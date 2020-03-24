@@ -1,0 +1,149 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="head">
+		<style type="text/css">
+			.ui-panelgrid.form-elements .ui-grc-2 {
+				padding-left: 60px;
+			}
+			
+			@media ( max-width :1024px) {
+				.ui-panelgrid.form-elements .ui-grc-2 {
+					padding-left: 20px;
+				}
+			}
+			
+			@media ( max-width :640px) {
+				.ui-panelgrid.form-elements .ui-grc-2 {
+					padding-left: 6px;
+				}
+			}
+			
+			.dialogDemo label {
+				line-height: 2.1em;
+			}
+			</style>
+	</ui:define>
+
+	<ui:define name="content">
+
+		<p:ajaxStatus onstart="PF('statusDialog').show()"
+			onsuccess="PF('statusDialog').hide()" />
+
+		<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+			closable="false" resizable="false" showHeader="false">
+			<p:graphicImage name="/images/loading.gif" />
+		</p:dialog>
+
+		<h:form>
+			<p:growl id="growl" globalOnly="false" />
+			<p:panel id="panel">
+				<f:facet name="header">
+					<div align="center">
+						<h1>Cadastro de Paciente</h1>
+					</div>
+				</f:facet>
+				<div class="ui-g ui-fluid">
+					<div class="ui-g-12">
+						<div class="card card-w-title">
+							<p:panelGrid columns="1"
+								styleClass="form-group ui-panelgrid-blank" layout="grid">
+								<p:commandLink value="Nome: " onclick="PF('listagem').show();">
+									<p:message for="itNome" escape="false" />
+								</p:commandLink>
+								<p:inputText id="itNome" value="#{PacienteController.entity.nome}"
+									required="true" requiredMessage="Informe o nome." />
+
+								<p:outputLabel value="Sexo: ">
+									<p:message for="itMatricula" escape="false" />
+								</p:outputLabel>
+								<p:inputText id="itSexo"
+									value="#{PacienteController.entity.sexo}" />
+
+								<p:outputLabel value="Data de Aniversário:" />
+								<p:calendar value="#{PacienteController.entity.dataAniversario}"
+									pattern="dd/MM/yyyy" />
+
+								<p:outputLabel value="Cpf:" />
+								<p:inputText value="#{PacienteController.entity.cpf}" />
+							</p:panelGrid>
+
+							
+						</div>
+					</div>
+				</div>
+				<p:toolbar>
+					<f:facet name="left">
+						<p:commandButton value="Salvar" icon="pi pi-check" process="@form"
+							update="@form" action="#{PacienteController.salvar}" />
+
+						<p:commandButton value="Limpar" 
+							process="@this" update="panel"
+							action="#{PacienteController.limpar}">
+							<p:ajax update="@form" resetValues="true" />
+						</p:commandButton>
+
+					</f:facet>
+
+					<f:facet name="right">
+						<p:commandButton value="Excluir" icon="pi pi-trash"
+							process="@form" update="panel"
+							action="#{PacienteController.excluir}">
+							<p:confirm header="Confirmação" message="Confirma a exclusão?" />
+						</p:commandButton>
+					</f:facet>
+				</p:toolbar>
+			</p:panel>
+
+			<p:confirmDialog global="true" 
+				showEffect="fade" 
+				hideEffect="fade">
+				<p:commandButton value="Sim" type="button"
+					styleClass="ui-confirmdialog-yes" />
+				<p:commandButton value="Não" type="button"
+					styleClass="ui-confirmdialog-no" />
+			</p:confirmDialog>
+
+			<p:dialog header="Listagem de Pacientes" 
+				widgetVar="listagem"
+				height="300" width="90%"
+				modal="true" resizable="true">
+				<p:outputLabel value="Nome: " />
+				<p:inputText id="itFiltro" value="#{PacienteController.filtro}" />
+				<p:commandButton value="Pesquisar"
+					actionListener="#{PacienteController.pesquisar}"
+					process="@this itFiltro" update="dtListagem" />
+				<br />
+				<p:dataTable id="dtListagem" var="entity"
+					value="#{PacienteController.listaPaciente}">
+					<p:column headerText="Id">
+						<h:outputText value="#{entity.id}" />
+					</p:column>
+
+					<p:column headerText="Nome">
+						<p:commandLink value="#{entity.nome}"
+							actionListener="#{PacienteController.editar(entity.id)}" 
+							process="@this" update="@form" resetValues="true"/>
+					</p:column>
+
+					<p:column headerText="Matricula">
+						<h:outputText value="#{entity.matricula}" />
+					</p:column>
+
+					<p:column headerText="Data Aniversário">
+						<h:outputText value="#{entity.dataAniversario}" />
+					</p:column>
+
+					<p:column headerText="E-Mail">
+						<h:outputText value="#{entity.email}" />
+					</p:column>
+				</p:dataTable>
+			</p:dialog>
+			
+		</h:form>
+	</ui:define>
+</ui:composition>
+		
