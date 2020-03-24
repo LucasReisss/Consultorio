@@ -1,0 +1,81 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/template/template.xhtml">
+	<ui:define name="head">
+		<style type="text/css">
+.ui-panelgrid.form-elements .ui-grc-2 {
+	padding-left: 60px;
+}
+
+@media ( max-width :1024px) {
+	.ui-panelgrid.form-elements .ui-grc-2 {
+		padding-left: 20px;
+	}
+}
+
+@media ( max-width :640px) {
+	.ui-panelgrid.form-elements .ui-grc-2 {
+		padding-left: 6px;
+	}
+}
+
+.dialogDemo label {
+	line-height: 2.1em;
+}
+</style>
+	</ui:define>
+	<ui:define name="content">
+		<h:form>
+
+			<p:panel id="panel">
+				<f:facet name="header">
+					<div align="center">
+						<h1>Cadastro do Paciente</h1>
+					</div>
+				</f:facet>
+				<div class="ui-g ui-fluid">
+					<div class="ui-g-12">
+						<div class="card card-w-title">
+							<p:panelGrid columns="1"
+								styleClass="form-group ui-panelgrid-blank" layout="grid">
+								
+								
+								
+								
+									
+
+								<p:outputLabel value="Nome: ">
+									
+								</p:outputLabel>
+								
+
+								<p:outputLabel value="Email:" />
+								
+
+								<p:outputLabel value="Senha:" />
+								
+								
+								<p:outputLabel value="CPF:" />
+								
+								
+								<p:outputLabel value="RG:" />
+								
+								
+								<p:outputLabel value="Naturalidade:" />
+								
+								
+								<p:outputLabel value="Emissor:" />
+								
+							</p:panelGrid>
+
+						</div>
+					</div>
+				</div>
+			</p:panel>
+
+		</h:form>
+	</ui:define>
+</ui:composition>
