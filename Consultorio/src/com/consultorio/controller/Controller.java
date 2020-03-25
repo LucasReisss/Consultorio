@@ -54,7 +54,7 @@ public abstract class Controller <T  extends DefaultEntity<T>> implements Serial
 			return;
 		}
 		limpar();
-		Util.addMessageInfo("Exclus√£o realizada com sucesso.");	
+		Util.addMessageInfo("Exclus„o realizada com sucesso.");	
 	}
 	
 	public void editar(int id) {

@@ -50,7 +50,11 @@ public class Paciente extends DefaultEntity<Paciente>{
 	public void setEmissor(String emissor) {
 		this.emissor = emissor;
 	}
-	
-	
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}	
 
 }

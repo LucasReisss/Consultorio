@@ -36,45 +36,118 @@
 						<h1>Cadastro do Paciente</h1>
 					</div>
 				</f:facet>
-				<div class="ui-g ui-fluid">
-					<div class="ui-g-12">
+				<div class="ui-fluid">
+					<div class="ui-fluid">
 						<div class="card card-w-title">
-							<p:panelGrid columns="1"
-								styleClass="form-group ui-panelgrid-blank" layout="grid">
-								
-								
-								
-								
-									
+							<p:panelGrid columns="2"
+								columnClasses="ui-g-12 ui-md-2,ui-g-12 ui-md-4,ui-g-12 ui-md-2,ui-g-12 ui-md-4"
+								layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
 
-								<p:outputLabel value="Nome: ">
-									
-								</p:outputLabel>
-								
+
+
+								<p:commandLink value="Nome: " onclick="PF('listagem').show();">
+									<p:message for="itNome" escape="false" />
+								</p:commandLink>
+								<p:inputText id="itNome"
+									value="#{pacienteController.entity.nome}" />
+
 
 								<p:outputLabel value="Email:" />
-								
+								<p:inputText value="#{pacienteController.entity.email}" />
 
-								<p:outputLabel value="Senha:" />
-								
-								
 								<p:outputLabel value="CPF:" />
-								
-								
+								<p:inputText value="#{pacienteController.entity.cpf}" />
+
 								<p:outputLabel value="RG:" />
-								
-								
+								<p:inputText value="#{pacienteController.entity.rg}" />
+
 								<p:outputLabel value="Naturalidade:" />
-								
-								
+								<p:inputText value="#{pacienteController.entity.naturalidade}" />
+
 								<p:outputLabel value="Emissor:" />
-								
+								<p:inputText value="#{pacienteController.entity.emissor}" />
+
 							</p:panelGrid>
 
 						</div>
 					</div>
 				</div>
+
+				<p:toolbar>
+					<f:facet name="left">
+						<p:commandButton value="Salvar" icon="pi pi-check" process="@form"
+							update="@form" action="#{pacienteController.salvar}" />
+
+						<p:commandButton value="Limpar" process="@this" update="panel"
+							action="#{pacienteController.limpar}">
+						</p:commandButton>
+
+					</f:facet>
+
+					<f:facet name="right">
+						<p:commandButton value="Excluir" icon="pi pi-trash"
+							process="@form" update="panel"
+							action="#{pacienteController.excluir}">
+							<p:confirm header="Confirmação" message="Confirma a exclusão?" />
+						</p:commandButton>
+					</f:facet>
+				</p:toolbar>
 			</p:panel>
+
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+				<p:commandButton value="Sim" type="button"
+					styleClass="ui-confirmdialog-yes" />
+				<p:commandButton value="Não" type="button"
+					styleClass="ui-confirmdialog-no" />
+			</p:confirmDialog>
+
+			<p:dialog header="Listagem de Pacientes" widgetVar="listagem"
+				height="300" width="90%" modal="true" resizable="true">
+				<p:outputLabel value="Nome: " />
+				<p:inputText id="itFiltro" value="#{pacienteController.filtro}" />
+				<p:commandButton value="Pesquisar"
+					actionListener="#{pacienteController.pesquisar}"
+					process="@this itFiltro" update="dtListagem" />
+				<br />
+				<p:dataTable id="dtListagem" var="entity"
+					value="#{pacienteController.listaPaciente}">
+					<p:column headerText="Id">
+						<h:outputText value="#{entity.id}" />
+					</p:column>
+
+					<p:column headerText="Nome">
+						<p:commandLink value="#{entity.nome}"
+							actionListener="#{pacienteController.editar(entity.id)}"
+							process="@this" update="@form" resetValues="true" />
+					</p:column>
+
+					<p:column headerText="E-Mail">
+						<h:outputText value="#{entity.email}" />
+					</p:column>
+
+					<p:column headerText="Senha">
+						<h:outputText value="#{entity.senha}" />
+					</p:column>
+
+					<p:column headerText="Cpf">
+						<h:outputText value="#{entity.cpf}" />
+					</p:column>
+
+					<p:column headerText="Rg">
+						<h:outputText value="#{entity.rg}" />
+					</p:column>
+
+					<p:column headerText="Naturalidade">
+						<h:outputText value="#{entity.naturalidade}" />
+					</p:column>
+
+					<p:column headerText="Emissor">
+						<h:outputText value="#{entity.emissor}" />
+					</p:column>
+
+
+				</p:dataTable>
+			</p:dialog>
 
 		</h:form>
 	</ui:define>
