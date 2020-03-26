@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
+import javax.swing.JOptionPane;
 
 import com.consultorio.application.Util;
 import com.consultorio.factory.JPAFactory;
@@ -20,7 +23,9 @@ public class LoginController extends Controller<Usuario> {
 	private static final long serialVersionUID = -7481072779220340737L;
 
 	private Usuario usuario;
-
+	UsuarioController usCon = new UsuarioController();
+	
+	
 	public String login() {
 		
 		
@@ -51,14 +56,13 @@ public class LoginController extends Controller<Usuario> {
 		String senhacrip = Util.hashSHA256(getEntity().getSenha());
 		usuario = getUsuario(getEntity().getEmail(), senhacrip);
 		
+		
 	if(usuario != null) {
 		Util.addMessageInfo("Login realizado com Sucesso");
 			return "paciente.xhtml?faces-redirect=true";
 		}
 			Util.addMessageError("Usuário ou senha Inválido");
 			return null;
-		
-
 	}
 
 
@@ -75,6 +79,7 @@ public class LoginController extends Controller<Usuario> {
 	}
 	
 
+
 	
 
 	public void setUsuario(Usuario usuario) {
@@ -83,11 +88,28 @@ public class LoginController extends Controller<Usuario> {
 
 
 
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+
 	@Override
 	public Usuario getEntity() {
 		if (entity == null)
 			entity = new Usuario();
 		return entity;
+	}
+	
+	
+	public String logar() {
+		FacesContext context = FacesContext.getCurrentInstance();
+		String senhacrip = Util.hashSHA256(getEntity().getSenha());
+		System.out.println("Email: " + entity.getEmail() + " senha: " + senhacrip);
+		if(usCon.logar(entity.getEmail(), senhacrip) == true) {
+			return "paciente.xhtml?faces-redirect=true";
+		}
+		context.addMessage(null, new FacesMessage("Email ou senha incorretos"));
+		return " . ";
 	}
 
 }

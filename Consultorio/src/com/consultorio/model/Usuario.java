@@ -2,8 +2,10 @@ package com.consultorio.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.NamedQuery;
 
 @Entity
+@NamedQuery(name = "logar", query = "SELECT m FROM Usuario m WHERE m.email = :email and m.senha = :senha")
 public class Usuario extends DefaultEntity<Usuario> {
 	
 	private static final long serialVersionUID = -422953916537710258L;
