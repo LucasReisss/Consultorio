@@ -17,7 +17,7 @@ public class Paciente extends DefaultEntity<Paciente>{
 	private String naturalidade;
 	@Column(length = 20)
 	private String emissor;
-	@Column(length = 20)
+	@Column(length = 50)
 	private String email;
 	
 	public String getNome() {
