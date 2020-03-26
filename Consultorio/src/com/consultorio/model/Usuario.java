@@ -4,7 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 
 @Entity
-public class Login extends DefaultEntity<Login> {
+public class Usuario extends DefaultEntity<Usuario> {
 	
 	private static final long serialVersionUID = -422953916537710258L;
 	
@@ -12,7 +12,7 @@ public class Login extends DefaultEntity<Login> {
 	private String nome;
 	@Column(length = 50, nullable = false)
 	private String email;
-	@Column(length = 20, nullable = false)
+	@Column(length = 100, nullable = false)
 	private String senha;
 	
 	public String getNome() {

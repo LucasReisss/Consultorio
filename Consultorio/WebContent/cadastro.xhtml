@@ -57,19 +57,20 @@
 								<p:outputLabel value="Nome">
 									<p:message for="itNome" escape="false" />
 								</p:outputLabel>
-								<p:inputText id="itNome" value="#{loginController.entity.nome}"
-									required="true" requiredMessage="Informe o nome." />
+								<p:inputText id="itNome"
+									value="#{usuarioController.entity.nome}" required="true"
+									requiredMessage="Informe o nome." />
 
 								<p:outputLabel value="Email:" />
-								<p:inputText value="#{loginController.entity.email}" />
+								<p:inputText value="#{usuarioController.entity.email}" />
 
 								<p:outputLabel value="Senha:" for="pwd" />
-								<p:password id="pwd" value="#{loginController.entity.senha}"
+								<p:password id="pwd" value="#{usuarioController.entity.senha}"
 									feedback="true" weakLabel="Senha fraca"
 									goodLabel="Senha razoavel" strongLabel="Senha forte"
 									promptLabel="Informe uma senha" match="pwd2" required="true"
 									requiredMessage="A senha é obrigatória"
-									validatorMessage="As senhas estão diferentes"/>
+									validatorMessage="As senhas estão diferentes" />
 
 								<p:outputLabel value="Confirmar Senha:" for="pwd2" />
 								<p:password id="pwd2" feedback="false" required="true" />
@@ -85,10 +86,10 @@
 						<f:facet name="left">
 							<p:commandButton value="Salvar" icon="pi pi-check"
 								process="@form" update="@form"
-								action="#{loginController.salvar}" />
+								action="#{usuarioController.salvar}" />
 
 							<p:commandButton value="Limpar" process="@this" update="panel"
-								action="#{loginController.limpar}">
+								action="#{usuarioController.limpar}">
 								<p:ajax update="@form" resetValues="true" />
 							</p:commandButton>
 

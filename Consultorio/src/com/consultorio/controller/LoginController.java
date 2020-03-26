@@ -1,59 +1,93 @@
 package com.consultorio.controller;
 
-import java.math.BigInteger;
-import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.view.ViewScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import com.consultorio.application.Util;
 import com.consultorio.factory.JPAFactory;
-import com.consultorio.model.Login;
+import com.consultorio.model.Usuario;
 
 @Named
-@ViewScoped
-public class LoginController extends Controller<Login> {
+@RequestScoped
+public class LoginController extends Controller<Usuario> {
 
-	private static final long serialVersionUID = 5361424037386272291L;
-	private String filtro;
-	private List<Login> listaLogin;
+	private static final long serialVersionUID = -7481072779220340737L;
 
-	public void pesquisar() {
-		EntityManager em = JPAFactory.getEntityManager();
-		Query query = em.createQuery("Select p " + "From Paciente p " + "Where upper(p.nome) like upper(:filtro)");
-		query.setParameter("filtro", "%" + getFiltro() + "%");
-		listaLogin = query.getResultList();
+	private Usuario usuario;
+
+	public String login() {
+		
+		
+		
+//		List<Usuario> usuarios = new ArrayList<Usuario>();
+//		usuarios = (List<Usuario>) getUsuario(getEntity().getEmail(), getEntity().getSenha());
+//
+//		for (Usuario usuarioDaLista : usuarios) {
+//			if (getUsuario().getEmail().equals(usuarioDaLista.getEmail())) {
+//				getUsuario().setSenha(Util.hashSHA256(getUsuario().getSenha()));
+//				if (getUsuario().getSenha().equals(usuarioDaLista.getSenha())) {
+//					System.out.println("igual");
+//
+//					if (usuario != null) {
+//						// armazenando um usuario na sessao
+//						return "paciente.xhtml?faces-redirect=true";
+//
+//					}
+//
+//				}
+//			}
+//			
+//	}
+//		Util.addMessageError("Usuário ou senha Inválido.");
+//		return null;
+	
+
+		String senhacrip = Util.hashSHA256(getEntity().getSenha());
+		usuario = getUsuario(getEntity().getEmail(), senhacrip);
+		
+	if(usuario != null) {
+		Util.addMessageInfo("Login realizado com Sucesso");
+			return "paciente.xhtml?faces-redirect=true";
+		}
+			Util.addMessageError("Usuário ou senha Inválido");
+			return null;
+		
+
 	}
 
-	public void logar() {
-		
+
+	public Usuario getUsuario(String email, String senha) {
+		try {
+			EntityManager em = JPAFactory.getEntityManager();
+			Query query = em.createQuery("SELECT m " + "FROM Usuario m " + "where m.email = :email and m.senha = :senha");
+			query.setParameter("email", "email");
+			query.setParameter("senha", "senha");
+			return entity;
+		} catch (NoResultException e) {
+			return null;
+		}
 	}
 	
+
+	
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
+
+
+
 	@Override
-	public Login getEntity() {
-		if (entity == null) {
-			entity = new Login();
-		}
+	public Usuario getEntity() {
+		if (entity == null)
+			entity = new Usuario();
 		return entity;
-	}
-
-	public String getFiltro() {
-		return filtro;
-	}
-
-	public void setFiltro(String filtro) {
-		this.filtro = filtro;
-	}
-
-	public List<Login> getListaLogin() {
-		if (listaLogin == null) {
-			listaLogin = new ArrayList<Login>();
-		}
-		return listaLogin;
 	}
 
 }
