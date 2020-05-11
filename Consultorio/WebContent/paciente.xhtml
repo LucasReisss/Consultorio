@@ -55,10 +55,16 @@
 
 
 
-								<p:commandLink value="Nome: " onclick="PF('listagem').show();">
-									<p:message for="itNome" escape="false" />
+								<p:commandLink value="Nome:"
+									actionListener="#{pacienteController.abrirPacienteListing}"
+									process="@this" update="@none">
+									
+									<p:ajax event="dialogReturn"
+										listener="#{pacienteController.obterPacienteListing}" 
+										update="@form"/>
+									
 								</p:commandLink>
-								<p:inputText id="itNome"
+								<p:inputText id="itNomePaciente"
 									value="#{pacienteController.entity.nome}" required="true"
 									requiredMessage="Informe o nome." />
 

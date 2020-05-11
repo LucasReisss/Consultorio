@@ -5,11 +5,12 @@ import java.util.List;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
 
-import com.consultorio.factory.JPAFactory;
+import org.primefaces.event.SelectEvent;
+
+import com.consultorio.listing.PacienteListing;
 import com.consultorio.model.Paciente;
+import com.consultorio.repository.PacienteRepository;
 
 @Named
 @ViewScoped
@@ -20,10 +21,8 @@ public class PacienteController extends Controller<Paciente> {
 	private List<Paciente> listaPaciente;
 
 	public void pesquisar() {
-		EntityManager em = JPAFactory.getEntityManager();
-		Query query = em.createQuery("Select p " + "From Paciente p " + "Where upper(p.nome) like upper(:filtro)");
-		query.setParameter("filtro", "%" + getFiltro() + "%");
-		listaPaciente = query.getResultList();
+		PacienteRepository repo = new PacienteRepository();
+		listaPaciente = repo.findByNome(getFiltro());
 	}
 	
 	@Override
@@ -47,4 +46,13 @@ public class PacienteController extends Controller<Paciente> {
 		return listaPaciente;
 	}
 
+	public void abrirPacienteListing() {
+		PacienteListing listing = new PacienteListing();
+		listing.open();
+	}
+	
+	public void obterPacienteListing(SelectEvent event) {
+		Paciente entity = (Paciente) event.getObject();
+		setEntity(entity);
+	}
 }

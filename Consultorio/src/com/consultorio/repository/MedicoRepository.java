@@ -16,7 +16,7 @@ public class MedicoRepository extends Repository<Medico> {
 		jpql.append("FROM ");
 		jpql.append("  Medico m ");
 		jpql.append("WHERE ");
-		jpql.append(" upper(a.nome) like upper(:nome)");
+		jpql.append(" upper(m.nome) like upper(:nome)");
 		
 		Query query = getEntityManager().createQuery(jpql.toString());
 		
