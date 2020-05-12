@@ -78,19 +78,18 @@
 								<p:inputText value="#{medicoController.entity.naturalidade}" />
 
 								<p:outputLabel value="Emissor:" />
-								<p:inputText value="#{pacienteController.entity.emissor}" />
+								<p:inputText value="#{medicoController.entity.emissor}" />
 								
 								<p:commandLink value="Especialidade: " 
-									actionListener="#{especialidadeMedicaController.abrirEspecialidadeListing}" 
+									actionListener="#{medicoController.abrirEspecialidadeListing}"
 									process="@this" update="@none">
 									
 									<p:ajax event="dialogReturn" 
-										listener="#{especialidadeMedicaController.obterEspecialidadeListing}" 
-										update="itNomeEstado" />
+										listener="#{medicoController.obterEspecialidadeListing}"
+										update="itespecialidade" />
 									
 								</p:commandLink>
-								<p:inputText id="itNomeEstado" value="#{alunoController.entity.estado.nome}"/>
-								
+                                <p:inputText id="itespecialidade" value="#{medicoController.entity.especialidade.nome}"/>
 							</p:panelGrid>
 
 						</div>

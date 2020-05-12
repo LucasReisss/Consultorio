@@ -43,7 +43,7 @@ public class MedicoController extends Controller<Medico> {
 			entity = new Medico();
 			entity.setEspecialidade(new EspecialidadeMedica());
 		}
-		return null;
+		return entity;
 	}
 
 	public String getFiltro() {

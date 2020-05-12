@@ -41,7 +41,7 @@ public class EspecialidadeMedicaListing extends Listing<EspecialidadeMedica> {
 		options.put("contentWidth", "100%");
 		options.put("contentHeight", "100%");
 
-		PrimeFaces.current().dialog().openDynamic("medicolisting", options, null);
+		PrimeFaces.current().dialog().openDynamic("especialidademedicalisting", options, null);
 	}
 
 	public void pesquisar() {

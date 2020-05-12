@@ -14,7 +14,7 @@ public class EspecialidadeMedicaRepository extends Repository<EspecialidadeMedic
 		jpql.append("SELECT ");
 		jpql.append("  e ");
 		jpql.append("FROM ");
-		jpql.append(" EspecialidadeMedico e ");
+		jpql.append(" EspecialidadeMedica e ");
 		jpql.append("WHERE ");
 		jpql.append("  upper(e.nome) like upper(:nome) ");
 		
