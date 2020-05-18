@@ -13,6 +13,15 @@ public class MedicoValidation implements Validation<Medico> {
 		validaDataAniversario(entity);
 		
 		validaEmail(entity);
+		
+		validaCpf(entity);
+	}
+	
+	private void validaCpf(Medico entity) throws ValidationException {
+		MedicoRepository repo = new MedicoRepository();
+		if(repo.contains(entity.getCpf(), entity.getId())) {
+			throw new ValidationException("CPF Inválido. Este CPF já está sendo utilizado.");
+		}
 	}
 
 	private void validaEmail(Medico entity) throws ValidationException {

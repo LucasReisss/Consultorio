@@ -45,5 +45,25 @@ public class MedicoRepository extends Repository<Medico> {
 		return resultado == 0 ? false : true;
 
 	}
+	
+	public boolean contains(String cpf, Integer id) {
+		StringBuffer jpql = new StringBuffer();
+		jpql.append("SELECT ");
+		jpql.append(" count(*) ");
+		jpql.append("FROM ");
+		jpql.append("  Medico m ");
+		jpql.append("WHERE ");
+		jpql.append(" upper(m.cpf) = upper(?) ");
+		jpql.append(" AND m.id <> ? ");
+
+		Query query = getEntityManager().createNativeQuery(jpql.toString());
+
+		query.setParameter(1, cpf);
+		query.setParameter(2, id == null ? -1 : id);
+		
+		long resultado = (long) query.getSingleResult();
+		
+		return resultado == 0 ? false : true;
+	}
 
 }
