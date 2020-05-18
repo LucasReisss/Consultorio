@@ -42,7 +42,7 @@ public class PacienteListing extends Listing<Paciente> {
 
 	public void pesquisar() {
 		PacienteRepository repo = new PacienteRepository();
-		list = repo.findByNome(filtro);
+		list = repo.findByNome(getFiltro());
 	}
 
 	public List<Paciente> getList() {
