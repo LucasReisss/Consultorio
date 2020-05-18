@@ -67,6 +67,10 @@
 								
 								<p:outputLabel value="Senha:" />
 								<p:inputText value="#{medicoController.entity.senha}" />
+								
+								<p:outputLabel value="Data de Aniversário:" />
+								<p:calendar value="#{medicoController.entity.dataAniversario}"
+									pattern="dd/MM/yyyy" />
 
 								<p:outputLabel value="CPF:" />
 								<p:inputText value="#{medicoController.entity.cpf}" />
@@ -155,6 +159,10 @@
 					
 					<p:column headerText="Senha">
 						<h:outputText value="#{entity.senha}" />
+					</p:column>
+					
+					<p:column headerText="Data Aniversário">
+						<h:outputText value="#{entity.dataAniversario}" />
 					</p:column>
 
 					<p:column headerText="Cpf">

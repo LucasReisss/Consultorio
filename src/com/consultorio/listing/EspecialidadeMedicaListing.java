@@ -23,12 +23,9 @@ public class EspecialidadeMedicaListing extends Listing<EspecialidadeMedica> {
 	private static final long serialVersionUID = 1854020310735604097L;
 	private List<EspecialidadeMedica> list;
 	private String filtro;
-
-	@Override
-	public EspecialidadeMedica getEntity() {
-		if (entity == null)
-			entity = new EspecialidadeMedica();
-		return entity;
+	
+	public EspecialidadeMedicaListing() {
+		super(EspecialidadeMedica.class);
 	}
 
 	public void open() {
@@ -49,12 +46,6 @@ public class EspecialidadeMedicaListing extends Listing<EspecialidadeMedica> {
 		setList(repo.findByNome(getFiltro()));
 	}
 
-	public void select(int id) {
-		EntityManager em = JPAFactory.getEntityManager();
-		setEntity((EspecialidadeMedica) em.find(EspecialidadeMedica.class, id));
-
-		PrimeFaces.current().dialog().closeDynamic(getEntity());
-	}
 
 	public List<EspecialidadeMedica> getList() {
 		if (list == null)

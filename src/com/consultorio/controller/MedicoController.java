@@ -27,6 +27,30 @@ public class MedicoController extends Controller<Medico> {
 		listaMedico = repo.findByNome(getFiltro());
 	}
 	
+	@Override
+	public void salvar() {
+		if (getEntity().getEspecialidade() != null && getEntity().getEspecialidade().getId() == null)
+			getEntity().setEspecialidade(null);
+		super.salvar();
+	}
+	
+	@Override
+	public void editar(int id) {
+		super.editar(id);
+		if (getEntity().getEspecialidade() == null)
+			getEntity().setEspecialidade(new EspecialidadeMedica());
+	}
+	
+//	public void abrirMedicoListing() {
+//		MedicoListing listing = new MedicoListing();
+//		listing.open();
+//	}
+//	
+//	public void obterMedicoListing(SelectEvent event) {
+//		Medico entity = (Medico) event.getObject();
+//		getEntity().setMedico(entity);
+//	}
+	
 	public void abrirEspecialidadeListing() {
 		EspecialidadeMedicaListing listing = new EspecialidadeMedicaListing();
 		listing.open();
@@ -43,6 +67,7 @@ public class MedicoController extends Controller<Medico> {
 			entity = new Medico();
 			entity.setEspecialidade(new EspecialidadeMedica());
 		}
+		
 		return entity;
 	}
 

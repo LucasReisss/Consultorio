@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 
 import com.consultorio.application.RepositoryException;
 import com.consultorio.application.Util;
+import com.consultorio.application.ValidationException;
 import com.consultorio.factory.JPAFactory;
 import com.consultorio.model.DefaultEntity;
 import com.consultorio.repository.Repository;
@@ -28,6 +29,8 @@ public abstract class Controller <T  extends DefaultEntity<T>> implements Serial
 	public void salvar() {
 		Repository<T> r = new Repository<T>();
 		try {
+			if(getEntity().getValidation() != null)
+				getEntity().getValidation().validate(getEntity());
 			r.beginTransaction();
 			r.salvar(getEntity());
 			r.commitTransaction();	
@@ -35,6 +38,10 @@ public abstract class Controller <T  extends DefaultEntity<T>> implements Serial
 			e.printStackTrace();
 			r.rollbackTransaction();
 			Util.addMessageError("Problema ao salvar.");
+			return;
+		}catch(ValidationException e) {
+			System.out.println(e.getMessage());
+			Util.addMessageError(e.getMessage());
 			return;
 		}
 		limpar();

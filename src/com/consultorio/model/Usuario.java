@@ -4,6 +4,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.NamedQuery;
 
+import com.consultorio.model.validation.Validation;
+
 @Entity
 @NamedQuery(name = "logar", query = "SELECT m FROM Usuario m WHERE m.email = :email and m.senha = :senha")
 public class Usuario extends DefaultEntity<Usuario> {
@@ -34,6 +36,11 @@ public class Usuario extends DefaultEntity<Usuario> {
 	}
 	public void setSenha(String senha) {
 		this.senha = senha;
+	}
+	@Override
+	public Validation<Usuario> getValidation() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

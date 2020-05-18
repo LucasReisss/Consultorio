@@ -23,14 +23,10 @@ public class PacienteListing extends Listing<Paciente> {
 	private List<Paciente> list;
 	private String filtro;
 	
-	@Override
-	public Paciente getEntity() {
-		if(entity == null) {
-			entity = new Paciente();
-		}
-		return entity;
+	public PacienteListing() {
+		super(Paciente.class);
 	}
-	
+
 	public void open() {
 		Map<String, Object> options = new HashMap<String, Object>();
 		options.put("resizable", true);
@@ -47,13 +43,6 @@ public class PacienteListing extends Listing<Paciente> {
 	public void pesquisar() {
 		PacienteRepository repo = new PacienteRepository();
 		list = repo.findByNome(filtro);
-	}
-
-	public void select(int id) {
-		EntityManager em = JPAFactory.getEntityManager();
-		setEntity((Paciente) em.find(Paciente.class, id));
-
-		PrimeFaces.current().dialog().closeDynamic(getEntity());
 	}
 
 	public List<Paciente> getList() {

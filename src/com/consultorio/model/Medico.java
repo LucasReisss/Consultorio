@@ -1,9 +1,16 @@
 package com.consultorio.model;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import com.consultorio.model.validation.MedicoValidation;
+import com.consultorio.model.validation.Validation;
 
 @Entity
 public class Medico extends DefaultEntity<Medico> {
@@ -15,6 +22,11 @@ public class Medico extends DefaultEntity<Medico> {
 	private String email;
 	@Column(length = 100, nullable = false)
 	private String senha;
+	@Column(nullable = false)
+	
+	@Temporal(TemporalType.DATE)
+	private Date dataAniversario;
+	
 	@Column(length = 20)
 	private String cpf;
 	@Column(length = 20)
@@ -24,8 +36,8 @@ public class Medico extends DefaultEntity<Medico> {
 	@Column(length = 20)
 	private String emissor;
 	
-	@ManyToOne
-	@JoinColumn(name = "idespecialidade")
+	@ManyToOne()
+	@JoinColumn(name = "idespecialidade", nullable = true)
 	private EspecialidadeMedica especialidade;
 
 	public String getNome() {
@@ -90,6 +102,21 @@ public class Medico extends DefaultEntity<Medico> {
 
 	public void setEspecialidade(EspecialidadeMedica especialidade) {
 		this.especialidade = especialidade;
+	}
+	
+
+	public Date getDataAniversario() {
+		return dataAniversario;
+	}
+
+	public void setDataAniversario(Date dataAniversario) {
+		this.dataAniversario = dataAniversario;
+	}
+
+	@Override
+	public Validation<Medico> getValidation() {
+		
+		return new MedicoValidation();
 	}
 	
 	

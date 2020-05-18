@@ -13,18 +13,16 @@ public abstract class Listing<T extends DefaultEntity<T>> implements Serializabl
 
 	private static final long serialVersionUID = 8479261041861677730L;
 	
-	protected T entity;
-
-	public abstract T getEntity();
-
-	public void setEntity(T entity) {
-		this.entity = entity;
+	private Class clazz = null;
+	
+	public Listing(Class clazz) {
+		this.clazz = clazz;
 	}
 	
 	public void select(int id) {
 		EntityManager em = JPAFactory.getEntityManager();
-		setEntity((T) em.find(getEntity().getClass(), id));
-		PrimeFaces.current().dialog().closeDynamic(getEntity());
+		T entity = (T) em.find(clazz, id);
+		PrimeFaces.current().dialog().closeDynamic(entity);
 	}
 
 }

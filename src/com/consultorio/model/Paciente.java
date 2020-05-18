@@ -3,6 +3,8 @@ package com.consultorio.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
+import com.consultorio.model.validation.Validation;
+
 @Entity
 public class Paciente extends DefaultEntity<Paciente>{
 
@@ -55,6 +57,11 @@ public class Paciente extends DefaultEntity<Paciente>{
 	}
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	@Override
+	public Validation<Paciente> getValidation() {
+		// TODO Auto-generated method stub
+		return null;
 	}	
 
 }
