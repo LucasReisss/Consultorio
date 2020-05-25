@@ -13,6 +13,7 @@ import javax.persistence.Query;
 
 import com.consultorio.application.RepositoryException;
 import com.consultorio.application.Util;
+import com.consultorio.application.ValidationException;
 import com.consultorio.factory.JPAFactory;
 import com.consultorio.model.Usuario;
 import com.consultorio.repository.Repository;
@@ -45,6 +46,8 @@ public class UsuarioController extends Controller<Usuario> {
 			r.rollbackTransaction();
 			Util.addMessageError("Problema ao salvar.");
 			return;
+		} catch (ValidationException e) {
+			e.printStackTrace();
 		}
 		limpar();
 		Util.addMessageInfo("Cadastro realizado com sucesso.");

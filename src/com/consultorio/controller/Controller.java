@@ -29,8 +29,6 @@ public abstract class Controller <T  extends DefaultEntity<T>> implements Serial
 	public void salvar() {
 		Repository<T> r = new Repository<T>();
 		try {
-			if(getEntity().getValidation() != null)
-				getEntity().getValidation().validate(getEntity());
 			r.beginTransaction();
 			r.salvar(getEntity());
 			r.commitTransaction();	
