@@ -2,8 +2,6 @@ package com.consultorio.model;
 
 import javax.persistence.Entity;
 
-import com.consultorio.model.validation.Validation;
-
 @Entity
 public class Endereco extends DefaultEntity<Endereco> {
 
@@ -64,10 +62,6 @@ public class Endereco extends DefaultEntity<Endereco> {
 		this.uf = uf;
 	}
 
-	@Override
-	public Validation<Endereco> getValidation() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
 
 }

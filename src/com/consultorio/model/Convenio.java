@@ -4,8 +4,6 @@ import java.util.Date;
 
 import javax.persistence.Entity;
 
-import com.consultorio.model.validation.Validation;
-
 @Entity
 public class Convenio extends DefaultEntity<Convenio> {
 
@@ -64,12 +62,5 @@ public class Convenio extends DefaultEntity<Convenio> {
 		this.validade = validade;
 	}
 
-
-
-	@Override
-	public Validation<Convenio> getValidation() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 }

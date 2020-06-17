@@ -64,12 +64,32 @@
 										update="@form"/>
 									
 								</p:commandLink>
-								<p:inputText id="itNomePaciente"
+								<p:inputText id="itNome"
 									value="#{pacienteController.entity.nome}" required="true"
 									requiredMessage="Informe o nome." />
 
 								<p:outputLabel value="Email:" />
-								<p:inputText value="#{pacienteController.entity.email}" />
+								<p:inputText value="#{pacienteController.entity.email}" id="email" />
+								
+								<p:outputLabel value="Senha:" for="pwd" />
+								<p:password id="pwd" value="#{pacienteController.entity.senha}"
+									feedback="true" weakLabel="Senha fraca"
+									goodLabel="Senha razoavel" strongLabel="Senha forte"
+									promptLabel="Informe uma senha" match="pwd2" required="true"
+									requiredMessage="A senha é obrigatória"
+									validatorMessage="As senhas estão diferentes"
+									redisplay="true" />
+
+								<p:outputLabel value="Confirmar Senha:" for="pwd2" />
+								<p:password id="pwd2" feedback="false" required="true"
+								redisplay="true">
+								<p:ajax event="change" process="itNome email pwd pwd2" update="@form" />
+								</p:password>
+								
+								<p:outputLabel value="Data de Aniversário:" />
+								<p:calendar value="#{pacienteController.entity.dataNascimento}"
+									pattern="dd/MM/yyyy"
+									required="true"/>
 
 								<p:outputLabel value="CPF:" />
 								<p:inputText value="#{pacienteController.entity.cpf}" />

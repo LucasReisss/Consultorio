@@ -9,6 +9,7 @@ import javax.persistence.Query;
 
 import com.consultorio.application.Util;
 import com.consultorio.factory.JPAFactory;
+import com.consultorio.model.Medico;
 import com.consultorio.model.Pessoa;
 
 @Named

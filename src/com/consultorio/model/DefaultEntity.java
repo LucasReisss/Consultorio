@@ -12,8 +12,6 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import com.consultorio.model.validation.Validation;
-
 @MappedSuperclass
 public abstract class DefaultEntity<T> implements Serializable {
 
@@ -27,8 +25,6 @@ public abstract class DefaultEntity<T> implements Serializable {
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date dataAlteracao;
-
-	public abstract Validation<T> getValidation();
 	
 	@PrePersist
 	private void atualizarDadosAntesInsert() {

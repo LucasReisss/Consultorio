@@ -82,7 +82,7 @@
 								</p:password>
 
 								<p:outputLabel value="Data de Aniversário:" />
-								<p:calendar value="#{medicoController.entity.dataAniversario}"
+								<p:calendar value="#{medicoController.entity.dataNascimento}"
 									pattern="dd/MM/yyyy"
 									required="true"/>
 
@@ -173,12 +173,8 @@
 						<h:outputText value="#{entity.email}" />
 					</p:column>
 
-					<p:column headerText="Senha">
-						<h:outputText value="#{entity.senha}" />
-					</p:column>
-
 					<p:column headerText="Data Aniversário">
-						<h:outputText value="#{entity.dataAniversario}" />
+						<h:outputText value="#{entity.dataNascimento}" />
 					</p:column>
 
 					<p:column headerText="Cpf">

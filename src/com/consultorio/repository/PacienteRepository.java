@@ -5,8 +5,9 @@ import java.util.List;
 import javax.persistence.Query;
 
 import com.consultorio.model.Paciente;
+import com.consultorio.model.Pessoa;
 
-public class PacienteRepository extends Repository<Paciente> {
+public class PacienteRepository extends Repository<Pessoa> {
 	
 	public List<Paciente> findByNome(String nome){
 		

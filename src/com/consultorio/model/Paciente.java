@@ -1,67 +1,42 @@
 package com.consultorio.model;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 
 import com.consultorio.model.validation.PacienteValidation;
 import com.consultorio.model.validation.Validation;
 
 @Entity
-public class Paciente extends DefaultEntity<Paciente>{
-
-	private static final long serialVersionUID = 5683363782986414566L;
-	@Column(length = 100, nullable = false)
-	private String nome;
-	@Column(length = 20)
-	private String cpf;
-	@Column(length = 20)
-	private String rg;
-	@Column(length = 20)
-	private String naturalidade;
-	@Column(length = 20)
-	private String emissor;
-	@Column(length = 50)
-	private String email;
+public class Paciente extends Pessoa {
 	
-	public String getNome() {
-		return nome;
+	private static final long serialVersionUID = -8722060693269364691L;
+	
+	private Exame exame;
+	
+	private Convenio convenio;
+	
+	public Exame getExame() {
+		return exame;
 	}
-	public void setNome(String nome) {
-		this.nome = nome;
+
+	public void setExame(Exame exame) {
+		this.exame = exame;
 	}
-	public String getCpf() {
-		return cpf;
+
+	public Convenio getConvenio() {
+		return convenio;
 	}
-	public void setCpf(String cpf) {
-		this.cpf = cpf;
+
+	public void setConvenio(Convenio convenio) {
+		this.convenio = convenio;
 	}
-	public String getRg() {
-		return rg;
-	}
-	public void setRg(String rg) {
-		this.rg = rg;
-	}
-	public String getNaturalidade() {
-		return naturalidade;
-	}
-	public void setNaturalidade(String naturalidade) {
-		this.naturalidade = naturalidade;
-	}
-	public String getEmissor() {
-		return emissor;
-	}
-	public void setEmissor(String emissor) {
-		this.emissor = emissor;
-	}
-	public String getEmail() {
-		return email;
-	}
-	public void setEmail(String email) {
-		this.email = email;
-	}
+
 	@Override
 	public Validation<Paciente> getValidation() {
 		return new PacienteValidation();
-	}	
+	}
+
+	
+	
+	
 
 }

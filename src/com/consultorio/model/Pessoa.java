@@ -4,15 +4,24 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.NamedQuery;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import com.consultorio.model.validation.Validation;
 
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @NamedQuery(name = "logar", query = "SELECT p FROM Pessoa p WHERE p.email = :email and p.senha = :senha")
-public class Pessoa extends DefaultEntity<Pessoa> {
-
-	private static final long serialVersionUID = -298974611494912586L;
+@NamedQuery(name = "logarMedico", query = "SELECT m FROM Medico m WHERE m.email = :email and m.senha = :senha")
+@NamedQuery(name = "logarPaciente", query = "SELECT p FROM Paciente p WHERE p.email = :email and p.senha = :senha")
+public class Pessoa extends DefaultEntity<Pessoa>{
+	
+	private static final long serialVersionUID = -6432207614516019961L;
 	
 	private String nome;
 	@Column(nullable = false)
@@ -26,7 +35,15 @@ public class Pessoa extends DefaultEntity<Pessoa> {
 	private String emissor;
 	private Endereco endereco;
 	private Telefone telefone;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date dataCadastro;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date dataAlteracao;
 	
+	public <T> Validation<T> getValidation() {
+		return null ;
+	}
+
 	public String getNome() {
 		return nome;
 	}
@@ -107,10 +124,31 @@ public class Pessoa extends DefaultEntity<Pessoa> {
 		this.telefone = telefone;
 	}
 
-	@Override
-	public Validation<Pessoa> getValidation() {
-		// TODO Auto-generated method stub
-		return null;
+	@PrePersist
+	private void atualizarDadosAntesInsert() {
+		this.dataCadastro = new Date();
+		this.dataAlteracao = this.dataCadastro;
+	}
+	
+	@PreUpdate
+	private void atualizarDadosAntesUpdate() {
+		this.dataAlteracao = new Date();
+	}
+	
+	public Date getDataCadastro() {
+		return dataCadastro;
+	}
+
+	public void setDataCadastro(Date dataCadastro) {
+		this.dataCadastro = dataCadastro;
+	}
+
+	public Date getDataAlteracao() {
+		return dataAlteracao;
+	}
+
+	public void setDataAlteracao(Date dataAlteracao) {
+		this.dataAlteracao = dataAlteracao;
 	}
 	
 }

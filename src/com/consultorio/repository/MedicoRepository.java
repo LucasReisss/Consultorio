@@ -1,14 +1,13 @@
 package com.consultorio.repository;
 
-import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Query;
 
 import com.consultorio.model.Medico;
+import com.consultorio.model.Pessoa;
 
-public class MedicoRepository extends Repository<Medico> {
+public class MedicoRepository extends Repository<Pessoa> {
 
 	public List<Medico> findByNome(String nome) {
 

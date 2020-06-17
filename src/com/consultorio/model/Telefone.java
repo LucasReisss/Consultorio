@@ -2,8 +2,6 @@ package com.consultorio.model;
 
 import javax.persistence.Entity;
 
-import com.consultorio.model.validation.Validation;
-
 @Entity
 public class Telefone extends DefaultEntity<Telefone> {
 	
@@ -26,11 +24,5 @@ public class Telefone extends DefaultEntity<Telefone> {
 
 	public void setNumero(String numero) {
 		this.numero = numero;
-	}
-
-	@Override
-	public Validation<Telefone> getValidation() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

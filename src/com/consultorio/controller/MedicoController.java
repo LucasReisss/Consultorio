@@ -14,11 +14,12 @@ import com.consultorio.application.ValidationException;
 import com.consultorio.listing.EspecialidadeMedicaListing;
 import com.consultorio.model.EspecialidadeMedica;
 import com.consultorio.model.Medico;
+import com.consultorio.model.Pessoa;
 import com.consultorio.repository.MedicoRepository;
 
 @Named
 @ViewScoped
-public class MedicoController extends Controller<Medico> {
+public class MedicoController extends Controller<Pessoa> {
 
 	private static final long serialVersionUID = -3862624597114610891L;
 	
@@ -85,10 +86,10 @@ public class MedicoController extends Controller<Medico> {
 	public Medico getEntity() {
 		if(entity == null) {
 			entity = new Medico();
-			entity.setEspecialidade(new EspecialidadeMedica());
+			((Medico) entity).setEspecialidade(new EspecialidadeMedica());
 		}
 		
-		return entity;
+		return (Medico) entity;
 	}
 
 	public String getFiltro() {

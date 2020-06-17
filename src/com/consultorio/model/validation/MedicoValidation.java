@@ -32,7 +32,7 @@ public class MedicoValidation implements Validation<Medico> {
 	}
 	
 	private void validaDataAniversario(Medico entity) throws ValidationException {
-		LocalDate data = new java.sql.Date(entity.getDataAniversario().getTime()).toLocalDate();
+		LocalDate data = new java.sql.Date(entity.getDataNascimento().getTime()).toLocalDate();
 		LocalDate dataLimite = LocalDate.now().minusYears(18);
 		
 		if (data.isAfter(dataLimite)) {

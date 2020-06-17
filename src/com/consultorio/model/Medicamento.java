@@ -2,8 +2,6 @@ package com.consultorio.model;
 
 import javax.persistence.Entity;
 
-import com.consultorio.model.validation.Validation;
-
 @Entity
 public class Medicamento extends DefaultEntity<Medicamento> {
 
@@ -22,13 +20,4 @@ public class Medicamento extends DefaultEntity<Medicamento> {
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
-
-
-
-	@Override
-	public Validation<Medicamento> getValidation() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

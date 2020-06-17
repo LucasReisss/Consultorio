@@ -10,11 +10,12 @@ import org.primefaces.event.SelectEvent;
 
 import com.consultorio.listing.PacienteListing;
 import com.consultorio.model.Paciente;
+import com.consultorio.model.Pessoa;
 import com.consultorio.repository.PacienteRepository;
 
 @Named
 @ViewScoped
-public class PacienteController extends Controller<Paciente> { 
+public class PacienteController extends Controller<Pessoa> { 
 
 	private static final long serialVersionUID = -7996231487557010298L;
 	private String filtro;
@@ -29,7 +30,7 @@ public class PacienteController extends Controller<Paciente> {
 	public Paciente getEntity() {
 		if (entity == null)
 			entity = new Paciente();
-		return entity;
+		return (Paciente) entity;
 	}
 
 	public String getFiltro() {

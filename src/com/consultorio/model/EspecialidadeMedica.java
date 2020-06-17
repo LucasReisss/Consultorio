@@ -2,8 +2,6 @@ package com.consultorio.model;
 
 import javax.persistence.Entity;
 
-import com.consultorio.model.validation.Validation;
-
 @Entity
 public class EspecialidadeMedica extends DefaultEntity<EspecialidadeMedica> {
 
@@ -19,10 +17,6 @@ public class EspecialidadeMedica extends DefaultEntity<EspecialidadeMedica> {
 		this.nome = nome;
 	}
 
-	@Override
-	public Validation<EspecialidadeMedica> getValidation() {
-		return null;
-	}
 	
 	
 }

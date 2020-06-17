@@ -9,6 +9,7 @@ import com.consultorio.application.Util;
 import com.consultorio.application.ValidationException;
 import com.consultorio.factory.JPAFactory;
 import com.consultorio.model.DefaultEntity;
+import com.consultorio.model.Pessoa;
 import com.consultorio.repository.Repository;
 
 public abstract class Controller <T  extends DefaultEntity<T>> implements Serializable {

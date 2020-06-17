@@ -7,17 +7,16 @@ import java.util.Map;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
-import javax.persistence.EntityManager;
 
 import org.primefaces.PrimeFaces;
 
-import com.consultorio.factory.JPAFactory;
 import com.consultorio.model.Paciente;
+import com.consultorio.model.Pessoa;
 import com.consultorio.repository.PacienteRepository;
 
 @Named
 @ViewScoped
-public class PacienteListing extends Listing<Paciente> {
+public class PacienteListing extends Listing<Pessoa> {
 
 	private static final long serialVersionUID = -5274842308492045809L;
 	private List<Paciente> list;
