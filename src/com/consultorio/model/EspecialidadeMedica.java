@@ -1,6 +1,5 @@
 package com.consultorio.model;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 
 import com.consultorio.model.validation.Validation;

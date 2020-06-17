@@ -8,6 +8,9 @@ import javax.inject.Named;
 
 import org.primefaces.event.SelectEvent;
 
+import com.consultorio.application.RepositoryException;
+import com.consultorio.application.Util;
+import com.consultorio.application.ValidationException;
 import com.consultorio.listing.EspecialidadeMedicaListing;
 import com.consultorio.model.EspecialidadeMedica;
 import com.consultorio.model.Medico;
@@ -29,9 +32,26 @@ public class MedicoController extends Controller<Medico> {
 	
 	@Override
 	public void salvar() {
-		if (getEntity().getEspecialidade() != null && getEntity().getEspecialidade().getId() == null)
-			getEntity().setEspecialidade(null);
-		super.salvar();
+		MedicoRepository r = new MedicoRepository();
+		try {
+			r.beginTransaction();
+			getEntity().setSenha(Util.hashSHA256(getEntity().getSenha()));
+			if (getEntity().getEspecialidade() != null && getEntity().getEspecialidade().getId() == null) {
+				getEntity().setEspecialidade(null);
+			}
+			r.salvar(getEntity());
+			r.commitTransaction();
+		} catch (RepositoryException e) {
+			e.printStackTrace();
+			r.rollbackTransaction();
+			Util.addMessageError("Problema ao salvar.");
+			return;
+		} catch (ValidationException e) {
+			e.printStackTrace();
+		}
+		limpar();
+		Util.addMessageInfo("Cadastro realizado com sucesso.");
+		
 	}
 	
 	@Override

@@ -17,7 +17,6 @@
 		<class>com.consultorio.model.Paciente</class>
 		<class>com.consultorio.model.Pessoa</class>
 		<class>com.consultorio.model.Telefone</class>
-		<class>com.consultorio.model.Usuario</class>
 
 
 		<properties>

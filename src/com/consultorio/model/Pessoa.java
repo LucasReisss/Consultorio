@@ -2,16 +2,23 @@ package com.consultorio.model;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.NamedQuery;
 
 import com.consultorio.model.validation.Validation;
 
 @Entity
+@NamedQuery(name = "logar", query = "SELECT p FROM Pessoa p WHERE p.email = :email and p.senha = :senha")
 public class Pessoa extends DefaultEntity<Pessoa> {
 
 	private static final long serialVersionUID = -298974611494912586L;
 	
 	private String nome;
+	@Column(nullable = false)
+	private String email;
+	@Column(nullable = false)
+	private String senha;
 	private Date dataNascimento;
 	private String rg;
 	private String cpf;
@@ -26,6 +33,22 @@ public class Pessoa extends DefaultEntity<Pessoa> {
 	
 	public void setNome(String nome) {
 		this.nome = nome;
+	}
+	
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getSenha() {
+		return senha;
+	}
+
+	public void setSenha(String senha) {
+		this.senha = senha;
 	}
 
 	public Date getDataNascimento() {

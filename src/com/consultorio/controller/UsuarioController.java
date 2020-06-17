@@ -6,36 +6,34 @@ import java.util.List;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
-import javax.persistence.Persistence;
 import javax.persistence.Query;
 
 import com.consultorio.application.RepositoryException;
 import com.consultorio.application.Util;
 import com.consultorio.application.ValidationException;
 import com.consultorio.factory.JPAFactory;
-import com.consultorio.model.Usuario;
+import com.consultorio.model.Pessoa;
 import com.consultorio.repository.Repository;
 
 @Named
 @ViewScoped
-public class UsuarioController extends Controller<Usuario> {
+public class UsuarioController extends Controller<Pessoa> {
 
 	private static final long serialVersionUID = -3305082947567412162L;
 	private String filtro;
-	private List<Usuario> listaUsuario;
+	private List<Pessoa> listaPessoa;
 
 	public void pesquisar() {
 		EntityManager em = JPAFactory.getEntityManager();
-		Query query = em.createQuery("Select m " + "From Usuario m " + "Where upper(m.nome) like upper(:filtro)");
+		Query query = em.createQuery("Select p " + "From Pessoa p " + "Where upper(p.nome) like upper(:filtro)");
 		query.setParameter("filtro", "%" + getFiltro() + "%");
-		listaUsuario = query.getResultList();
+		listaPessoa = query.getResultList();
 	}
 
 	@Override
 	public void salvar() {
-		Repository<Usuario> r = new Repository<Usuario>();
+		Repository<Pessoa> r = new Repository<Pessoa>();
 		try {
 			r.beginTransaction();
 			getEntity().setSenha(Util.hashSHA256(getEntity().getSenha()));
@@ -54,9 +52,9 @@ public class UsuarioController extends Controller<Usuario> {
 	}
 
 	@Override
-	public Usuario getEntity() {
+	public Pessoa getEntity() {
 		if (entity == null)
-			entity = new Usuario();
+			entity = new Pessoa();
 		return entity;
 	}
 
@@ -68,18 +66,20 @@ public class UsuarioController extends Controller<Usuario> {
 		this.filtro = filtro;
 	}
 
-	public List<Usuario> getListaUsuario() {
-		if (listaUsuario == null)
-			listaUsuario = new ArrayList<Usuario>();
-		return listaUsuario;
+	public List<Pessoa> getListaPessoa() {
+		if (listaPessoa == null)
+			listaPessoa = new ArrayList<Pessoa>();
+		return listaPessoa;
 	}
 
 	public boolean logar(String email, String senha) {
 		EntityManager em = JPAFactory.getEntityManager();
 		System.out.println("entrou aqui");
 		try {
-			Usuario user = (Usuario) em.createNamedQuery("logar", Usuario.class).setParameter("email", email)
+			
+			Pessoa user =  (Pessoa) em.createNamedQuery("logar", Pessoa.class).setParameter("email", email)
 					.setParameter("senha", senha).getSingleResult();
+			
 			if (user != null) {
 				return true;
 			}

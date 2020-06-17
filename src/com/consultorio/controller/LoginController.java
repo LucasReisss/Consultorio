@@ -9,15 +9,15 @@ import javax.persistence.Query;
 
 import com.consultorio.application.Util;
 import com.consultorio.factory.JPAFactory;
-import com.consultorio.model.Usuario;
+import com.consultorio.model.Pessoa;
 
 @Named
 @RequestScoped
-public class LoginController extends Controller<Usuario> {
+public class LoginController extends Controller<Pessoa> {
 
 	private static final long serialVersionUID = -7481072779220340737L;
 
-	private Usuario usuario;
+	private Pessoa pessoa;
 	UsuarioController usCon = new UsuarioController();
 
 	public String logar() {
@@ -25,17 +25,18 @@ public class LoginController extends Controller<Usuario> {
 		String senhacrip = Util.hashSHA256(getEntity().getSenha());
 		System.out.println("Email: " + entity.getEmail() + " senha: " + senhacrip);
 		if (usCon.logar(entity.getEmail(), senhacrip) == true) {
+			Util.addMessageError("Login Efetuado com sucesso");
 			return "paciente.xhtml?faces-redirect=true";
 		}
 		Util.addMessageError("Email ou senha incorretos");
 		return " . ";
 	}
 
-	public Usuario getUsuario(String email, String senha) {
+	public Pessoa getPessoa(String email, String senha) {
 		try {
 			EntityManager em = JPAFactory.getEntityManager();
 			Query query = em
-					.createQuery("SELECT m " + "FROM Usuario m " + "where m.email = :email and m.senha = :senha");
+					.createQuery("SELECT p FROM Pessoa p where p.email = :email and p.senha = :senha");
 			query.setParameter("email", "email");
 			query.setParameter("senha", "senha");
 			return entity;
@@ -44,18 +45,18 @@ public class LoginController extends Controller<Usuario> {
 		}
 	}
 
-	public void setUsuario(Usuario usuario) {
-		this.usuario = usuario;
+	public Pessoa getPessoa() {
+		return pessoa;
 	}
 
-	public Usuario getUsuario() {
-		return usuario;
+	public void setPessoa(Pessoa pessoa) {
+		this.pessoa = pessoa;
 	}
 
 	@Override
-	public Usuario getEntity() {
+	public Pessoa getEntity() {
 		if (entity == null)
-			entity = new Usuario();
+			entity = new Pessoa();
 		return entity;
 	}
 
