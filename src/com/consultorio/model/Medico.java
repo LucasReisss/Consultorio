@@ -1,5 +1,6 @@
 package com.consultorio.model;
 
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -8,6 +9,7 @@ import com.consultorio.model.validation.MedicoValidation;
 import com.consultorio.model.validation.Validation;
 
 @Entity
+@DiscriminatorValue("Medico")
 public class Medico extends Pessoa {
 
 	private static final long serialVersionUID = -755582211013832728L;
@@ -25,10 +27,7 @@ public class Medico extends Pessoa {
 	}
 	
 	@Override
-	public Validation<Medico> getValidation() {
-		return new MedicoValidation();
+	public Validation<Pessoa> getValidation() {
+		return super.getValidation();
 	}
-	
-	
-
 }

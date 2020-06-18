@@ -2,6 +2,8 @@ package com.consultorio.model;
 
 import javax.persistence.Entity;
 
+import com.consultorio.model.validation.Validation;
+
 @Entity
 public class ConvenioF extends DefaultEntity<ConvenioF> {
 
@@ -32,6 +34,12 @@ public class ConvenioF extends DefaultEntity<ConvenioF> {
 
 	public void setRegistroAns(String registroAns) {
 		this.registroAns = registroAns;
+	}
+
+	@Override
+	public Validation<ConvenioF> getValidation() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

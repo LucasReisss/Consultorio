@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.persistence.Entity;
 
+import com.consultorio.model.validation.Validation;
+
 @Entity
 public class Agenda extends DefaultEntity<Agenda>{
 
@@ -18,5 +20,11 @@ public class Agenda extends DefaultEntity<Agenda>{
 	String observacao;
 	Boolean retorno;
 	Medico medico;
+	
+	@Override
+	public Validation<Agenda> getValidation() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

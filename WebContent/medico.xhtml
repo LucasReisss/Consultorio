@@ -71,11 +71,10 @@
 									promptLabel="Informe uma senha" match="pwd2" required="true"
 									requiredMessage="A senha é obrigatória"
 									validatorMessage="As senhas estão diferentes"
-									redisplay="true" />
+									redisplay="true"/>
 
 								<p:outputLabel value="Confirmar Senha:" for="pwd2" />
-								<p:password id="pwd2" feedback="false" required="true"
-								redisplay="true"> 
+								<p:password id="pwd2" feedback="false" required="true" redisplay="true">
 								
 								<p:ajax event="change" process="itNome email pwd pwd2" update="@form" />
 								

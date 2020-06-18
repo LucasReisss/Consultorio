@@ -4,9 +4,8 @@ import com.consultorio.application.ValidationException;
 import com.consultorio.model.Paciente;
 import com.consultorio.repository.PacienteRepository;
 
-public class PacienteValidation implements Validation<Paciente> {
+public class PacienteValidation {
 
-	@Override
 	public void validate(Paciente entity) throws ValidationException {
 		validaEmail(entity);
 

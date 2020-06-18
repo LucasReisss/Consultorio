@@ -7,6 +7,7 @@ import com.consultorio.application.ValidationException;
 import com.consultorio.factory.JPAFactory;
 import com.consultorio.model.DefaultEntity;
 import com.consultorio.model.Pessoa;
+import com.consultorio.model.validation.MedicoValidation;
 
 public class Repository<T extends DefaultEntity<T>> {
 	private EntityManager entityManager;
@@ -47,10 +48,16 @@ public class Repository<T extends DefaultEntity<T>> {
 
 	public void salvar(T entity) throws RepositoryException, ValidationException{
 		try {
-//			if (entity != null) {
-//				entity; 
-//			}
+			
+			if(entity.getValidation() != null) {
+				entity.getValidation().validate(entity);
+			}
 			getEntityManager().merge(entity);
+		}
+            catch (ValidationException e) {
+		    // e.printStackTrace();
+			System.out.println(e.getMessage());
+			throw e;
 		} catch (Exception e) {
 			System.out.println("Erro no repositorio ao executar o método merge.");
 			e.printStackTrace();

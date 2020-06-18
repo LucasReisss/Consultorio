@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.persistence.Entity;
 
+import com.consultorio.model.validation.Validation;
+
 @Entity
 public class Financeiro extends DefaultEntity<Financeiro> {
 
@@ -15,7 +17,11 @@ public class Financeiro extends DefaultEntity<Financeiro> {
 	Date data;
 	Double valor;
 	Medico medico;
-
-
+	
+	@Override
+	public Validation<Financeiro> getValidation() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

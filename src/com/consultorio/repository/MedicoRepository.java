@@ -26,15 +26,15 @@ public class MedicoRepository extends Repository<Pessoa> {
 		return query.getResultList();
 	}
 
-	public boolean contains(Integer id, String email) {
+	public boolean containsEmail(Integer id, String email) {
 		StringBuffer jpql = new StringBuffer();
 		jpql.append("SELECT ");
 		jpql.append(" count(*) ");
 		jpql.append("FROM ");
-		jpql.append("  Medico m ");
+		jpql.append("  Pessoa p ");
 		jpql.append("WHERE ");
-		jpql.append(" upper(m.email) = upper(?) ");
-		jpql.append(" AND m.id <> ? ");
+		jpql.append(" upper(p.email) = upper(?) ");
+		jpql.append(" AND p.id <> ? ");
 
 		Query query = getEntityManager().createNativeQuery(jpql.toString());
 
@@ -47,15 +47,15 @@ public class MedicoRepository extends Repository<Pessoa> {
 
 	}
 	
-	public boolean contains(String cpf, Integer id) {
+	public boolean containsCpf(String cpf, Integer id) {
 		StringBuffer jpql = new StringBuffer();
 		jpql.append("SELECT ");
 		jpql.append(" count(*) ");
 		jpql.append("FROM ");
-		jpql.append("  Medico m ");
+		jpql.append("  Pessoa p ");
 		jpql.append("WHERE ");
-		jpql.append(" upper(m.cpf) = upper(?) ");
-		jpql.append(" AND m.id <> ? ");
+		jpql.append(" upper(p.cpf) = upper(?) ");
+		jpql.append(" AND p.id <> ? ");
 
 		Query query = getEntityManager().createNativeQuery(jpql.toString());
 
@@ -66,5 +66,26 @@ public class MedicoRepository extends Repository<Pessoa> {
 		
 		return resultado == 0 ? false : true;
 	}
+	
+	public boolean containsRg(String rg, Integer id) {
+		StringBuffer jpql = new StringBuffer();
+		jpql.append("SELECT ");
+		jpql.append(" count(*) ");
+		jpql.append("FROM ");
+		jpql.append("  Pessoa p ");
+		jpql.append("WHERE ");
+		jpql.append(" upper(p.rg) = upper(?) ");
+		jpql.append(" AND p.id <> ? ");
+
+		Query query = getEntityManager().createNativeQuery(jpql.toString());
+
+		query.setParameter(1, rg);
+		query.setParameter(2, id == null ? -1 : id);
+		
+		long resultado = (long) query.getSingleResult();
+		
+		return resultado == 0 ? false : true;
+	}
+
 
 }

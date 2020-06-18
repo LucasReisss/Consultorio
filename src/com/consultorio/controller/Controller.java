@@ -3,6 +3,7 @@ package com.consultorio.controller;
 import java.io.Serializable;
 
 import javax.persistence.EntityManager;
+import javax.persistence.RollbackException;
 
 import com.consultorio.application.RepositoryException;
 import com.consultorio.application.Util;
@@ -40,6 +41,7 @@ public abstract class Controller <T  extends DefaultEntity<T>> implements Serial
 			return;
 		}catch(ValidationException e) {
 			System.out.println(e.getMessage());
+			r.rollbackTransaction();
 			Util.addMessageError(e.getMessage());
 			return;
 		}

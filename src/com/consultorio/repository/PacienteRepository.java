@@ -31,7 +31,7 @@ public class PacienteRepository extends Repository<Pessoa> {
 		jpql.append("SELECT ");
 		jpql.append(" count(*) ");
 		jpql.append("FROM ");
-		jpql.append("  Paciente p ");
+		jpql.append("  Pessoa p ");
 		jpql.append("WHERE ");
 		jpql.append(" upper(p.email) = upper(?) ");
 		jpql.append(" AND p.id <> ? ");
@@ -52,7 +52,7 @@ public class PacienteRepository extends Repository<Pessoa> {
 		jpql.append("SELECT ");
 		jpql.append(" count(*) ");
 		jpql.append("FROM ");
-		jpql.append("  Paciente p ");
+		jpql.append("  Pessoa p ");
 		jpql.append("WHERE ");
 		jpql.append(" upper(p.cpf) = upper(?) ");
 		jpql.append(" AND p.id <> ? ");
@@ -72,7 +72,7 @@ public class PacienteRepository extends Repository<Pessoa> {
 		jpql.append("SELECT ");
 		jpql.append(" count(*) ");
 		jpql.append("FROM ");
-		jpql.append("  Paciente p ");
+		jpql.append("  Pessoa p ");
 		jpql.append("WHERE ");
 		jpql.append(" upper(p.rg) = upper(?) ");
 		jpql.append(" AND p.id <> ? ");

@@ -3,6 +3,8 @@ package com.consultorio.model;
 import java.util.Date;
 
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -12,13 +14,13 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.consultorio.model.validation.PessoaValidation;
 import com.consultorio.model.validation.Validation;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "tipo", discriminatorType = DiscriminatorType.STRING)
 @NamedQuery(name = "logar", query = "SELECT p FROM Pessoa p WHERE p.email = :email and p.senha = :senha")
-@NamedQuery(name = "logarMedico", query = "SELECT m FROM Medico m WHERE m.email = :email and m.senha = :senha")
-@NamedQuery(name = "logarPaciente", query = "SELECT p FROM Paciente p WHERE p.email = :email and p.senha = :senha")
 public class Pessoa extends DefaultEntity<Pessoa>{
 	
 	private static final long serialVersionUID = -6432207614516019961L;
@@ -39,10 +41,6 @@ public class Pessoa extends DefaultEntity<Pessoa>{
 	private Date dataCadastro;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date dataAlteracao;
-	
-	public <T> Validation<T> getValidation() {
-		return null ;
-	}
 
 	public String getNome() {
 		return nome;
@@ -149,6 +147,11 @@ public class Pessoa extends DefaultEntity<Pessoa>{
 
 	public void setDataAlteracao(Date dataAlteracao) {
 		this.dataAlteracao = dataAlteracao;
+	}
+
+	@Override
+	public Validation<Pessoa> getValidation() {
+		return new PessoaValidation();
 	}
 	
 }

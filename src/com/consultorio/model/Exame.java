@@ -2,6 +2,8 @@ package com.consultorio.model;
 
 import javax.persistence.Entity;
 
+import com.consultorio.model.validation.Validation;
+
 @Entity
 public class Exame extends DefaultEntity<Exame> {
 
@@ -11,7 +13,11 @@ public class Exame extends DefaultEntity<Exame> {
 	Medicamento medicamento;
 	String descricao;
 	String posologia;
-
 	
+	@Override
+	public Validation<Exame> getValidation() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

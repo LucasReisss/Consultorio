@@ -1,11 +1,13 @@
 package com.consultorio.model;
 
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 import com.consultorio.model.validation.PacienteValidation;
 import com.consultorio.model.validation.Validation;
 
 @Entity
+@DiscriminatorValue("Paciente")
 public class Paciente extends Pessoa {
 	
 	private static final long serialVersionUID = -8722060693269364691L;
@@ -29,14 +31,9 @@ public class Paciente extends Pessoa {
 	public void setConvenio(Convenio convenio) {
 		this.convenio = convenio;
 	}
-
+	
 	@Override
-	public Validation<Paciente> getValidation() {
-		return new PacienteValidation();
+	public Validation<Pessoa> getValidation() {
+		return super.getValidation();
 	}
-
-	
-	
-	
-
 }

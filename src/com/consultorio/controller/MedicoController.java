@@ -15,6 +15,7 @@ import com.consultorio.listing.EspecialidadeMedicaListing;
 import com.consultorio.model.EspecialidadeMedica;
 import com.consultorio.model.Medico;
 import com.consultorio.model.Pessoa;
+import com.consultorio.model.validation.MedicoValidation;
 import com.consultorio.repository.MedicoRepository;
 
 @Named
@@ -48,11 +49,13 @@ public class MedicoController extends Controller<Pessoa> {
 			Util.addMessageError("Problema ao salvar.");
 			return;
 		} catch (ValidationException e) {
-			e.printStackTrace();
+			System.out.println(e.getMessage());
+			r.rollbackTransaction();
+			Util.addMessageError(e.getMessage());
+			return;
 		}
 		limpar();
 		Util.addMessageInfo("Cadastro realizado com sucesso.");
-		
 	}
 	
 	@Override
