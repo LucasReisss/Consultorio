@@ -11,21 +11,21 @@ public enum UF {
 	RO(11, "Rondônia", "RO"), RR(14, "Roraima", "RR"), SC(42, "Santa Catarina", "SC"),	
 	SP(35, "São Paulo", "SP"), SE(28, "Sergipe", "SE"), TO(17, "Tocantins", "TO");
 	
-	Integer código;
+	Integer codigo;
 	
 	String estado;
 
 	String sigla;
 	
 
-	private UF(Integer código, String estado, String sigla) {
-		this.código = código;
+	private UF(Integer codigo, String estado, String sigla) {
+		this.codigo = codigo;
 		this.estado = estado;
 		this.sigla = sigla;
 	}
 
-	public Integer getCódigo() {
-		return código;
+	public Integer getCodigo() {
+		return codigo;
 	}
 
 	public String getSigla() {
