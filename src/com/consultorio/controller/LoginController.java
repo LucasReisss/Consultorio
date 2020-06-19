@@ -7,9 +7,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
+import com.consultorio.application.Session;
 import com.consultorio.application.Util;
 import com.consultorio.factory.JPAFactory;
-import com.consultorio.model.Medico;
 import com.consultorio.model.Pessoa;
 
 @Named
@@ -26,6 +26,9 @@ public class LoginController extends Controller<Pessoa> {
 		String senhacrip = Util.hashSHA256(getEntity().getSenha());
 		System.out.println("Email: " + entity.getEmail() + " senha: " + senhacrip);
 		if (usCon.logar(entity.getEmail(), senhacrip) == true) {
+			// adicionar um usuario na sessao
+			Session.getInstance().setAttribute("usuarioLogado", pessoa);
+			
 			Util.addMessageError("Login Efetuado com sucesso");
 			return "paciente.xhtml?faces-redirect=true";
 		}
