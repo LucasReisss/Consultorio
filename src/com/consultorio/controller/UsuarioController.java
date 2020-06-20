@@ -89,5 +89,24 @@ public class UsuarioController extends Controller<Pessoa> {
 		}
 
 	}
+	
+	public Pessoa logaR(String email, String senha) {
+		EntityManager em = JPAFactory.getEntityManager();
+		System.out.println("entrou aqui");
+		try {
+			
+			Pessoa user =  (Pessoa) em.createNamedQuery("logar", Pessoa.class).setParameter("email", email)
+					.setParameter("senha", senha).getSingleResult();
+			
+			if (user != null) {
+				return user;
+			}
+			return user;
+		} catch (NoResultException e) {
+			Pessoa user = null;
+			return user;
+		}
+
+	}
 
 }

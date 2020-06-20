@@ -1,11 +1,15 @@
 package com.consultorio.controller;
 
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.consultorio.application.Session;
 import com.consultorio.application.Util;
@@ -13,7 +17,7 @@ import com.consultorio.factory.JPAFactory;
 import com.consultorio.model.Pessoa;
 
 @Named
-@RequestScoped
+@SessionScoped
 public class LoginController extends Controller<Pessoa> {
 
 	private static final long serialVersionUID = -7481072779220340737L;
@@ -22,18 +26,43 @@ public class LoginController extends Controller<Pessoa> {
 	UsuarioController usCon = new UsuarioController();
 
 	public String logar() {
+		pessoa = null;
 		FacesContext context = FacesContext.getCurrentInstance();
 		String senhacrip = Util.hashSHA256(getEntity().getSenha());
 		System.out.println("Email: " + entity.getEmail() + " senha: " + senhacrip);
-		if (usCon.logar(entity.getEmail(), senhacrip) == true) {
+		pessoa = usCon.logaR(entity.getEmail(), senhacrip);
+		if(pessoa != null) {
 			// adicionar um usuario na sessao
-			Session.getInstance().setAttribute("usuarioLogado", pessoa);
+			HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+			session.setAttribute("usuarioLogado", pessoa);
 			
 			Util.addMessageError("Login Efetuado com sucesso");
-			return "paciente.xhtml?faces-redirect=true";
+			return "home.xhtml?faces-redirect=true";
 		}
 		Util.addMessageError("Email ou senha incorretos");
 		return " . ";
+	}
+	
+	public String logout() {
+		FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+		return "login.xhtml?faces-redirect=true";
+	}
+	
+	public boolean isLogado() {
+		
+		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+		
+		Pessoa pessoa = (Pessoa) session.getAttribute("usuarioLogado");
+		boolean check;
+		
+		if (pessoa != null) {
+			check = true;
+		}
+		else {
+			check = false;
+		}
+		
+		return check;
 	}
 
 	public Pessoa getPessoa(String email, String senha) {

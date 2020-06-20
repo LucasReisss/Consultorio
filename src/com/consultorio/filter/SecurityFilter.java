@@ -22,36 +22,34 @@ public class SecurityFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		
+
 // 	 	Para desabilitar o filter, descomente as duas proximas linhas e comente o restante		
 //		chain.doFilter(request, response);
 //		return;
+		
+		HttpServletRequest req = (HttpServletRequest) request;
+		HttpServletResponse res = (HttpServletResponse) response;
 
-		HttpServletRequest servletRequest = (HttpServletRequest) request;
-		// imprime o endereco da pagina
-		String endereco = servletRequest.getRequestURI();
-		System.out.println(endereco);
-		if (endereco.equals("/Consultorio/faces/login.xhtml")) {
-			chain.doFilter(request, response);
+		HttpSession session = (HttpSession) req.getSession();
+
+		Pessoa pessoa = (Pessoa) session.getAttribute("usuarioLogado");
+		String link = req.getRequestURL().toString();
+		System.out.println(link);
+
+		if (!link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/login.xhtml") && pessoa == null) {
+
+			res.sendRedirect(req.getContextPath() + "/faces/login.xhtml");
 			return;
-		}
 
-		// retorna a sessao corrente (false - para nao criar uma nova sessao)
-		HttpSession session = servletRequest.getSession(false);
-
-		Pessoa pessoa = null;
-		if (session != null)
-			pessoa = (Pessoa) session.getAttribute("pessoaLogado");
-
-		if (pessoa == null) {
-			((HttpServletResponse) response).sendRedirect("/Consultorio/faces/login.xhtml");
+		} else if (pessoa != null && link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/login.xhtml")) {
+			res.sendRedirect(req.getContextPath() + "/faces/home.xhtml");
+			return;
 		} else {
-			// segue o fluxo
 			chain.doFilter(request, response);
-			return;
 		}
-
 	}
+
+	
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
