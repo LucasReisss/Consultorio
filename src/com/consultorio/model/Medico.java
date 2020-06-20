@@ -5,7 +5,6 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import com.consultorio.model.validation.MedicoValidation;
 import com.consultorio.model.validation.Validation;
 
 @Entity

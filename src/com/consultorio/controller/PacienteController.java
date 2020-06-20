@@ -14,7 +14,6 @@ import com.consultorio.application.ValidationException;
 import com.consultorio.listing.PacienteListing;
 import com.consultorio.model.Paciente;
 import com.consultorio.model.Pessoa;
-import com.consultorio.repository.MedicoRepository;
 import com.consultorio.repository.PacienteRepository;
 
 @Named

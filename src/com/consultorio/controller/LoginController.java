@@ -1,19 +1,18 @@
 package com.consultorio.controller;
 
-import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.consultorio.application.Session;
 import com.consultorio.application.Util;
 import com.consultorio.factory.JPAFactory;
+import com.consultorio.model.Administrador;
+import com.consultorio.model.Medico;
+import com.consultorio.model.Paciente;
 import com.consultorio.model.Pessoa;
 
 @Named
@@ -63,6 +62,61 @@ public class LoginController extends Controller<Pessoa> {
 		}
 		
 		return check;
+	}
+	
+	public boolean permiteAcesso(String nome) {
+		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+
+		Pessoa pessoa = (Pessoa) session.getAttribute("usuarioLogado");
+		
+		Paciente paciente = new Paciente();
+		Medico medico = new Medico();
+		Administrador adm = new Administrador();
+		
+		if(pessoa.getClass().isInstance(adm) && nome.equalsIgnoreCase("Adm")) {
+			return true;
+		}
+		else if (pessoa.getClass().isInstance(medico) && nome.equalsIgnoreCase("Medico")) {
+			return true;
+		}
+		else if ((pessoa.getClass().isInstance(adm) || pessoa.getClass().isInstance(medico))
+				&& nome.equalsIgnoreCase("Adm-Medico")) {
+			return true;
+		}
+		else if (pessoa.getClass().isInstance(paciente) && nome.equalsIgnoreCase("Paciente")) {
+			return true;
+		}
+		else if ((pessoa.getClass().isInstance(adm) || pessoa.getClass().isInstance(paciente))
+				&& nome.equalsIgnoreCase("Adm-Paciente")) {
+			return true;
+		}
+		else {
+			return false;
+		}
+		
+	}
+	
+	public boolean verificaUser(Integer id) {
+		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+
+		Pessoa pessoa = (Pessoa) session.getAttribute("usuarioLogado");
+		
+		Paciente paciente = new Paciente();
+		Medico medico = new Medico();
+		Administrador adm = new Administrador();
+		
+		if((pessoa.getClass().isInstance(paciente) && pessoa.getId().equals(id)) ||
+				pessoa.getClass().isInstance(adm)) {
+			return true;
+		}
+		else if ((pessoa.getClass().isInstance(medico) && pessoa.getId().equals(id)) ||
+				pessoa.getClass().isInstance(adm)){
+			return true;
+		}
+		else {
+			return false;
+		}
+		
 	}
 
 	public Pessoa getPessoa(String email, String senha) {

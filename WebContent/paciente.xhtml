@@ -114,7 +114,8 @@
 						<f:facet name="left">
 							<p:commandButton value="Salvar" icon="pi pi-check"
 								process="@form" update="@form"
-								action="#{pacienteController.salvar}" />
+								action="#{pacienteController.salvar}"
+								rendered="#{loginController.verificaUser(entity.id)}"/>
 
 							<p:commandButton value="Limpar" process="@this" update="panel"
 								action="#{pacienteController.limpar}">
@@ -126,6 +127,7 @@
 						<f:facet name="right">
 							<p:commandButton value="Excluir" icon="pi pi-trash"
 								process="@form" update="panel"
+								rendered="#{loginController.permiteAcesso('Adm')}"
 								action="#{pacienteController.excluir}">
 								<p:confirm header="Confirmação" message="Confirma a exclusão?" />
 							</p:commandButton>

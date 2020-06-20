@@ -14,6 +14,7 @@
 		<class>com.consultorio.model.Financeiro</class>
 		<class>com.consultorio.model.Medicamento</class>
 		<class>com.consultorio.model.Medico</class>
+		<class>com.consultorio.model.Administrador</class>
 		<class>com.consultorio.model.Paciente</class>
 		<class>com.consultorio.model.Pessoa</class>
 		<class>com.consultorio.model.Telefone</class>
@@ -32,9 +33,9 @@
 			<property name="javax.persistence.jdbc.password"
 				value="123456" />
 
-		<!--  <property name="eclipselink.ddl-generation" value="drop-and-create-tables" /> -->	 
+	 <!-- <property name="eclipselink.ddl-generation" value="drop-and-create-tables" /> --> 
 				
-			<property name="eclipselink.ddl-generation" value="create-or-extend-tables" /> 
+		<property name="eclipselink.ddl-generation" value="create-or-extend-tables" />   
 
 				<property name="eclipselink.logging.level" value="ALL" />
 		</properties>

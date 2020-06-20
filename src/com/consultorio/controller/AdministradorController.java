@@ -13,33 +13,30 @@ import com.consultorio.application.Util;
 import com.consultorio.application.ValidationException;
 import com.consultorio.listing.EspecialidadeMedicaListing;
 import com.consultorio.model.EspecialidadeMedica;
-import com.consultorio.model.Medico;
+import com.consultorio.model.Administrador;
 import com.consultorio.model.Pessoa;
-import com.consultorio.repository.MedicoRepository;
+import com.consultorio.repository.AdministradorRepository;
 
 @Named
 @ViewScoped
-public class MedicoController extends Controller<Pessoa> {
+public class AdministradorController extends Controller<Pessoa> {
 
 	private static final long serialVersionUID = -3862624597114610891L;
 	
 	private String filtro;
-	private List<Medico> listaMedico;
+	private List<Administrador> listaAdministrador;
 	
 	public void pesquisar() {
-		MedicoRepository repo = new MedicoRepository();
-		listaMedico = repo.findByNome(getFiltro());
+		AdministradorRepository repo = new AdministradorRepository();
+		listaAdministrador = repo.findByNome(getFiltro());
 	}
 	
 	@Override
 	public void salvar() {
-		MedicoRepository r = new MedicoRepository();
+		AdministradorRepository r = new AdministradorRepository();
 		try {
 			r.beginTransaction();
 			getEntity().setSenha(Util.hashSHA256(getEntity().getSenha()));
-			if (getEntity().getEspecialidade() != null && getEntity().getEspecialidade().getId() == null) {
-				getEntity().setEspecialidade(null);
-			}
 			r.salvar(getEntity());
 			r.commitTransaction();
 		} catch (RepositoryException e) {
@@ -60,38 +57,25 @@ public class MedicoController extends Controller<Pessoa> {
 	@Override
 	public void editar(int id) {
 		super.editar(id);
-		if (getEntity().getEspecialidade() == null)
-			getEntity().setEspecialidade(new EspecialidadeMedica());
 	}
 	
-//	public void abrirMedicoListing() {
-//		MedicoListing listing = new MedicoListing();
+//	public void abrirAdministradorListing() {
+//		AdministradorListing listing = new AdministradorListing();
 //		listing.open();
 //	}
 //	
-//	public void obterMedicoListing(SelectEvent event) {
-//		Medico entity = (Medico) event.getObject();
-//		getEntity().setMedico(entity);
+//	public void obterAdministradorListing(SelectEvent event) {
+//		Administrador entity = (Administrador) event.getObject();
+//		getEntity().setAdministrador(entity);
 //	}
-	
-	public void abrirEspecialidadeListing() {
-		EspecialidadeMedicaListing listing = new EspecialidadeMedicaListing();
-		listing.open();
-	}
-	
-	public void obterEspecialidadeListing(SelectEvent event) {
-		EspecialidadeMedica entity = (EspecialidadeMedica) event.getObject();
-		getEntity().setEspecialidade(entity);
-	}
 
 	@Override
-	public Medico getEntity() {
+	public Administrador getEntity() {
 		if(entity == null) {
-			entity = new Medico();
-			((Medico) entity).setEspecialidade(new EspecialidadeMedica());
+			entity = new Administrador();
 		}
 		
-		return (Medico) entity;
+		return (Administrador) entity;
 	}
 
 	public String getFiltro() {
@@ -102,10 +86,10 @@ public class MedicoController extends Controller<Pessoa> {
 		this.filtro = filtro;
 	}
 
-	public List<Medico> getListaMedico() {
-		if(listaMedico == null)
-			listaMedico = new ArrayList<Medico>();
-		return listaMedico;
+	public List<Administrador> getListaAdministrador() {
+		if(listaAdministrador == null)
+			listaAdministrador = new ArrayList<Administrador>();
+		return listaAdministrador;
 	}
 
 	

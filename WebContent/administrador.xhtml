@@ -42,7 +42,7 @@
 			<p:panel id="panel">
 				<f:facet name="header">
 					<div align="center">
-						<h1>Cadastro do Médico</h1>
+						<h1>Cadastro de Administrador</h1>
 					</div>
 				</f:facet>
 				<div class="ui-g ui-fluid">
@@ -53,17 +53,19 @@
 								layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
 								id="painelGrid">
 
+
+
 								<p:commandLink value="Nome: " onclick="PF('listagem').show();">
 									<p:message for="itNome" escape="false" />
 								</p:commandLink>
-								<p:inputText id="itNome" value="#{medicoController.entity.nome}"
+								<p:inputText id="itNome" value="#{administradorController.entity.nome}"
 									required="true" requiredMessage="Informe o nome."/>
 
 								<p:outputLabel value="Email:" />
-								<p:inputText value="#{medicoController.entity.email}" id="email"/>
+								<p:inputText value="#{administradorController.entity.email}" id="email"/>
 
 								<p:outputLabel value="Senha:" for="pwd" />
-								<p:password id="pwd" value="#{medicoController.entity.senha}"
+								<p:password id="pwd" value="#{administradorController.entity.senha}"
 									feedback="true" weakLabel="Senha fraca"
 									goodLabel="Senha razoavel" strongLabel="Senha forte"
 									promptLabel="Informe uma senha" match="pwd2" required="true"
@@ -79,50 +81,37 @@
 								</p:password>
 
 								<p:outputLabel value="Data de Aniversário:" />
-								<p:calendar value="#{medicoController.entity.dataNascimento}"
+								<p:calendar value="#{administradorController.entity.dataNascimento}"
 									pattern="dd/MM/yyyy"
 									required="true"/>
 
 								<p:outputLabel value="CPF:" />
-								<p:inputText value="#{medicoController.entity.cpf}" />
+								<p:inputText value="#{administradorController.entity.cpf}" />
 
 								<p:outputLabel value="RG:" />
-								<p:inputText value="#{medicoController.entity.rg}" />
+								<p:inputText value="#{administradorController.entity.rg}" />
 
 								<p:outputLabel value="Naturalidade:" />
-								<p:inputText value="#{medicoController.entity.naturalidade}" />
+								<p:inputText value="#{administradorController.entity.naturalidade}" />
 
 								<p:outputLabel value="Emissor:" />
-								<p:inputText value="#{medicoController.entity.emissor}" />
+								<p:inputText value="#{administradorController.entity.emissor}" />
 
-								<p:commandLink value="Especialidade: "
-									actionListener="#{medicoController.abrirEspecialidadeListing}"
-									process="@this" update="@none">
-
-									<p:ajax event="dialogReturn"
-										listener="#{medicoController.obterEspecialidadeListing}"
-										update="itespecialidade" />
-
-								</p:commandLink>
-								<p:inputText id="itespecialidade"
-									value="#{medicoController.entity.especialidade.nome}"
-									required="true" requiredMessage="Selecione a especialidade" />
 							</p:panelGrid>
 
 						</div>
 					</div>
 				</div>
 
-				<div class="ui-button ui-state-hover">
+				<div class="ui-button ui-state-hover   ">
 					<p:toolbar>
 						<f:facet name="left">
 							<p:commandButton value="Salvar" icon="pi pi-check"
 								process="@form" update="@form"
-								action="#{medicoController.salvar}" 
-								rendered="#{loginController.verificaUser(entity.id)}"/>
+								action="#{administradorController.salvar}" />
 
 							<p:commandButton value="Limpar" process="@this" update="panel"
-								action="#{medicoController.limpar}">
+								action="#{administradorController.limpar}">
 								<p:ajax update="@form" resetValues="true" />
 							</p:commandButton>
 
@@ -131,8 +120,7 @@
 						<f:facet name="right">
 							<p:commandButton value="Excluir" icon="pi pi-trash"
 								process="@form" update="panel"
-								rendered="#{loginController.permiteAcesso('Adm')}"
-								action="#{medicoController.excluir}">
+								action="#{administradorController.excluir}">
 								<p:confirm header="Confirmação" message="Confirma a exclusão?" />
 							</p:commandButton>
 						</f:facet>
@@ -147,23 +135,25 @@
 					styleClass="ui-confirmdialog-no" />
 			</p:confirmDialog>
 
-			<p:dialog header="Listagem de Medicos" widgetVar="listagem"
+			<p:dialog header="Listagem de Administradores" widgetVar="listagem"
 				height="300" width="90%" modal="true" resizable="true">
 				<p:outputLabel value="Nome: " />
-				<p:inputText id="itFiltro" value="#{medicoController.filtro}" />
+				<p:inputText id="itFiltro" value="#{administradorController.filtro}" />
 				<p:commandButton value="Pesquisar"
-					actionListener="#{medicoController.pesquisar}"
+					actionListener="#{administradorController.pesquisar}"
 					process="@this itFiltro" update="dtListagem" />
 				<br />
 				<div class="ui-datatable"></div>
 				<p:dataTable id="dtListagem" var="entity"
-					value="#{medicoController.listaMedico}">
+					value="#{administradorController.listaAdministrador}">
 					<p:column headerText="Id">
 						<h:outputText value="#{entity.id}" />
 					</p:column>
 
 					<p:column headerText="Nome">
-						<h:outputText value="#{entity.nome}" />
+						<p:commandLink value="#{entity.nome}"
+							actionListener="#{administradorController.editar(entity.id)}"
+							process="@this" update="@form" resetValues="true" />
 					</p:column>
 
 					<p:column headerText="E-Mail">
@@ -189,16 +179,6 @@
 					<p:column headerText="Emissor">
 						<h:outputText value="#{entity.emissor}" />
 					</p:column>
-					<p:column headerText="Especialiade">
-						<h:outputText value="#{entity.especialidade.nome}" />
-					</p:column>
-					<p:column headerText="Editar">
-						<p:commandLink value="Editar"
-						rendered="#{loginController.verificaUser(entity.id)}"
-						actionListener="#{medicoController.editar(entity.id)}"
-						process="@this" update="@form" resetValues="true" />
-					</p:column>
-
 
 				</p:dataTable>
 			</p:dialog>

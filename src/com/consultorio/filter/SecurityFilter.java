@@ -13,6 +13,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.consultorio.model.Administrador;
+import com.consultorio.model.Medico;
+import com.consultorio.model.Paciente;
 import com.consultorio.model.Pessoa;
 
 @WebFilter(filterName = "SecurityFilter", urlPatterns = { "/faces/*" })
@@ -23,31 +26,68 @@ public class SecurityFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 
-// 	 	Para desabilitar o filter, descomente as duas proximas linhas e comente o restante		
+ //	 	Para desabilitar o filter, descomente as duas proximas linhas e comente o restante		
 //		chain.doFilter(request, response);
 //		return;
 		
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse res = (HttpServletResponse) response;
+		
+		Paciente paciente = new Paciente();
+		Medico medico = new Medico();
+		Administrador adm = new Administrador();
 
+		// retorna a sessao corrente (false - para nao criar uma nova sessao)
 		HttpSession session = (HttpSession) req.getSession();
 
+		// carregando o atributo do tipo pessoa dentro da sessao
 		Pessoa pessoa = (Pessoa) session.getAttribute("usuarioLogado");
 		String link = req.getRequestURL().toString();
+		// imprime o endereco da pagina
 		System.out.println(link);
 
+		
+		
+		// se nao tiver usuario logado na sessao so tera acesso a pagina de login
 		if (!link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/login.xhtml") && pessoa == null) {
 
 			res.sendRedirect(req.getContextPath() + "/faces/login.xhtml");
 			return;
-
-		} else if (pessoa != null && link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/login.xhtml")) {
+		}	// nao permite o usuario logado a acessar a acessar a area de login
+		else if (pessoa != null && link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/login.xhtml")) {
 			res.sendRedirect(req.getContextPath() + "/faces/home.xhtml");
 			return;
-		} else {
+		} 
+		// tratamento de páginas pelo tipo médico
+		else if (pessoa != null && pessoa.getClass().isInstance(medico)) {
+			if(link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/medico.xhtml")
+					|| link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/home.xhtml")
+					|| link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/especialidademedicalisting.xhtml")) {
+				chain.doFilter(request, response);
+			}
+			else {
+				res.sendRedirect(req.getContextPath() + "/faces/medico.xhtml");
+				return;
+			}
+		}
+		// tratamento de páginas pelo tipo paciente
+		else if (pessoa != null && pessoa.getClass().isInstance(paciente)) {
+			if(link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/paciente.xhtml") 
+					|| link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/home.xhtml")
+					|| link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/pacientelisting.xhtml")) {
+				chain.doFilter(request, response);
+			}
+			else {
+				res.sendRedirect(req.getContextPath() + "/faces/paciente.xhtml");
+				return;
+			}
+		}
+		else {
+			// CONTINUA A EXECUCAO INDO PARA A PAGINA REQUISITADA
 			chain.doFilter(request, response);
 		}
 	}
+
 
 	
 

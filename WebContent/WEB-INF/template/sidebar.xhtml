@@ -7,19 +7,19 @@
 
 	<div class="layout-sidebar">
 		<ul id="layout-menu" class="layout-menu">
-			<li><h:link outcome="/cadastro">
+			<li><h:link outcome="/administrador" rendered="#{loginController.permiteAcesso('Adm')}"> 
 					<i class="pi pi-globe" />
-					<span>Cadastro de Usuário</span>
+					<span>Cadastro de Adm</span>
 				</h:link></li>
-			<li><h:link outcome="/paciente">
-					<i class="pi pi-globe" />
+			<li><h:link outcome="/paciente" rendered="#{loginController.permiteAcesso('Adm-Paciente')}">
+					<i class="pi pi-globe"/>
 					<span>Cadastro do Paciente</span>
 				</h:link></li>
-			<li><h:link outcome="/medico">
+			<li><h:link outcome="/medico" rendered="#{loginController.permiteAcesso('Adm-Medico')}">
 					<i class="pi pi-globe" />
 					<span>Cadastro do Médico</span>
 				</h:link></li>
-			<li><h:link outcome="/especialidademedica">
+			<li><h:link outcome="/especialidademedica" rendered="#{loginController.permiteAcesso('Adm')}">
 					<i class="pi pi-globe" />
 					<span>Cadastro da Especialidade</span>
 				</h:link></li>
