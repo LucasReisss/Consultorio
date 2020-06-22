@@ -118,8 +118,9 @@
 						<f:facet name="left">
 							<p:commandButton value="Salvar" icon="pi pi-check"
 								process="@form" update="@form"
-								action="#{medicoController.salvar}" 
-								rendered="#{loginController.verificaUser(entity.id)}"/>
+								disabled="#{loginController.permiteAcesso('Adm-Medico') == false
+								|| loginController.verificaUser(medicoController.entity.id) == false}"
+								action="#{medicoController.salvar}" />
 
 							<p:commandButton value="Limpar" process="@this" update="panel"
 								action="#{medicoController.limpar}">
