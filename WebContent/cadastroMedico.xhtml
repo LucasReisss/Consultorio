@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>Login</title>
+</h:head>
+<h:body>
+
+	<p:ajaxStatus onstart="PF('statusDialog').show()"
+		onsuccess="PF('statusDialog').hide()" />
+
+	<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+		closable="false" resizable="false" showHeader="false">
+		<p:graphicImage name="/images/loading.gif" />
+	</p:dialog>
+
+	<h:form>
+		<p:growl id="growl" globalOnly="false" />
+
+		<h1>Cadastro Medico</h1>
+
+		<p:panel id="panel">
+		
+				<div class="ui-g ui-fluid  ">
+					<div class="ui-g-12">
+						<div class="card card-w-title  ">
+
+							<p:panelGrid columns="2" columnClasses="ui-g-12 ui-md-1"
+								layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+
+								<p:outputLabel value="Nome:" />
+
+								<p:inputText id="itNome"
+									value="#{medicoController.entity.nome}" required="true"
+									requiredMessage="Informe o nome." />
+
+								<p:outputLabel value="Email:" />
+								<p:inputText value="#{medicoController.entity.email}"
+									id="email" />
+
+								<p:outputLabel value="Senha:" for="pwd" />
+								<p:password id="pwd" value="#{medicoController.entity.senha}"
+									feedback="true" weakLabel="Senha fraca"
+									goodLabel="Senha razoavel" strongLabel="Senha forte"
+									promptLabel="Informe uma senha" match="pwd2" required="true"
+									requiredMessage="A senha é obrigatória"
+									validatorMessage="As senhas estão diferentes" redisplay="true" />
+
+								<p:outputLabel value="Confirmar Senha:" for="pwd2" />
+								<p:password id="pwd2" feedback="false" required="true"
+									redisplay="true">
+									<p:ajax event="change" process="itNome email pwd pwd2"
+										update="@form" />
+								</p:password>
+
+								<p:outputLabel value="Data de Aniversário:" />
+								<p:calendar value="#{medicoController.entity.dataNascimento}"
+									pattern="dd/MM/yyyy" required="true" />
+
+								<p:outputLabel value="CPF:" />
+								<p:inputText value="#{medicoController.entity.cpf}" />
+
+								<p:outputLabel value="RG:" />
+								<p:inputText value="#{medicoController.entity.rg}" />
+
+								<p:outputLabel value="Naturalidade:" />
+								<p:inputText value="#{medicoController.entity.naturalidade}" />
+
+								<p:outputLabel value="Emissor:" />
+								<p:inputText value="#{medicoController.entity.emissor}" />
+								
+								<p:commandLink value="Especialidade: "
+									actionListener="#{medicoController.abrirEspecialidadeListing}"
+									process="@this" update="@none">
+
+									<p:ajax event="dialogReturn"
+										listener="#{medicoController.obterEspecialidadeListing}"
+										update="itespecialidade" />
+
+								</p:commandLink>
+								<p:inputText id="itespecialidade"
+									value="#{medicoController.entity.especialidade.nome}"
+									required="true" requiredMessage="Selecione a especialidade" 
+									disabled="true"/>
+
+							</p:panelGrid>
+
+						</div>
+					</div>
+				</div>
+
+				<div class="ui-button ui-state-hover   ">
+					<p:toolbar>
+						<f:facet name="left">
+							<p:commandButton value="Salvar" icon="pi pi-check"
+								process="@form" update="@form"
+								action="#{medicoController.salvar}"/>
+
+							<p:commandButton value="Limpar" process="@this" update="panel"
+								action="#{medicoController.limpar}">
+								<p:ajax update="@form" resetValues="true" />
+							</p:commandButton>
+
+						</f:facet>
+						
+					</p:toolbar>
+				</div>
+			</p:panel>
+
+	</h:form>
+
+</h:body>
+</html>

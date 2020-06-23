@@ -9,21 +9,15 @@ public class Medicamento extends DefaultEntity<Medicamento> {
 
 	private static final long serialVersionUID = -4432412034960896245L;
 	
-	String nome;
+	private String nome;
 	
-	
-
 	public String getNome() {
 		return nome;
 	}
 
-
-
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
-
-
 
 	@Override
 	public Validation<Medicamento> getValidation() {

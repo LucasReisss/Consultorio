@@ -1,98 +1,194 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:p="http://primefaces.org/ui"
-	template="/WEB-INF/template/template.xhtml">
-	<ui:define name="head">
-		<style type="text/css">
-.ui-panelgrid.form-elements .ui-grc-2 {
-	padding-left: 60px;
+<!DOCTYPE html>
+<html lang="pt-br" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>Cadastro</title>
+	<style type="text/css">
+   		body {
+	margin: 0;
+	padding: 0;
+	font-family: sans-serif;
+	background: #dfe6e9;
 }
 
-@media ( max-width :1024px) {
-	.ui-panelgrid.form-elements .ui-grc-2 {
-		padding-left: 20px;
-	}
+.box {
+	width: 25%;
+	padding: 40px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background: #a29bfe;
+	text-align: center;
 }
 
-@media ( max-width :640px) {
-	.ui-panelgrid.form-elements .ui-grc-2 {
-		padding-left: 6px;
-	}
+.box h1 {
+	color: black;
+	text-transform: uppercase;
+	font-weight: 700;
 }
 
-.dialogDemo label {
-	line-height: 2.1em;
+.box input[type="text"], .box input[type="password"] {
+	border: 0;
+	background: none;
+	display: block;
+	margin: 20px auto;
+	text-align: center;
+	border: 2px solid #2d3436;
+	padding: 14px 10px;
+	width: 200px;
+	outline: none;
+	color: white;
+	border-radius: 24px;
+	transition: 0.25s;
 }
-</style>
-	</ui:define>
-	<ui:define name="content">
-		<p:ajaxStatus onstart="PF('statusDialog').show()"
-			onsuccess="PF('statusDialog').hide()" />
 
-		<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
-			closable="false" resizable="false" showHeader="false">
-			<p:graphicImage name="/images/loading.gif" />
-		</p:dialog>
+.box input[type="text"]:focus, .box input[type="password"]:focus {
+	width: 280px;
+	border-color: #2d3436;
+}
 
+.box input[type="submit"] {
+	border: 0;
+	background: none;
+	display: block;
+	margin: 20px auto;
+	text-align: center;
+	border: 2px solid #2ecc71;
+	padding: 14px 40px;
+	outline: none;
+	color: white;
+	border-radius: 24px;
+	transition: 0.25s;
+	cursor: pointer;
+}
 
-		<h:form>
-			<p:growl id="growl" globalOnly="false" />
-			<p:panel id="panel">
-				<f:facet name="header">
-					<div align="center">
-						<h1>Inscreva-se</h1>
-					</div>
-				</f:facet>
-				<div class="ui-g ui-fluid  ">
-					<div class="ui-g-12">
-						<div class="card card-w-title  ">
+.box input[type="submit"]:hover {
+	background: #2ecc71;
+}
 
-							<p:panelGrid columns="2" columnClasses="ui-g-12 ui-md-1"
-								layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+.bor input[type="submit"] {
+	border: 0;
+	background: none;
+	display: block;
+	float: right;
+	text-align: center;
+	border: 2px solid #2ecc71;
+	padding: 14px 25px;
+	outline: none;
+	color: black;
+	border-radius: 24px;
+	transition: 0.25s;
+	cursor: pointer;
+}
 
-								<p:outputLabel value="Email:" />
-								<p:inputText value="#{usuarioController.entity.email}" />
-
-								<p:outputLabel value="Senha:" for="pwd" />
-								<p:password id="pwd" value="#{usuarioController.entity.senha}"
-									feedback="true" weakLabel="Senha fraca"
-									goodLabel="Senha razoavel" strongLabel="Senha forte"
-									promptLabel="Informe uma senha" match="pwd2" required="true"
-									requiredMessage="A senha é obrigatória"
-									validatorMessage="As senhas estão diferentes" />
-
-								<p:outputLabel value="Confirmar Senha:" for="pwd2" />
-								<p:password id="pwd2" feedback="false" required="true" />
-
-							</p:panelGrid>
-
-						</div>
-					</div>
-				</div>
-
-				<div class="ui-button ui-state-hover   ">
-					<p:toolbar>
-						<f:facet name="left">
-							<p:commandButton value="Salvar" icon="pi pi-check"
-								process="@form" update="@form"
-								action="#{usuarioController.salvar}" />
-
-							<p:commandButton value="Limpar" process="@this" update="panel"
-								action="#{usuarioController.limpar}">
-								<p:ajax update="@form" resetValues="true" />
-							</p:commandButton>
-
-						</f:facet>
-
-					</p:toolbar>
-				</div>
-
-			</p:panel>
+.bor input[type="submit"]:hover {
+	background: #2ecc71;
+}
 
 
+<!-- CADASTRO -->
 
-		</h:form>
-	</ui:define>
-</ui:composition>
+.cad {
+
+	text-align: center;
+}
+
+.cad h1 {
+	color: black;
+	text-transform: uppercase;
+	font-weight: 700;
+}
+
+.cad input[type="text"], .box input[type="password"] {
+	border: 0;
+	background: none;
+	display: block;
+	margin: 20px auto;
+	text-align: center;
+	border: 2px solid #2d3436;
+	padding: 14px 10px;
+	width: 200px;
+	outline: none;
+	color: white;
+	border-radius: 24px;
+	transition: 0.25s;
+}
+
+.cad input[type="text"]:focus, .box input[type="password"]:focus {
+	width: 280px;
+	border-color: #2d3436;
+}
+
+.cad input[type="submit"] {
+	border: 0;
+	background: none;
+	display: block;
+	margin: 20px auto;
+	text-align: center;
+	border: 2px solid #2ecc71;
+	padding: 14px 40px;
+	outline: none;
+	color: white;
+	border-radius: 24px;
+	transition: 0.25s;
+	cursor: pointer;
+}
+
+.cad input[type="submit"]:hover {
+	background: #2ecc71;
+}
+
+.cad input[type="submit"] {
+	border: 0;
+	background: none;
+	display: block;
+	float: right;
+	text-align: center;
+	border: 2px solid #2ecc71;
+	padding: 14px 25px;
+	outline: none;
+	color: black;
+	border-radius: 24px;
+	transition: 0.25s;
+	cursor: pointer;
+} 
+  </style>	
+</h:head>
+<h:body>
+
+	<h:form class="box">
+		<p:growl id="growl" globalOnly="false" />
+
+		<h1>Cadastre-se</h1>
+
+		<div class="row">
+			<div class="column">
+				<h:commandButton value="Paciente" icon="pi pi-check" process="@form"
+					update="@form" action="cadastroPaciente.xhtml?faces-redirect=true"/>
+			</div>
+
+			<div class="column">
+				<h:commandButton value="Medico" icon="pi pi-check" process="@form"
+					update="@form" action="cadastroMedico.xhtml?faces-redirect=true"/>
+			</div>
+
+		</div>
+
+	</h:form>
+	
+	<h:form class="bor">
+		<div class="row">
+			<div class="column">
+				<h:commandButton value="Login" icon="pi pi-check"
+					action="login.xhtml?faces-redirect=true" />
+			</div>
+		</div>
+	
+	</h:form>
+
+
+</h:body>
+</html>

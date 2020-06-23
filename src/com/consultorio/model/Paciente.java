@@ -3,7 +3,6 @@ package com.consultorio.model;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
-import com.consultorio.model.validation.PacienteValidation;
 import com.consultorio.model.validation.Validation;
 
 @Entity

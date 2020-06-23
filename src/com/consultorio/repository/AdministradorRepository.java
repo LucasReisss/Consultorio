@@ -25,6 +25,18 @@ public class AdministradorRepository extends Repository<Pessoa> {
 
 		return query.getResultList();
 	}
+	
+	public List<Administrador> findAll() {
+		StringBuffer jpql = new StringBuffer();
+		jpql.append("SELECT ");
+		jpql.append(" a ");
+		jpql.append("FROM ");
+		jpql.append("  Administrador a");
+
+		Query query = getEntityManager().createQuery(jpql.toString());
+
+		return query.getResultList();
+	}
 
 	public boolean containsEmail(Integer id, String email) {
 		StringBuffer jpql = new StringBuffer();

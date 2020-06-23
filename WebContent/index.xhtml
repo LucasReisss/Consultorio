@@ -4,7 +4,7 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:p="http://primefaces.org/ui">
 <h:head>
-	<title>Login</title>
+	<title>Cadastro</title>
 	<style type="text/css">
    		body {
 	margin: 0;
@@ -155,48 +155,17 @@
 	transition: 0.25s;
 	cursor: pointer;
 } 
-  </style>
+  </style>	
 </h:head>
 <h:body>
 
-	<p:ajaxStatus onstart="PF('statusDialog').show()"
-		onsuccess="PF('statusDialog').hide()" />
-
-	<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
-		closable="false" resizable="false" showHeader="false">
-		<p:graphicImage name="/images/loading.gif" />
-	</p:dialog>
-
 	<h:form class="box">
-		<p:growl id="growl" globalOnly="false" />
 
-		<h1>Login</h1>
-
-		<p:inputText id="itEmail" value="#{loginController.entity.email}"
-			required="true" requiredMessage="Informe o email"
-			placeholder="usuario" />
-
-		<p:password id="pwd" value="#{loginController.entity.senha}"
-			required="true" requiredMessage="Informe a senha" placeholder="senha" />
-
-		<div class="row">
-			<div class="column">
-				<h:commandButton value="Entrar" icon="pi pi-check" process="@form"
-					update="@form" action="#{loginController.logar()}" />
-			</div>
-
-		</div>
-
-	</h:form>
-
-	<h:form class="bor">
-		<div class="row">
-			<div class="column">
-				<h:commandButton value="Cadastro" icon="pi pi-check"
-					action="cadastro.xhtml?faces-redirect=true" />
-			</div>
-		</div>
-	</h:form>
+		<h1>Sistema Consultorio Médico</h1>
 	
+	
+	</h:form>
+
+
 </h:body>
 </html>

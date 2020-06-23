@@ -48,13 +48,20 @@ public class SecurityFilter implements Filter {
 
 		
 		
-		// se nao tiver usuario logado na sessao so tera acesso a pagina de login
-		if (!link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/login.xhtml") && pessoa == null) {
-
+		// se nao tiver usuario logado na sessao so tera acesso a pagina de login, cadastro ou index
+		if (pessoa == null && !(link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/login.xhtml") ||
+				link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/cadastro.xhtml") ||
+				link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/index.xhtml") ||
+				link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/cadastroMedico.xhtml") ||
+				link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/especialidademedicalisting.xhtml") ||
+				link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/cadastroPaciente.xhtml"))) {
 			res.sendRedirect(req.getContextPath() + "/faces/login.xhtml");
 			return;
-		}	// nao permite o usuario logado a acessar a acessar a area de login
-		else if (pessoa != null && link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/login.xhtml")) {
+		}	// nao permite o usuario logado a acessar a acessar a area de login ou de cadastro
+		else if (pessoa != null && (link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/login.xhtml") ||
+				link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/cadastro.xhtml") ||
+				link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/cadastroMedico.xhtml") ||
+				link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/cadastroPaciente.xhtml"))) {
 			res.sendRedirect(req.getContextPath() + "/faces/home.xhtml");
 			return;
 		} 
