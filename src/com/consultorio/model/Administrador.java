@@ -10,8 +10,8 @@ import javax.servlet.annotation.WebListener;
 
 import com.consultorio.application.RepositoryException;
 import com.consultorio.application.ValidationException;
-import com.consultorio.model.validation.Validation;
 import com.consultorio.repository.AdministradorRepository;
+import com.consultorio.validation.Validation;
 
 @Entity
 @DiscriminatorValue("Adm")

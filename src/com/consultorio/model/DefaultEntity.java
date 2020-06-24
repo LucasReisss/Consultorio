@@ -12,7 +12,7 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import com.consultorio.model.validation.Validation;
+import com.consultorio.validation.Validation;
 
 @MappedSuperclass
 public abstract class DefaultEntity<T> implements Serializable {

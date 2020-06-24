@@ -1,4 +1,4 @@
-package com.consultorio.model.validation;
+package com.consultorio.validation;
 
 import com.consultorio.application.ValidationException;
 

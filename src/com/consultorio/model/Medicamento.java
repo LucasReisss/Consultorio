@@ -2,7 +2,7 @@ package com.consultorio.model;
 
 import javax.persistence.Entity;
 
-import com.consultorio.model.validation.Validation;
+import com.consultorio.validation.Validation;
 
 @Entity
 public class Medicamento extends DefaultEntity<Medicamento> {

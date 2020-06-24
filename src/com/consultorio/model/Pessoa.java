@@ -14,8 +14,8 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import com.consultorio.model.validation.PessoaValidation;
-import com.consultorio.model.validation.Validation;
+import com.consultorio.validation.PessoaValidation;
+import com.consultorio.validation.Validation;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)

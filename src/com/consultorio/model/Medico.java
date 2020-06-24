@@ -5,7 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import com.consultorio.model.validation.Validation;
+import com.consultorio.validation.Validation;
 
 @Entity
 @DiscriminatorValue("Medico")

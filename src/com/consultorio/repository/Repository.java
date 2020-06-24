@@ -7,7 +7,7 @@ import com.consultorio.application.ValidationException;
 import com.consultorio.factory.JPAFactory;
 import com.consultorio.model.DefaultEntity;
 import com.consultorio.model.Pessoa;
-import com.consultorio.model.validation.MedicoValidation;
+import com.consultorio.validation.MedicoValidation;
 
 public class Repository<T extends DefaultEntity<T>> {
 	private EntityManager entityManager;
