@@ -1,5 +1,9 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
 
 	<h:form styleClass="topbar-logo">
 		<div class="layout-topbar">
@@ -7,20 +11,23 @@
 				<a href="#" id="menu-btn" class="menu-btn"> <i
 					class="pi pi-bars"></i>
 				</a>
+				
+				<h:outputLink value="home.xhtml?faces-redirect=true">
 				<p:graphicImage name="layout/images/logo_consultorio.png"
 					styleClass="topbar-logo" />
-				
+				</h:outputLink>
+
 				<div style="float: right">
-				<h:outputLabel value="User: #{sessionScope.usuarioLogado.nome}" styleClass="topbar-logo"
-				style="padding-right: 10px;" rendered="#{loginController.isLogado()}"/>
-				<p:commandButton value="Sair" action="#{loginController.logout()}"
-					rendered="#{loginController.isLogado()}" styleClass="topbar-logo"
-					/>
+					<p:commandLink value="User: #{sessionScope.usuarioLogado.nome}"
+						styleClass="topbar-logo" style="padding-right: 10px;"
+						rendered="#{loginController.isLogado()}"
+						action="#{loginController.paginaUser(sessionScope.usuarioLogado.id)}" />
+					<p:commandButton value="Sair" action="#{loginController.logout()}"
+						rendered="#{loginController.isLogado()}" styleClass="topbar-logo" />
 
 				</div>
-				
+
 			</div>
 		</div>
 	</h:form>
-
 </ui:composition>

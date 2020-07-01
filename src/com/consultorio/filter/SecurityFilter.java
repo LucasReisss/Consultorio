@@ -48,7 +48,7 @@ public class SecurityFilter implements Filter {
 
 		
 		
-		// se nao tiver usuario logado na sessao so tera acesso a pagina de login, cadastro ou index
+		// se nao tiver usuario logado na sessao so tera acesso a pagina de login, cadastro ou index etc
 		if (pessoa == null && !(link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/login.xhtml") ||
 				link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/cadastro.xhtml") ||
 				link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/index.xhtml") ||
@@ -57,7 +57,7 @@ public class SecurityFilter implements Filter {
 				link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/cadastroPaciente.xhtml"))) {
 			res.sendRedirect(req.getContextPath() + "/faces/login.xhtml");
 			return;
-		}	// nao permite o usuario logado a acessar a acessar a area de login ou de cadastro
+		}	// nao permite o usuario logado a acessar a acessar a area de login ou de cadastro etc
 		else if (pessoa != null && (link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/login.xhtml") ||
 				link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/cadastro.xhtml") ||
 				link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/cadastroMedico.xhtml") ||
@@ -69,6 +69,7 @@ public class SecurityFilter implements Filter {
 		else if (pessoa != null && pessoa.getClass().isInstance(medico)) {
 			if(link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/medico.xhtml")
 					|| link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/home.xhtml")
+					|| link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/perfilMedico.xhtml") 
 					|| link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/especialidademedicalisting.xhtml")) {
 				chain.doFilter(request, response);
 			}
@@ -80,6 +81,7 @@ public class SecurityFilter implements Filter {
 		// tratamento de páginas pelo tipo paciente
 		else if (pessoa != null && pessoa.getClass().isInstance(paciente)) {
 			if(link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/paciente.xhtml") 
+					|| link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/perfilPaciente.xhtml") 
 					|| link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/home.xhtml")
 					|| link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/pacientelisting.xhtml")) {
 				chain.doFilter(request, response);

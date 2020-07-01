@@ -118,6 +118,27 @@ public class LoginController extends Controller<Pessoa> {
 		}
 		
 	}
+	
+	public String paginaUser(Integer id) {
+		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+
+		Pessoa pessoa = (Pessoa) session.getAttribute("usuarioLogado");
+		
+		Paciente paciente = new Paciente();
+		Medico medico = new Medico();
+		Administrador adm = new Administrador();
+		
+		if((pessoa.getClass().isInstance(paciente) && pessoa.getId().equals(id))) {
+			return "perfilPaciente.xhtml?faces-redirect=true";
+		}
+		else if ((pessoa.getClass().isInstance(medico) && pessoa.getId().equals(id))){
+			return "perfilMedico.xhtml?faces-redirect=true";
+		}
+		else {
+			return "perfilAdm.xhtml?faces-redirect=true";
+		}
+		
+	}
 
 	public Pessoa getPessoa(String email, String senha) {
 		try {
