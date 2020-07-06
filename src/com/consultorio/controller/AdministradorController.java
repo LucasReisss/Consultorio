@@ -40,12 +40,15 @@ public class AdministradorController extends Controller<Pessoa> {
 //	}
 
 	@Override
-	public Administrador getEntity() {
+	public Pessoa getEntity() {
 		if(entity == null) {
-			entity = new Administrador();
+			entity = new Pessoa();
+			if (entity.getAdm() == null) {
+				entity.setAdm(new Administrador());
+			}
 		}
 		
-		return (Administrador) entity;
+		return entity;
 	}
 
 	public String getFiltro() {

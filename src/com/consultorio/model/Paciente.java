@@ -1,13 +1,11 @@
 package com.consultorio.model;
 
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 import com.consultorio.validation.Validation;
 
 @Entity
-@DiscriminatorValue("Paciente")
-public class Paciente extends Pessoa {
+public class Paciente extends DefaultEntity<Paciente> {
 	
 	private static final long serialVersionUID = -8722060693269364691L;
 	
@@ -32,7 +30,8 @@ public class Paciente extends Pessoa {
 	}
 	
 	@Override
-	public Validation<Pessoa> getValidation() {
-		return super.getValidation();
+	public Validation<Paciente> getValidation() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

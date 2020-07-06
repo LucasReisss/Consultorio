@@ -3,11 +3,7 @@ package com.consultorio.model;
 import java.util.Date;
 
 import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.NamedQuery;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
@@ -18,8 +14,6 @@ import com.consultorio.validation.PessoaValidation;
 import com.consultorio.validation.Validation;
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "tipo", discriminatorType = DiscriminatorType.STRING)
 @NamedQuery(name = "logar", query = "SELECT p FROM Pessoa p WHERE p.email = :email and p.senha = :senha")
 public class Pessoa extends DefaultEntity<Pessoa>{
 	
@@ -41,6 +35,9 @@ public class Pessoa extends DefaultEntity<Pessoa>{
 	private Date dataCadastro;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date dataAlteracao;
+	private Medico medico;
+	private Paciente paciente;
+	private Administrador adm;
 
 	public String getNome() {
 		return nome;
@@ -147,6 +144,30 @@ public class Pessoa extends DefaultEntity<Pessoa>{
 
 	public void setDataAlteracao(Date dataAlteracao) {
 		this.dataAlteracao = dataAlteracao;
+	}
+	
+	public Medico getMedico() {
+		return medico;
+	}
+
+	public void setMedico(Medico medico) {
+		this.medico = medico;
+	}
+
+	public Paciente getPaciente() {
+		return paciente;
+	}
+
+	public void setPaciente(Paciente paciente) {
+		this.paciente = paciente;
+	}
+
+	public Administrador getAdm() {
+		return adm;
+	}
+
+	public void setAdm(Administrador adm) {
+		this.adm = adm;
 	}
 
 	@Override

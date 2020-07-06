@@ -2,7 +2,6 @@ package com.consultorio.model;
 
 import java.util.GregorianCalendar;
 
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -14,23 +13,22 @@ import com.consultorio.repository.AdministradorRepository;
 import com.consultorio.validation.Validation;
 
 @Entity
-@DiscriminatorValue("Adm")
 @WebListener
-public class Administrador extends Pessoa implements ServletContextListener{
+public class Administrador extends DefaultEntity<Administrador> implements ServletContextListener{
 
 	private static final long serialVersionUID = 2164284968159609561L;
 	
-	
 	@Override
-	public Validation<Pessoa> getValidation() {
-		return super.getValidation();
+	public Validation<Administrador> getValidation() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
 		AdministradorRepository repo = new AdministradorRepository();
-		Administrador adm = new Administrador();
-
+		Pessoa adm = new Pessoa();
+		adm.setAdm(new Administrador());
 		adm.setNome("Adm");
 		adm.setEmail("adm");
 		// senha adm
@@ -58,9 +56,7 @@ public class Administrador extends Pessoa implements ServletContextListener{
 
 	@Override
 	public void contextDestroyed(ServletContextEvent sce) {
-		// TODO Auto-generated method stub
 		
-	}
-	
+	}	
 
 }

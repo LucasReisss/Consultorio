@@ -22,7 +22,7 @@ public class PacienteController extends Controller<Pessoa> {
 
 	private static final long serialVersionUID = -7996231487557010298L;
 	private String filtro;
-	private List<Paciente> listaPaciente;
+	private List<Pessoa> listaPaciente;
 
 	public void pesquisar() {
 		PacienteRepository repo = new PacienteRepository();
@@ -53,10 +53,13 @@ public class PacienteController extends Controller<Pessoa> {
 	}
 	
 	@Override
-	public Paciente getEntity() {
+	public Pessoa getEntity() {
 		if (entity == null)
-			entity = new Paciente();
-		return (Paciente) entity;
+			entity = new Pessoa();
+			if(entity.getPaciente() == null) {
+				entity.setPaciente(new Paciente());
+			}
+		return entity;
 	}
 
 	public String getFiltro() {
@@ -67,9 +70,9 @@ public class PacienteController extends Controller<Pessoa> {
 		this.filtro = filtro;
 	}
 
-	public List<Paciente> getListaPaciente() {
+	public List<Pessoa> getListaPaciente() {
 		if (listaPaciente == null)
-			listaPaciente = new ArrayList<Paciente>();
+			listaPaciente = new ArrayList<Pessoa>();
 		return listaPaciente;
 	}
 
@@ -79,7 +82,7 @@ public class PacienteController extends Controller<Pessoa> {
 	}
 	
 	public void obterPacienteListing(SelectEvent event) {
-		Paciente entity = (Paciente) event.getObject();
+		Pessoa entity = (Pessoa) event.getObject();
 		setEntity(entity);
 	}
 }

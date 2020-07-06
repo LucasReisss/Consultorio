@@ -10,7 +10,6 @@ import javax.inject.Named;
 
 import org.primefaces.PrimeFaces;
 
-import com.consultorio.model.Paciente;
 import com.consultorio.model.Pessoa;
 import com.consultorio.repository.PacienteRepository;
 
@@ -19,11 +18,11 @@ import com.consultorio.repository.PacienteRepository;
 public class PacienteListing extends Listing<Pessoa> {
 
 	private static final long serialVersionUID = -5274842308492045809L;
-	private List<Paciente> list;
+	private List<Pessoa> list;
 	private String filtro;
 	
 	public PacienteListing() {
-		super(Paciente.class);
+		super(Pessoa.class);
 	}
 
 	public void open() {
@@ -44,13 +43,13 @@ public class PacienteListing extends Listing<Pessoa> {
 		list = repo.findByNome(getFiltro());
 	}
 
-	public List<Paciente> getList() {
+	public List<Pessoa> getList() {
 		if (list == null)
-			list = new ArrayList<Paciente>();
+			list = new ArrayList<Pessoa>();
 		return list;
 	}
 
-	public void setList(List<Paciente> list) {
+	public void setList(List<Pessoa> list) {
 		this.list = list;
 	}
 

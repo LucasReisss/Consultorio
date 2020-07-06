@@ -5,19 +5,20 @@ import java.util.List;
 import javax.persistence.Query;
 
 import com.consultorio.model.Medico;
+import com.consultorio.model.Paciente;
 import com.consultorio.model.Pessoa;
 
 public class MedicoRepository extends Repository<Pessoa> {
 
-	public List<Medico> findByNome(String nome) {
+	public List<Paciente> findByNome(String nome) {
 
 		StringBuffer jpql = new StringBuffer();
 		jpql.append("SELECT ");
-		jpql.append(" m ");
+		jpql.append("pe ");
 		jpql.append("FROM ");
-		jpql.append("  Medico m ");
-		jpql.append("WHERE ");
-		jpql.append(" upper(m.nome) like upper(:nome)");
+		jpql.append("Medico me ");
+		jpql.append("Inner Join Pessoa pe on me.id = pe.medico.id and ");
+		jpql.append("upper(pe.nome) like upper(:nome)");
 
 		Query query = getEntityManager().createQuery(jpql.toString());
 

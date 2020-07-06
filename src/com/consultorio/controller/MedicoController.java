@@ -14,6 +14,7 @@ import com.consultorio.application.ValidationException;
 import com.consultorio.listing.EspecialidadeMedicaListing;
 import com.consultorio.model.EspecialidadeMedica;
 import com.consultorio.model.Medico;
+import com.consultorio.model.Paciente;
 import com.consultorio.model.Pessoa;
 import com.consultorio.repository.MedicoRepository;
 
@@ -24,7 +25,7 @@ public class MedicoController extends Controller<Pessoa> {
 	private static final long serialVersionUID = -3862624597114610891L;
 	
 	private String filtro;
-	private List<Medico> listaMedico;
+	private List<Paciente> listaMedico;
 	
 	public void pesquisar() {
 		MedicoRepository repo = new MedicoRepository();
@@ -37,9 +38,11 @@ public class MedicoController extends Controller<Pessoa> {
 		try {
 			r.beginTransaction();
 			getEntity().setSenha(Util.hashSHA256(getEntity().getSenha()));
-			if (getEntity().getEspecialidade() != null && getEntity().getEspecialidade().getId() == null) {
-				getEntity().setEspecialidade(null);
+			if (getEntity().getMedico().getEspecialidade() != null 
+					&& getEntity().getMedico().getEspecialidade().getId() == null) {
+				getEntity().getMedico().setEspecialidade(null);
 			}
+			getEntity().getMedico().setEspecialidade(getEntity().getMedico().getEspecialidade());
 			r.salvar(getEntity());
 			r.commitTransaction();
 		} catch (RepositoryException e) {
@@ -60,8 +63,8 @@ public class MedicoController extends Controller<Pessoa> {
 	@Override
 	public void editar(int id) {
 		super.editar(id);
-		if (getEntity().getEspecialidade() == null)
-			getEntity().setEspecialidade(new EspecialidadeMedica());
+		if (getEntity().getMedico().getEspecialidade() == null)
+			getEntity().getMedico().setEspecialidade(new EspecialidadeMedica());
 	}
 	
 //	public void abrirMedicoListing() {
@@ -81,17 +84,22 @@ public class MedicoController extends Controller<Pessoa> {
 	
 	public void obterEspecialidadeListing(SelectEvent event) {
 		EspecialidadeMedica entity = (EspecialidadeMedica) event.getObject();
-		getEntity().setEspecialidade(entity);
+		getEntity().getMedico().setEspecialidade(entity);
 	}
 
 	@Override
-	public Medico getEntity() {
+	public Pessoa getEntity() {
 		if(entity == null) {
-			entity = new Medico();
-			((Medico) entity).setEspecialidade(new EspecialidadeMedica());
+			entity = new Pessoa();
+			if(entity.getMedico() == null) {
+				entity.setMedico(new Medico());
+				if (entity.getMedico().getEspecialidade() == null) {
+					entity.getMedico().setEspecialidade(new EspecialidadeMedica());					
+				}
+			}
 		}
-		
-		return (Medico) entity;
+	
+		return entity;
 	}
 
 	public String getFiltro() {
@@ -102,9 +110,9 @@ public class MedicoController extends Controller<Pessoa> {
 		this.filtro = filtro;
 	}
 
-	public List<Medico> getListaMedico() {
+	public List<Paciente> getListaMedico() {
 		if(listaMedico == null)
-			listaMedico = new ArrayList<Medico>();
+			listaMedico = new ArrayList<Paciente>();
 		return listaMedico;
 	}
 

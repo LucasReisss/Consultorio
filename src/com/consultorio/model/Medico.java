@@ -1,19 +1,18 @@
 package com.consultorio.model;
 
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import com.consultorio.validation.Validation;
 
-@Entity
-@DiscriminatorValue("Medico")
-public class Medico extends Pessoa {
 
-	private static final long serialVersionUID = -755582211013832728L;
+@Entity
+public class Medico extends DefaultEntity<Medico> {
 	
-	@ManyToOne()
+	private static final long serialVersionUID = -3807693099398317608L;
+	
+	@ManyToOne
 	@JoinColumn(name = "idespecialidade", nullable = true)
 	private EspecialidadeMedica especialidade;
 
@@ -24,9 +23,11 @@ public class Medico extends Pessoa {
 	public void setEspecialidade(EspecialidadeMedica especialidade) {
 		this.especialidade = especialidade;
 	}
-	
+
 	@Override
-	public Validation<Pessoa> getValidation() {
-		return super.getValidation();
+	public Validation<Medico> getValidation() {
+		// TODO Auto-generated method stub
+		return null;
 	}
+	
 }

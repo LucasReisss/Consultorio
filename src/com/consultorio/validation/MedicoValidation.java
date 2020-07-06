@@ -3,14 +3,12 @@ package com.consultorio.validation;
 import java.time.LocalDate;
 
 import com.consultorio.application.ValidationException;
-import com.consultorio.model.DefaultEntity;
-import com.consultorio.model.Medico;
 import com.consultorio.model.Pessoa;
 import com.consultorio.repository.MedicoRepository;
 
 public class MedicoValidation {
 
-	public void validate(Medico entity) throws ValidationException {
+	public void validate(Pessoa entity) throws ValidationException {
 		validaDataAniversario(entity);
 		
 		validaEmail(entity);
@@ -18,21 +16,21 @@ public class MedicoValidation {
 		validaCpf(entity);
 	}
 	
-	private void validaCpf(Medico entity) throws ValidationException {
+	private void validaCpf(Pessoa entity) throws ValidationException {
 		MedicoRepository repo = new MedicoRepository();
 		if(repo.containsCpf(entity.getCpf(), entity.getId())) {
 			throw new ValidationException("CPF Inválido. Este CPF já está sendo utilizado.");
 		}
 	}
 
-	private void validaEmail(Medico entity) throws ValidationException {
+	private void validaEmail(Pessoa entity) throws ValidationException {
 		MedicoRepository repo = new MedicoRepository();
 		if (repo.containsEmail(entity.getId(), entity.getEmail())) {
 			throw new ValidationException("Email Inválido. Este e-mail já está sendo utilizado.");
 		}
 	}
 	
-	private void validaDataAniversario(Medico entity) throws ValidationException {
+	private void validaDataAniversario(Pessoa entity) throws ValidationException {
 		LocalDate data = new java.sql.Date((entity).getDataNascimento().getTime()).toLocalDate();
 		LocalDate dataLimite = LocalDate.now().minusYears(18);
 		

@@ -65,7 +65,6 @@
 
 								<p:column headerText="Editar">
 									<p:commandLink value="Editar"
-									rendered="#{loginController.verificaUser(entity.id)}"
 									actionListener="#{pacienteListing.select(entity.id)}"
 									process="@this" update="@form" resetValues="true" />
 								</p:column>

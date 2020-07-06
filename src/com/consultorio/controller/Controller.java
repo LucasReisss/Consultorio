@@ -3,14 +3,12 @@ package com.consultorio.controller;
 import java.io.Serializable;
 
 import javax.persistence.EntityManager;
-import javax.persistence.RollbackException;
 
 import com.consultorio.application.RepositoryException;
 import com.consultorio.application.Util;
 import com.consultorio.application.ValidationException;
 import com.consultorio.factory.JPAFactory;
 import com.consultorio.model.DefaultEntity;
-import com.consultorio.model.Pessoa;
 import com.consultorio.repository.Repository;
 
 public abstract class Controller <T  extends DefaultEntity<T>> implements Serializable {

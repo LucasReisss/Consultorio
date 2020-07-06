@@ -105,7 +105,7 @@
 
 								</p:commandLink>
 								<p:inputText id="itespecialidade"
-									value="#{medicoController.entity.especialidade.nome}" 
+									value="#{medicoController.entity.medico.especialidade.nome}" 
 									disabled="true"
 									required="true" requiredMessage="Selecione a especialidade" />
 							</p:panelGrid>
@@ -119,8 +119,6 @@
 						<f:facet name="left">
 							<p:commandButton value="Salvar" icon="pi pi-check"
 								process="@form" update="@form"
-								disabled="#{loginController.permiteAcesso('Adm-Medico') == false
-								|| loginController.verificaUser(medicoController.entity.id) == false}"
 								action="#{medicoController.salvar}" />
 
 							<p:commandButton value="Limpar" process="@this" update="panel"
@@ -192,11 +190,10 @@
 						<h:outputText value="#{entity.emissor}" />
 					</p:column>
 					<p:column headerText="Especialiade">
-						<h:outputText value="#{entity.especialidade.nome}" />
+						<h:outputText value="#{entity.medico.especialidade.nome}" />
 					</p:column>
 					<p:column headerText="Editar">
 						<p:commandLink value="Editar"
-						rendered="#{loginController.verificaUser(entity.id)}"
 						actionListener="#{medicoController.editar(entity.id)}"
 						process="@this" update="@form" resetValues="true" />
 					</p:column>
