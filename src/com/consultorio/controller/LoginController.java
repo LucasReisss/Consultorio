@@ -1,6 +1,6 @@
 package com.consultorio.controller;
 
-import javax.enterprise.context.SessionScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
@@ -16,7 +16,7 @@ import com.consultorio.model.Paciente;
 import com.consultorio.model.Pessoa;
 
 @Named
-@SessionScoped
+@RequestScoped
 public class LoginController extends Controller<Pessoa> {
 
 	private static final long serialVersionUID = -7481072779220340737L;
@@ -29,7 +29,7 @@ public class LoginController extends Controller<Pessoa> {
 		FacesContext context = FacesContext.getCurrentInstance();
 		String senhacrip = Util.hashSHA256(getEntity().getSenha());
 		System.out.println("Email: " + entity.getEmail() + " senha: " + senhacrip);
-		pessoa = usCon.logaR(entity.getEmail(), senhacrip);
+		pessoa = usCon.logar(entity.getEmail(), senhacrip);
 		if(pessoa != null) {
 			// adicionar um usuario na sessao
 			HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
@@ -73,20 +73,20 @@ public class LoginController extends Controller<Pessoa> {
 		Medico medico = new Medico();
 		Administrador adm = new Administrador();
 		
-		if(pessoa.getClass().isInstance(adm) && nome.equalsIgnoreCase("Adm")) {
+		if(pessoa.getAdm() != null && nome.equalsIgnoreCase("Adm")) {
 			return true;
 		}
-		else if (pessoa.getClass().isInstance(medico) && nome.equalsIgnoreCase("Medico")) {
+		else if (pessoa.getMedico() != null && nome.equalsIgnoreCase("Medico")) {
 			return true;
 		}
-		else if ((pessoa.getClass().isInstance(adm) || pessoa.getClass().isInstance(medico))
+		else if ((pessoa.getAdm() != null || pessoa.getMedico() != null)
 				&& nome.equalsIgnoreCase("Adm-Medico")) {
 			return true;
 		}
-		else if (pessoa.getClass().isInstance(paciente) && nome.equalsIgnoreCase("Paciente")) {
+		else if (pessoa.getPaciente() != null && nome.equalsIgnoreCase("Paciente")) {
 			return true;
 		}
-		else if ((pessoa.getClass().isInstance(adm) || pessoa.getClass().isInstance(paciente))
+		else if ((pessoa.getAdm() != null || pessoa.getPaciente() != null)
 				&& nome.equalsIgnoreCase("Adm-Paciente")) {
 			return true;
 		}
@@ -128,11 +128,8 @@ public class LoginController extends Controller<Pessoa> {
 		Medico medico = new Medico();
 		Administrador adm = new Administrador();
 		
-		if((pessoa.getClass().isInstance(paciente) && pessoa.getId().equals(id))) {
-			return "perfilPaciente.xhtml?faces-redirect=true";
-		}
-		else if ((pessoa.getClass().isInstance(medico) && pessoa.getId().equals(id))){
-			return "perfilMedico.xhtml?faces-redirect=true";
+		if((pessoa.getAdm() == null && pessoa.getId().equals(id))) {
+			return "perfilUsuario.xhtml?faces-redirect=true";
 		}
 		else {
 			return "perfilAdm.xhtml?faces-redirect=true";

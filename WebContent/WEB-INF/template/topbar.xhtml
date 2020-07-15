@@ -19,6 +19,8 @@
 
 				<div style="float: right">
 					<p:commandLink value="User: #{sessionScope.usuarioLogado.nome}"
+					rendered="#{loginController.isLogado()}"
+					action="#{loginController.paginaUser(sessionScope.usuarioLogado.id)}"
 						styleClass="topbar-logo" style="padding-right: 10px;"/>
 					<p:commandButton value="Sair" action="#{loginController.logout()}"
 						rendered="#{loginController.isLogado()}" styleClass="topbar-logo" />

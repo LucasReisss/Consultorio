@@ -5,23 +5,26 @@ import java.util.List;
 import javax.persistence.Query;
 
 import com.consultorio.model.Endereco;
+import com.consultorio.model.EspecialidadeMedica;
 import com.consultorio.model.Pessoa;
 import com.consultorio.model.Telefone;
 
-public class AdministradorRepository extends Repository<Pessoa> {
+public class UsuarioRepository extends Repository<Pessoa> {
 
-	public List<Pessoa> findByNome(String nome) {
+	public List<Pessoa> findByNome(Integer idUser, String nome) {
 
 		StringBuffer jpql = new StringBuffer();
 		jpql.append("SELECT ");
-		jpql.append(" a ");
+		jpql.append(" p ");
 		jpql.append("FROM ");
-		jpql.append("  Administrador a ");
+		jpql.append("Pessoa p ");
 		jpql.append("WHERE ");
-		jpql.append(" upper(a.nome) like upper(:nome)");
+		jpql.append("p.id = :idUser");
+		jpql.append("upper(p.nome) like upper(:nome)");
 
 		Query query = getEntityManager().createQuery(jpql.toString());
 
+		query.setParameter("idUser", idUser);
 		query.setParameter("nome", "%" + nome + "%");
 
 		return query.getResultList();
@@ -144,14 +147,29 @@ public class AdministradorRepository extends Repository<Pessoa> {
 
 		return resultado == 0 ? false : true;
 	}
+	
+	public List<Telefone> existeTelefone(String ddd, String numero) {
+		StringBuffer jpql = new StringBuffer();
+		jpql.append("SELECT ");
+		jpql.append("tel ");
+		jpql.append("FROM ");
+		jpql.append("Telefone tel ");
+		jpql.append("Where upper(tel.ddd) = upper(:ddd) and upper(tel.numero) = upper(:numero)");
 
-	public void excluirTel(Integer idAdm, Integer idTel) {
+		Query query = getEntityManager().createQuery(jpql.toString());
+		
+		query.setParameter("ddd", ddd);
+		query.setParameter("numero", numero);
+
+		return query.getResultList();
+	}
+
+	public void excluirTel(Integer idUser, Integer idTel) {
 		StringBuffer jpql = new StringBuffer();
 		jpql.append("Delete ");
 		jpql.append("FROM ");
 		jpql.append("Telefone tel ");
-		jpql.append("Inner Join Pessoa p on p.telefone.id = tel.id ");
-		jpql.append("Where p.id = "+idAdm+ " and tel.id = "+idTel);	
+		jpql.append("Where tel.id = "+idTel);	
 		
 		Query query = getEntityManager().createQuery(jpql.toString());
 
@@ -169,6 +187,35 @@ public class AdministradorRepository extends Repository<Pessoa> {
 		Query query = getEntityManager().createQuery(jpql.toString());
 
 		return (Endereco) query.getSingleResult();
+	}
+
+	public List<EspecialidadeMedica> findByEspecialidade(Integer id) {
+			StringBuffer jpql = new StringBuffer();
+			jpql.append("SELECT ");
+			jpql.append("es ");
+			jpql.append("FROM ");
+			jpql.append("Pessoa pe ");
+			jpql.append("Inner Join Medico me on pe.medico.id = me.id ");
+			jpql.append("Inner Join EspecialidadeMedica es on me.listaEspecialidade.id = es.id ");
+			jpql.append("Where pe.id = " + id);
+
+			Query query = getEntityManager().createQuery(jpql.toString());
+
+			return query.getResultList();
+		
+	}
+	
+	public void excluirEsp(Integer idUser, Integer idMed,Integer idEsp) {
+		StringBuffer jpql = new StringBuffer();
+		jpql.append("Delete ");
+		jpql.append("FROM ");
+		jpql.append("Pessoa p ");
+		jpql.append("Inner Join Medico m on p.medico.id = m.id ");
+		jpql.append("Inner Join EspecialidadeMedica esp on m.listaEspecialidade.id = esp.id ");
+		jpql.append("Where p.id = "+idUser+ " and m.id = "+idMed+ " and esp.id = "+idEsp);	
+		
+		Query query = getEntityManager().createQuery(jpql.toString());
+
 	}
 
 }

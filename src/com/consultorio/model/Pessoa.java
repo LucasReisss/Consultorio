@@ -1,10 +1,16 @@
 package com.consultorio.model;
 
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
@@ -29,14 +35,27 @@ public class Pessoa extends DefaultEntity<Pessoa>{
 	private String cpf;
 	private String naturalidade;
 	private String emissor;
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "idendereco")
 	private Endereco endereco;
-	private Telefone telefone;
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "idpessoa")
+	private List<Telefone> telefone;
+	
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date dataCadastro;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date dataAlteracao;
+	
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "idmedico", unique = true)
 	private Medico medico;
+	
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "idpaciente", unique = true)
 	private Paciente paciente;
+	
+	@JoinColumn(name = "idadministrador", unique = true)
 	private Administrador adm;
 
 	public String getNome() {
@@ -111,11 +130,11 @@ public class Pessoa extends DefaultEntity<Pessoa>{
 		this.endereco = endereco;
 	}
 
-	public Telefone getTelefone() {
+	public List<Telefone> getTelefone() {
 		return telefone;
 	}
 
-	public void setTelefone(Telefone telefone) {
+	public void setTelefone(List<Telefone> telefone) {
 		this.telefone = telefone;
 	}
 

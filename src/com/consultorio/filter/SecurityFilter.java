@@ -51,43 +51,38 @@ public class SecurityFilter implements Filter {
 		// se nao tiver usuario logado na sessao so tera acesso a pagina de login, cadastro ou index etc
 		if (pessoa == null && !(link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/login.xhtml") ||
 				link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/cadastro.xhtml") ||
-				link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/index.xhtml") ||
-				link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/cadastroMedico.xhtml") ||
-				link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/especialidademedicalisting.xhtml") ||
-				link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/cadastroPaciente.xhtml"))) {
+				link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/index.xhtml"))) {
 			res.sendRedirect(req.getContextPath() + "/faces/login.xhtml");
 			return;
 		}	// nao permite o usuario logado a acessar a acessar a area de login ou de cadastro etc
 		else if (pessoa != null && (link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/login.xhtml") ||
-				link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/cadastro.xhtml") ||
-				link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/cadastroMedico.xhtml") ||
-				link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/cadastroPaciente.xhtml"))) {
+				link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/cadastro.xhtml"))) {
 			res.sendRedirect(req.getContextPath() + "/faces/home.xhtml");
 			return;
 		} 
 		// tratamento de páginas pelo tipo médico
-		else if (pessoa != null && pessoa.getClass().isInstance(medico)) {
+		else if (pessoa != null && pessoa.getMedico() != null) {
 			if(link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/medico.xhtml")
 					|| link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/home.xhtml")
-					|| link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/perfilMedico.xhtml") 
-					|| link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/especialidademedicalisting.xhtml")) {
+					|| link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/perfilUsuario.xhtml") 
+					|| link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/index.xhtml")) {
 				chain.doFilter(request, response);
 			}
 			else {
-				res.sendRedirect(req.getContextPath() + "/faces/medico.xhtml");
+				res.sendRedirect(req.getContextPath() + "/faces/home.xhtml");
 				return;
 			}
 		}
 		// tratamento de páginas pelo tipo paciente
-		else if (pessoa != null && pessoa.getClass().isInstance(paciente)) {
+		else if (pessoa != null && pessoa.getPaciente() != null) {
 			if(link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/paciente.xhtml") 
-					|| link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/perfilPaciente.xhtml") 
+					|| link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/perfilUsuario.xhtml") 
 					|| link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/home.xhtml")
-					|| link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/pacientelisting.xhtml")) {
+					|| link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/index.xhtml")) {
 				chain.doFilter(request, response);
 			}
 			else {
-				res.sendRedirect(req.getContextPath() + "/faces/paciente.xhtml");
+				res.sendRedirect(req.getContextPath() + "/faces/home.xhtml");
 				return;
 			}
 		}

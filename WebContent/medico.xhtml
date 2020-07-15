@@ -84,7 +84,7 @@
 									required="true"/>
 
 								<p:outputLabel value="CPF:" />
-								<p:inputText value="#{medicoController.entity.cpf}" />
+								<p:inputText  value="#{medicoController.entity.cpf}" />
 
 								<p:outputLabel value="RG:" />
 								<p:inputText value="#{medicoController.entity.rg}" />
@@ -94,20 +94,20 @@
 
 								<p:outputLabel value="Emissor:" />
 								<p:inputText value="#{medicoController.entity.emissor}" />
-
-								<p:commandLink value="Especialidade: "
-									actionListener="#{medicoController.abrirEspecialidadeListing}"
-									process="@this" update="@none">
-
-									<p:ajax event="dialogReturn"
-										listener="#{medicoController.obterEspecialidadeListing}"
-										update="itespecialidade" />
-
-								</p:commandLink>
-								<p:inputText id="itespecialidade"
-									value="#{medicoController.entity.medico.especialidade.nome}" 
-									disabled="true"
-									required="true" requiredMessage="Selecione a especialidade" />
+								
+								<h:panelGrid columns="2" cellpadding="5">
+																
+								<h:outputLabel value="Especialidades" />
+								<p:selectCheckboxMenu id="menu"
+									value="#{medicoController.entity.medico.listaEspecialidade}" 
+									label="Especialidade" filter="true" filterMatchMode="startsWith"
+									panelStyle="width:250px">
+									<f:selectItems value="#{medicoController.gerarEspecialidade()}" 
+									var="esp" itemValue="#{esp.id}" itemLabel="#{esp.nome}"/>
+								</p:selectCheckboxMenu>
+								
+								</h:panelGrid>
+								
 							</p:panelGrid>
 
 						</div>
@@ -189,9 +189,13 @@
 					<p:column headerText="Emissor">
 						<h:outputText value="#{entity.emissor}" />
 					</p:column>
-					<p:column headerText="Especialiade">
-						<h:outputText value="#{entity.medico.especialidade.nome}" />
+					
+					<p:column headerText="Especialiade(s)">
+					<p:dataTable id="dtListagem" var="esp" value="#{medicoController.retornarEspecialidadesPorId(entity.id)}">
+					<p:column>#{esp}</p:column>
+					</p:dataTable>
 					</p:column>
+					
 					<p:column headerText="Editar">
 						<p:commandLink value="Editar"
 						actionListener="#{medicoController.editar(entity.id)}"

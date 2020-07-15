@@ -1,6 +1,8 @@
 package com.consultorio.model;
 
-import javax.persistence.Entity;
+import java.util.List;
+
+import javax.persistence.*;
 
 import com.consultorio.validation.Validation;
 
@@ -10,6 +12,16 @@ public class EspecialidadeMedica extends DefaultEntity<EspecialidadeMedica> {
 	private static final long serialVersionUID = -6647418779683681549L;
 
 	private String nome;
+	
+	private List<Medico> listaMedico;
+
+	public List<Medico> getListaMedico() {
+		return listaMedico;
+	}
+
+	public void setListaMedico(List<Medico> listaMedico) {
+		this.listaMedico = listaMedico;
+	}
 
 	public String getNome() {
 		return nome;

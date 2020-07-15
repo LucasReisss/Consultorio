@@ -2,149 +2,87 @@ package com.consultorio.validation;
 
 import java.time.LocalDate;
 
+import com.consultorio.validation.ValidaCpf;
 import com.consultorio.application.ValidationException;
-import com.consultorio.model.Administrador;
-import com.consultorio.model.Medico;
-import com.consultorio.model.Paciente;
 import com.consultorio.model.Pessoa;
-import com.consultorio.repository.AdministradorRepository;
-import com.consultorio.repository.MedicoRepository;
-import com.consultorio.repository.PacienteRepository;
+import com.consultorio.repository.UsuarioRepository;
 
 public class PessoaValidation implements Validation<Pessoa> {
 
 	@Override
 	public void validate(Pessoa entity) throws ValidationException {
-		// TODO Auto-generated method stub
+		
+		if (entity != null) {
+			validaCpfUsuario((Pessoa) entity);
+
+			validaEmailUsuario((Pessoa) entity);
+
+			validaRgUsuario((Pessoa) entity);
+			
+			if (entity.getMedico() != null || entity.getAdm() != null) {
+				validaDataAniversarioUsuario((Pessoa) entity);
+			} else {
+				validaDataAniversarioPaciente((Pessoa) entity);
+			}
+			
+		}
 		
 	}
 
-//	@Override
-//	public void validate(Pessoa entity) throws ValidationException {
-//		
-//		Paciente paciente = new Paciente();
-//		Medico medico = new Medico();
-//		Administrador adm = new Administrador();
-//		
-//		if (entity.getClass().isInstance(paciente)) {
-//			
-//			validaCpfPaciente((Paciente) entity);
-//
-//			validaEmailPaciente((Paciente) entity);
-//			
-//			validaRgPaciente((Paciente) entity);
-//		}
-//		
-//		if (entity.getClass().isInstance(medico)) {
-//
-//			validaCpfMedico((Medico) entity);
-//			
-//			validaEmailMedico((Medico) entity);
-//			
-//			validaRgMedico((Medico) entity);
-//			
-//			validaDataAniversarioMedico((Medico) entity);
-//		}
-//		
-//		if (entity.getClass().isInstance(adm)) {
-//
-//			validaCpfAdministrador((Administrador) entity);
-//			
-//			validaEmailAdministrador((Administrador) entity);
-//			
-//			validaRgAdministrador((Administrador) entity);
-//			
-//			validaDataAniversarioAdministrador((Administrador) entity);
-//		}
-//		
-//	}
-//	
-//	// PACIENTE
-//	
-//	private void validaCpfPaciente(Paciente entity) throws ValidationException {
-//		PacienteRepository repo = new PacienteRepository();
-//		if (repo.containsCpf(entity.getCpf(), entity.getId())) {
-//			throw new ValidationException("CPF Inválido. Este CPF já está sendo utilizado.");
-//		}
-//	}
-//
-//	private void validaEmailPaciente(Paciente entity) throws ValidationException {
-//		PacienteRepository repo = new PacienteRepository();
-//		if (repo.containsEmail(entity.getEmail(), entity.getId())) {
-//			throw new ValidationException("Email Inválido. Este e-mail já está sendo utilizado.");
-//		}
-//	}
-//
-//	private void validaRgPaciente(Paciente entity) throws ValidationException {
-//		PacienteRepository repo = new PacienteRepository();
-//		if (repo.containsRg(entity.getRg(), entity.getId())) {
-//			throw new ValidationException("Rg Inválido. Este rg já está sendo utilizado.");
-//		}
-//	}
-//	
-//	// MEDICO
-//	
-//	private void validaCpfMedico(Medico entity) throws ValidationException {
-//		MedicoRepository repo = new MedicoRepository();
-//		if(repo.containsCpf(entity.getCpf(), entity.getId())) {
-//			throw new ValidationException("CPF Inválido. Este CPF já está sendo utilizado.");
-//		}
-//	}
-//
-//	private void validaEmailMedico(Medico entity) throws ValidationException {
-//		MedicoRepository repo = new MedicoRepository();
-//		if (repo.containsEmail(entity.getId(), entity.getEmail())) {
-//			throw new ValidationException("Email Inválido. Este e-mail já está sendo utilizado.");
-//		}
-//	}
-//	
-//	private void validaRgMedico(Medico entity) throws ValidationException {
-//		MedicoRepository repo = new MedicoRepository();
-//		if (repo.containsRg(entity.getRg(), entity.getId())) {
-//			throw new ValidationException("Rg Inválido. Este rg já está sendo utilizado.");
-//		}
-//	}
-//	
-//	private void validaDataAniversarioMedico(Medico entity) throws ValidationException {
-//		LocalDate data = new java.sql.Date(entity.getDataNascimento().getTime()).toLocalDate();
-//		LocalDate dataLimite = LocalDate.now().minusYears(18);
-//		
-//		if (data.isAfter(dataLimite)) {
-//			throw new ValidationException("Data Inválida. O médico não pode ser menor de idade.");
-//		}
-//	}
-//	
-//	// ADMINISTRADOR
-//	
-//	private void validaCpfAdministrador(Administrador entity) throws ValidationException {
-//		AdministradorRepository repo = new AdministradorRepository();
-//		if(repo.containsCpf(entity.getCpf(), entity.getId())) {
-//			throw new ValidationException("CPF Inválido. Este CPF já está sendo utilizado.");
-//		}
-//	}
-//
-//	private void validaEmailAdministrador(Administrador entity) throws ValidationException {
-//		AdministradorRepository repo = new AdministradorRepository();
-//		if (repo.containsEmail(entity.getId(), entity.getEmail())) {
-//			throw new ValidationException("Email Inválido. Este e-mail já está sendo utilizado.");
-//		}
-//	}
-//	
-//	private void validaRgAdministrador(Administrador entity) throws ValidationException {
-//		AdministradorRepository repo = new AdministradorRepository();
-//		if (repo.containsRg(entity.getRg(), entity.getId())) {
-//			throw new ValidationException("Rg Inválido. Este rg já está sendo utilizado.");
-//		}
-//	}
-//	
-//	private void validaDataAniversarioAdministrador(Administrador entity) throws ValidationException {
-//		LocalDate data = new java.sql.Date(entity.getDataNascimento().getTime()).toLocalDate();
-//		LocalDate dataLimite = LocalDate.now().minusYears(18);
-//		
-//		if (data.isAfter(dataLimite)) {
-//			throw new ValidationException("Data Inválida. O médico não pode ser menor de idade.");
-//		}
-//	}
+	// Paciente 
 	
-	
+	private void validaDataAniversarioPaciente(Pessoa entity) throws ValidationException {
+		LocalDate data = new java.sql.Date(entity.getDataNascimento().getTime()).toLocalDate();
+		
+		LocalDate hoje = LocalDate.now();
+		
+		if (data.isAfter(hoje)) {
+			throw new ValidationException("Data Inválida");
+		}
+	}
+
+	// Usuario
+
+	private void validaCpfUsuario(Pessoa entity) throws ValidationException {
+		UsuarioRepository repo = new UsuarioRepository();
+		ValidaCpf valida = new ValidaCpf();
+		valida.TirarMascara(entity.getCpf());
+		if (repo.containsCpf(entity.getCpf(), entity.getId())) {
+			throw new ValidationException("Este CPF já está sendo utilizado.");
+		}	
+		
+		else {
+			if (!valida.isCPF()) {
+				throw new ValidationException("CPF inválido.");
+			}
+		}
+	}
+
+	private void validaEmailUsuario(Pessoa entity) throws ValidationException {
+		UsuarioRepository repo = new UsuarioRepository();
+		if (repo.containsEmail(entity.getId(), entity.getEmail())) {
+			throw new ValidationException("Email Inválido. Este e-mail já está sendo utilizado.");
+		}
+	}
+
+	private void validaRgUsuario(Pessoa entity) throws ValidationException {
+		UsuarioRepository repo = new UsuarioRepository();
+		if (repo.containsRg(entity.getRg(), entity.getId())) {
+			throw new ValidationException("Rg Inválido. Este rg já está sendo utilizado.");
+		}
+	}
+
+	private void validaDataAniversarioUsuario(Pessoa entity) throws ValidationException {
+		LocalDate data = new java.sql.Date(entity.getDataNascimento().getTime()).toLocalDate();
+		LocalDate dataLimite = LocalDate.now().minusYears(18);
+
+		if (data.isAfter(dataLimite)) {
+			if (entity.getMedico() != null) {				
+				throw new ValidationException("Data Inválida. O Médico não pode ser menor de idade.");
+			}	{
+				throw new ValidationException("Data Inválida. O Admnistrador não pode ser menor de idade.");
+			}
+		}
+	}
+
 }

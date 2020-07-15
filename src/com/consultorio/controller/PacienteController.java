@@ -14,6 +14,7 @@ import com.consultorio.application.ValidationException;
 import com.consultorio.listing.PacienteListing;
 import com.consultorio.model.Paciente;
 import com.consultorio.model.Pessoa;
+import com.consultorio.model.Telefone;
 import com.consultorio.repository.PacienteRepository;
 
 @Named
@@ -23,6 +24,7 @@ public class PacienteController extends Controller<Pessoa> {
 	private static final long serialVersionUID = -7996231487557010298L;
 	private String filtro;
 	private List<Pessoa> listaPaciente;
+	private Telefone telefone = new Telefone();
 
 	public void pesquisar() {
 		PacienteRepository repo = new PacienteRepository();
@@ -35,6 +37,9 @@ public class PacienteController extends Controller<Pessoa> {
 		try {
 			r.beginTransaction();
 			getEntity().setSenha(Util.hashSHA256(getEntity().getSenha()));
+			if (getTelefone() != null) {
+				getEntity().getTelefone().add(telefone);
+			}
 			r.salvar(getEntity());
 			r.commitTransaction();
 		} catch (RepositoryException e) {
@@ -58,6 +63,7 @@ public class PacienteController extends Controller<Pessoa> {
 			entity = new Pessoa();
 			if(entity.getPaciente() == null) {
 				entity.setPaciente(new Paciente());
+				entity.setTelefone(new ArrayList<Telefone>());
 			}
 		return entity;
 	}
@@ -68,6 +74,18 @@ public class PacienteController extends Controller<Pessoa> {
 
 	public void setFiltro(String filtro) {
 		this.filtro = filtro;
+	}
+
+	public Telefone getTelefone() {
+		return telefone;
+	}
+
+	public void setTelefone(Telefone telefone) {
+		this.telefone = telefone;
+	}
+
+	public void setListaPaciente(List<Pessoa> listaPaciente) {
+		this.listaPaciente = listaPaciente;
 	}
 
 	public List<Pessoa> getListaPaciente() {

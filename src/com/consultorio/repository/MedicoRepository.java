@@ -4,21 +4,22 @@ import java.util.List;
 
 import javax.persistence.Query;
 
-import com.consultorio.model.Medico;
-import com.consultorio.model.Paciente;
+import com.consultorio.model.EspecialidadeMedica;
 import com.consultorio.model.Pessoa;
 
 public class MedicoRepository extends Repository<Pessoa> {
 
-	public List<Paciente> findByNome(String nome) {
+	public List<Pessoa> findByNome(String nome) {
 
 		StringBuffer jpql = new StringBuffer();
-		jpql.append("SELECT ");
+		jpql.append("SELECT Distinct ");
 		jpql.append("pe ");
 		jpql.append("FROM ");
-		jpql.append("Medico me ");
-		jpql.append("Inner Join Pessoa pe on me.id = pe.medico.id and ");
+		jpql.append("Pessoa pe ");
+		jpql.append("Inner Join Medico me on pe.medico.id = me.id ");
+		jpql.append("Inner Join EspecialidadeMedica es on me.listaEspecialidade.id = es.id and ");
 		jpql.append("upper(pe.nome) like upper(:nome)");
+		jpql.append("Order By pe.id");
 
 		Query query = getEntityManager().createQuery(jpql.toString());
 
@@ -27,6 +28,21 @@ public class MedicoRepository extends Repository<Pessoa> {
 		return query.getResultList();
 	}
 
+	public List<Pessoa> findByEspecialidade(Integer id) {
+		StringBuffer jpql = new StringBuffer();
+		jpql.append("SELECT ");
+		jpql.append("es.nome ");
+		jpql.append("FROM ");
+		jpql.append("Pessoa pe ");
+		jpql.append("Inner Join Medico me on pe.medico.id = me.id ");
+		jpql.append("Inner Join EspecialidadeMedica es on me.listaEspecialidade.id = es.id ");
+		jpql.append("Where pe.id = " + id);
+
+		Query query = getEntityManager().createQuery(jpql.toString());
+
+		return query.getResultList();
+	}
+	
 	public boolean containsEmail(Integer id, String email) {
 		StringBuffer jpql = new StringBuffer();
 		jpql.append("SELECT ");

@@ -14,8 +14,8 @@ import com.consultorio.application.ValidationException;
 import com.consultorio.listing.EspecialidadeMedicaListing;
 import com.consultorio.model.EspecialidadeMedica;
 import com.consultorio.model.Medico;
-import com.consultorio.model.Paciente;
 import com.consultorio.model.Pessoa;
+import com.consultorio.repository.EspecialidadeMedicaRepository;
 import com.consultorio.repository.MedicoRepository;
 
 @Named
@@ -25,7 +25,12 @@ public class MedicoController extends Controller<Pessoa> {
 	private static final long serialVersionUID = -3862624597114610891L;
 	
 	private String filtro;
-	private List<Paciente> listaMedico;
+	private List<Pessoa> listaMedico;
+	private EspecialidadeMedica especialidadeMedica;
+	private List<EspecialidadeMedica> listaEspecialidade;
+	private List<EspecialidadeMedica> especialidades;
+	private List<EspecialidadeMedica> cloneEspecialidade;
+	private List<Pessoa> lista;
 	
 	public void pesquisar() {
 		MedicoRepository repo = new MedicoRepository();
@@ -38,11 +43,11 @@ public class MedicoController extends Controller<Pessoa> {
 		try {
 			r.beginTransaction();
 			getEntity().setSenha(Util.hashSHA256(getEntity().getSenha()));
-			if (getEntity().getMedico().getEspecialidade() != null 
-					&& getEntity().getMedico().getEspecialidade().getId() == null) {
-				getEntity().getMedico().setEspecialidade(null);
+			if (getEntity().getMedico().getListaEspecialidade() != null 
+					&& getEntity().getMedico().getListaEspecialidade() == null) {
+				getEntity().getMedico().setListaEspecialidade(null);
 			}
-			getEntity().getMedico().setEspecialidade(getEntity().getMedico().getEspecialidade());
+			getEntity().getMedico().setListaEspecialidade(mandarSelecionados());
 			r.salvar(getEntity());
 			r.commitTransaction();
 		} catch (RepositoryException e) {
@@ -63,8 +68,10 @@ public class MedicoController extends Controller<Pessoa> {
 	@Override
 	public void editar(int id) {
 		super.editar(id);
-		if (getEntity().getMedico().getEspecialidade() == null)
-			getEntity().getMedico().setEspecialidade(new EspecialidadeMedica());
+		if (entity.getMedico() == null) {
+			entity.setMedico(new Medico());
+			entity.getMedico().setListaEspecialidade(new ArrayList<EspecialidadeMedica>());
+		}
 	}
 	
 //	public void abrirMedicoListing() {
@@ -84,7 +91,8 @@ public class MedicoController extends Controller<Pessoa> {
 	
 	public void obterEspecialidadeListing(SelectEvent event) {
 		EspecialidadeMedica entity = (EspecialidadeMedica) event.getObject();
-		getEntity().getMedico().setEspecialidade(entity);
+		listaEspecialidade.add(entity);
+		getEntity().getMedico().setListaEspecialidade(listaEspecialidade);
 	}
 
 	@Override
@@ -93,8 +101,8 @@ public class MedicoController extends Controller<Pessoa> {
 			entity = new Pessoa();
 			if(entity.getMedico() == null) {
 				entity.setMedico(new Medico());
-				if (entity.getMedico().getEspecialidade() == null) {
-					entity.getMedico().setEspecialidade(new EspecialidadeMedica());					
+				if (entity.getMedico().getListaEspecialidade() == null) {
+					entity.getMedico().setListaEspecialidade(new ArrayList<EspecialidadeMedica>());
 				}
 			}
 		}
@@ -102,6 +110,50 @@ public class MedicoController extends Controller<Pessoa> {
 		return entity;
 	}
 
+	public List<EspecialidadeMedica> gerarEspecialidade() {
+		try {
+			especialidades = new ArrayList<EspecialidadeMedica>();
+			EspecialidadeMedicaRepository repo = new EspecialidadeMedicaRepository();
+			especialidades = repo.findAll();
+			
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			Util.addMessageError(e.getMessage());
+		}
+		return especialidades;
+	}
+	
+	public List<EspecialidadeMedica> mandarSelecionados() {
+		
+		cloneEspecialidade = new ArrayList<EspecialidadeMedica>();
+		
+			for (int j = 0; j < entity.getMedico().getListaEspecialidade().size(); j++) {
+				for (int i = 0; i < especialidades.size(); i++) {
+				if (especialidades.get(i).getId().equals(entity.getMedico().getListaEspecialidade().get(j))) {
+					cloneEspecialidade.add(especialidades.get(i));
+				}
+			}
+				gerarEspecialidade();
+		}
+
+		listaEspecialidade = cloneEspecialidade;
+		
+
+		return listaEspecialidade;
+	}
+	
+	public List<Pessoa> retornarEspecialidadesPorId(Integer id) {
+		lista = new ArrayList<Pessoa>();
+		MedicoRepository repo = new MedicoRepository();
+		try {
+			lista = repo.findByEspecialidade(id);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			Util.addMessageError(e.getMessage());
+		}
+		return lista;
+	}
+	
 	public String getFiltro() {
 		return filtro;
 	}
@@ -110,12 +162,54 @@ public class MedicoController extends Controller<Pessoa> {
 		this.filtro = filtro;
 	}
 
-	public List<Paciente> getListaMedico() {
+	public List<Pessoa> getListaMedico() {
 		if(listaMedico == null)
-			listaMedico = new ArrayList<Paciente>();
+			listaMedico = new ArrayList<Pessoa>();
 		return listaMedico;
 	}
 
-	
-	
+	public void setListaMedico(List<Pessoa> listaMedico) {
+		this.listaMedico = listaMedico;
+	}
+
+	public EspecialidadeMedica getEspecialidadeMedica() {
+		return especialidadeMedica;
+	}
+
+	public void setEspecialidadeMedica(EspecialidadeMedica especialidadeMedica) {
+		this.especialidadeMedica = especialidadeMedica;
+	}
+
+	public List<EspecialidadeMedica> getListaEspecialidade() {
+		return listaEspecialidade;
+	}
+
+	public void setListaEspecialidade(List<EspecialidadeMedica> listaEspecialidade) {
+		this.listaEspecialidade = listaEspecialidade;
+	}
+
+	public List<EspecialidadeMedica> getEspecialidades() {
+		return especialidades;
+	}
+
+	public void setEspecialidades(List<EspecialidadeMedica> especialidades) {
+		this.especialidades = especialidades;
+	}
+
+	public List<EspecialidadeMedica> getCloneEspecialidade() {
+		return cloneEspecialidade;
+	}
+
+	public void setCloneEspecialidade(List<EspecialidadeMedica> cloneEspecialidade) {
+		this.cloneEspecialidade = cloneEspecialidade;
+	}
+
+	public List<Pessoa> getLista() {
+		return lista;
+	}
+
+	public void setLista(List<Pessoa> lista) {
+		this.lista = lista;
+	}
+
 }

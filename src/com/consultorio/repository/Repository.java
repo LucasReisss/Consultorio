@@ -6,8 +6,7 @@ import com.consultorio.application.RepositoryException;
 import com.consultorio.application.ValidationException;
 import com.consultorio.factory.JPAFactory;
 import com.consultorio.model.DefaultEntity;
-import com.consultorio.model.Pessoa;
-import com.consultorio.validation.MedicoValidation;
+import com.consultorio.model.Telefone;
 
 public class Repository<T extends DefaultEntity<T>> {
 	private EntityManager entityManager;
@@ -75,6 +74,17 @@ public class Repository<T extends DefaultEntity<T>> {
 			throw new RepositoryException("Erro ao salvar.");
 		}
 	}
+	
+	public void excluir(Telefone entity) throws RepositoryException {
+		try {
+			Telefone obj = getEntityManager().merge(entity);
+			getEntityManager().remove(obj);
+		} catch (Exception e) {
+			System.out.println("Erro no repositorio " + "ao executar o método merge.");
+			e.printStackTrace();
+			throw new RepositoryException("Erro ao salvar.");
+		}
+	}
 
 	public EntityManager getEntityManager() {
 		return entityManager;
@@ -83,5 +93,5 @@ public class Repository<T extends DefaultEntity<T>> {
 	private void setEntityManager(EntityManager entityManager) {
 		this.entityManager = entityManager;
 	}
-
+	
 }
