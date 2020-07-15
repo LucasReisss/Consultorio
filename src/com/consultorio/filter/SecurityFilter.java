@@ -43,6 +43,10 @@ public class SecurityFilter implements Filter {
 		// carregando o atributo do tipo pessoa dentro da sessao
 		Pessoa pessoa = (Pessoa) session.getAttribute("usuarioLogado");
 		String link = req.getRequestURL().toString();
+		if (link.contains("http://localhost:8080/Consultorio/faces/javax.faces.resource/")) {
+			chain.doFilter(request, response);
+			return;
+		}
 		// imprime o endereco da pagina
 		System.out.println(link);
 

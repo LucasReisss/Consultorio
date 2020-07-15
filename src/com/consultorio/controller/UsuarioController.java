@@ -249,20 +249,12 @@ public class UsuarioController extends Controller<Pessoa> {
 		UsuarioRepository r = new UsuarioRepository();
 		try {
 			r.beginTransaction();
-			if (getEntity().getEndereco() == null) {
-				if (endereco.getUf() != null) {
-					getEntity().setEndereco(endereco);
-				} 
-			} 
-			else if (getEntity().getEndereco() != null) {
-				if (endereco.getUf() != null) {
-					getEntity().setEndereco(endereco);
-				} 
-				else {
-					Util.addMessageWarn("Existem campos em branco");
-					return;
-				}			
-			} 
+			if (endereco.getUf() != null) {
+				getEntity().setEndereco(endereco);
+			} else {
+				Util.addMessageWarn("Existem campos em branco");
+				return;
+			}
 			r.salvar(getEntity());
 			r.commitTransaction();
 		} catch (RepositoryException e) {

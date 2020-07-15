@@ -79,7 +79,7 @@ public class PessoaValidation implements Validation<Pessoa> {
 		if (data.isAfter(dataLimite)) {
 			if (entity.getMedico() != null) {				
 				throw new ValidationException("Data Inválida. O Médico não pode ser menor de idade.");
-			}	{
+			} else {
 				throw new ValidationException("Data Inválida. O Admnistrador não pode ser menor de idade.");
 			}
 		}
