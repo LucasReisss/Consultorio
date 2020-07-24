@@ -1,8 +1,12 @@
 package com.consultorio.model;
 
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 
 import com.consultorio.validation.Validation;
 
@@ -11,17 +15,20 @@ public class Convenio extends DefaultEntity<Convenio> {
 
 	private static final long serialVersionUID = 3189926229081725200L;
 	
-	private ConvenioF convenio;
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "idconvenio")
+	private List<ConvenioF> convenioF;
+	
 	private String carteirinha;
 	private String plano;
 	private Date validade;
 
-	public ConvenioF getConvenio() {
-		return convenio;
+	public List<ConvenioF> getConvenioF() {
+		return convenioF;
 	}
-	
-	public void setConvenio(ConvenioF convenio) {
-		this.convenio = convenio;
+
+	public void setConvenioF(List<ConvenioF> convenioF) {
+		this.convenioF = convenioF;
 	}
 
 	public String getCarteirinha() {

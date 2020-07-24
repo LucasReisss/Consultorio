@@ -1,6 +1,8 @@
 package com.consultorio.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 
 import com.consultorio.validation.Validation;
 
@@ -11,6 +13,7 @@ public class Paciente extends DefaultEntity<Paciente> {
 	
 	private Exame exame;
 	
+	@OneToOne(cascade = CascadeType.ALL)
 	private Convenio convenio;
 	
 	public Exame getExame() {

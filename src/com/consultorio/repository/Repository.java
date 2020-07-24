@@ -5,6 +5,8 @@ import javax.persistence.EntityManager;
 import com.consultorio.application.RepositoryException;
 import com.consultorio.application.ValidationException;
 import com.consultorio.factory.JPAFactory;
+import com.consultorio.model.Convenio;
+import com.consultorio.model.ConvenioF;
 import com.consultorio.model.DefaultEntity;
 import com.consultorio.model.Telefone;
 
@@ -78,6 +80,28 @@ public class Repository<T extends DefaultEntity<T>> {
 	public void excluir(Telefone entity) throws RepositoryException {
 		try {
 			Telefone obj = getEntityManager().merge(entity);
+			getEntityManager().remove(obj);
+		} catch (Exception e) {
+			System.out.println("Erro no repositorio " + "ao executar o método merge.");
+			e.printStackTrace();
+			throw new RepositoryException("Erro ao salvar.");
+		}
+	}
+	
+	public void excluirConvenio(Convenio entity) throws RepositoryException {
+		try {
+			Convenio obj = getEntityManager().merge(entity);
+			getEntityManager().remove(obj);
+		} catch (Exception e) {
+			System.out.println("Erro no repositorio " + "ao executar o método merge.");
+			e.printStackTrace();
+			throw new RepositoryException("Erro ao salvar.");
+		}
+	}
+	
+	public void excluirConvF(ConvenioF entity) throws RepositoryException {
+		try {
+			ConvenioF obj = getEntityManager().merge(entity);
 			getEntityManager().remove(obj);
 		} catch (Exception e) {
 			System.out.println("Erro no repositorio " + "ao executar o método merge.");

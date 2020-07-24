@@ -2,7 +2,6 @@ package com.consultorio.validation;
 
 import java.time.LocalDate;
 
-import com.consultorio.validation.ValidaCpf;
 import com.consultorio.application.ValidationException;
 import com.consultorio.model.Pessoa;
 import com.consultorio.repository.UsuarioRepository;
@@ -13,16 +12,18 @@ public class PessoaValidation implements Validation<Pessoa> {
 	public void validate(Pessoa entity) throws ValidationException {
 		
 		if (entity != null) {
-			validaCpfUsuario((Pessoa) entity);
+			validaCpfUsuario(entity);
 
-			validaEmailUsuario((Pessoa) entity);
+			validaEmailUsuario(entity);
 
-			validaRgUsuario((Pessoa) entity);
+			validaRgUsuario(entity);
 			
 			if (entity.getMedico() != null || entity.getAdm() != null) {
-				validaDataAniversarioUsuario((Pessoa) entity);
-			} else {
-				validaDataAniversarioPaciente((Pessoa) entity);
+				validaDataAniversarioUsuario(entity);
+			} 
+			
+			else {
+				validaDataAniversarioPaciente(entity);
 			}
 			
 		}

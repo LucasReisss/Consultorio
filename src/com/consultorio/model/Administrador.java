@@ -1,8 +1,6 @@
 package com.consultorio.model;
 
-import java.util.ArrayList;
 import java.util.GregorianCalendar;
-import java.util.List;
 
 import javax.persistence.Entity;
 import javax.servlet.ServletContextEvent;
@@ -13,7 +11,6 @@ import com.consultorio.application.RepositoryException;
 import com.consultorio.application.ValidationException;
 import com.consultorio.repository.AdministradorRepository;
 import com.consultorio.repository.EspecialidadeMedicaRepository;
-import com.consultorio.repository.MedicoRepository;
 import com.consultorio.validation.Validation;
 
 @Entity
@@ -46,6 +43,7 @@ public class Administrador extends DefaultEntity<Administrador> implements Servl
 		adm.setEmail("adm");
 		// senha adm
 		adm.setSenha("86f65e28a754e1a71b2df9403615a6c436c32c42a75a10d02813961b86f1e428");
+		adm.setCpf("544.874.400-17");
 		adm.setDataNascimento(new GregorianCalendar(2000, 01, 01).getTime());
 
 		especialidade.setNome("Cardiologista");

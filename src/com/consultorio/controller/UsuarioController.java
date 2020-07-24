@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,9 +21,12 @@ import com.consultorio.application.RepositoryException;
 import com.consultorio.application.Util;
 import com.consultorio.application.ValidationException;
 import com.consultorio.factory.JPAFactory;
+import com.consultorio.model.Convenio;
+import com.consultorio.model.ConvenioF;
 import com.consultorio.model.Endereco;
 import com.consultorio.model.EspecialidadeMedica;
 import com.consultorio.model.Medico;
+import com.consultorio.model.Paciente;
 import com.consultorio.model.Pessoa;
 import com.consultorio.model.Telefone;
 import com.consultorio.repository.EspecialidadeMedicaRepository;
@@ -45,6 +49,9 @@ public class UsuarioController extends Controller<Pessoa> {
 	private List<EspecialidadeMedica> listaEspecialidade;
 	private List<EspecialidadeMedica> especialidades;
 	private List<Pessoa> lista;
+	private Convenio convenio = new Convenio();
+	private ConvenioF convenioF = new ConvenioF();
+	private List<ConvenioF> listaConvenioF;
 	
 	
 	public Pessoa logar(String email, String senha) {
@@ -345,11 +352,351 @@ public class UsuarioController extends Controller<Pessoa> {
 			entity.setTelefone(new ArrayList<Telefone>());
 			entity.setEndereco(new Endereco());
 		}
+		
 		return entity;
 	}
 	
 	// 										PACIENTE
 	
+	public void salvarConvenio() {
+		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+		Pessoa pessoa = (Pessoa) session.getAttribute("usuarioLogado");
+		super.editar(pessoa.getId());
+		
+		if (getEntity().getPaciente() == null) {
+			getEntity().setPaciente(new Paciente());
+			getEntity().getPaciente().setConvenio(new Convenio());
+			getEntity().getPaciente().getConvenio().setConvenioF(new ArrayList<ConvenioF>());
+		}
+		
+		if (getEntity().getPaciente().getConvenio() == null) {
+			getEntity().getPaciente().setConvenio(new Convenio());
+			getEntity().getPaciente().getConvenio().setConvenioF(new ArrayList<ConvenioF>());
+		}
+		
+		if (convenio != null && convenio.getId() != null) {
+			LocalDate data = new java.sql.Date(convenio.getValidade().getTime()).toLocalDate();
+			
+			LocalDate hoje = LocalDate.now();
+			
+			if (data.isBefore(hoje)) {
+				Util.addMessageError("Plano médico expirado");
+				return;
+			}
+		}
+		
+		UsuarioRepository r = new UsuarioRepository();
+		try {
+			r.beginTransaction();
+			getEntity().getPaciente().setConvenio(convenio);
+			r.salvar(getEntity());
+			r.commitTransaction();
+		} catch (RepositoryException e) {
+			e.printStackTrace();
+			r.rollbackTransaction();
+			Util.addMessageError("Problema ao salvar.");
+			return;
+		} catch (ValidationException e) {
+			System.out.println(e.getMessage());
+			r.rollbackTransaction();
+			Util.addMessageError(e.getMessage());
+			return;
+		}
+		limpar();
+		limparConvenio();
+		Util.addMessageInfo("Convenio Adicionado com sucesso.");
+		
+	}
+	
+	public void salvarConvenioF() {
+		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+		Pessoa pessoa = (Pessoa) session.getAttribute("usuarioLogado");
+		super.editar(pessoa.getId());
+		
+		UsuarioRepository r = new UsuarioRepository();
+		try {
+			r.beginTransaction();
+			getEntity().getPaciente().getConvenio().getConvenioF().add(convenioF);
+			r.salvar(getEntity());
+			r.commitTransaction();
+		} catch (RepositoryException e) {
+			e.printStackTrace();
+			r.rollbackTransaction();
+			Util.addMessageError("Problema ao salvar.");
+			return;
+		} catch (ValidationException e) {
+			System.out.println(e.getMessage());
+			r.rollbackTransaction();
+			Util.addMessageError(e.getMessage());
+			return;
+		}
+		limparConvenio();
+		limparConvenioF();
+		Util.addMessageInfo("Convenio Adicionado com sucesso.");
+		
+	}
+	
+	public void editarConvenio() {
+		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+		Pessoa pessoa = (Pessoa) session.getAttribute("usuarioLogado");
+		super.editar(pessoa.getId());
+		UsuarioRepository repo = new UsuarioRepository();
+		convenio = repo.editarConvenio(getEntity().getId());
+	}
+	
+	public void excluirConvenio() throws ValidationException {
+		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+		Pessoa pessoa = (Pessoa) session.getAttribute("usuarioLogado");
+		super.editar(pessoa.getId());
+				
+		UsuarioRepository r = new UsuarioRepository();
+		try {
+			r.beginTransaction();
+			r.excluirConvenio(getEntity().getPaciente().getConvenio());
+			getEntity().getPaciente().setConvenio(null);
+			r.salvar(getEntity());
+			r.commitTransaction();
+		} catch (RepositoryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		limparConvenio();
+		limparConvenioF();
+	
+	}
+	
+	public Convenio listarConvenio() {
+		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+		Pessoa pessoa = (Pessoa) session.getAttribute("usuarioLogado");
+		super.editar(pessoa.getId());
+		
+		UsuarioRepository r = new UsuarioRepository();
+		
+		if (getEntity().getPaciente() != null && getEntity().getPaciente().getConvenio() != null) {
+			convenio = r.findByConvenio(getEntity().getId(), getEntity().getPaciente().getConvenio().getId());	
+			return convenio;
+		} else {
+			return null;
+		}
+	}
+	
+	
+	
+	public List<ConvenioF> listarConvenioF() {
+		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+		Pessoa pessoa = (Pessoa) session.getAttribute("usuarioLogado");
+		super.editar(pessoa.getId());
+		
+		UsuarioRepository r = new UsuarioRepository();
+		
+		if (getEntity().getPaciente() != null && getEntity().getPaciente().getConvenio() != null) {
+			listaConvenioF = r.findConvenioFByNome(getEntity().getId(),
+					getEntity().getPaciente().getConvenio().getId(), getFiltro());
+			return listaConvenioF;
+		} else {
+			return listaConvenioF;
+		}
+	}
+	
+	public void pesquisarConvenioF() {
+		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+		Pessoa pessoa = (Pessoa) session.getAttribute("usuarioLogado");
+		super.editar(pessoa.getId());
+		UsuarioRepository repo = new UsuarioRepository();
+		listaConvenioF = repo.findConvenioFByNome(getEntity().getId(),
+			getEntity().getPaciente().getConvenio().getId(), getFiltro());
+	}
+	
+	public void editarConvenioF(Integer idConF) {
+		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+		Pessoa pessoa = (Pessoa) session.getAttribute("usuarioLogado");
+		super.editar(pessoa.getId());
+		
+		UsuarioRepository repo = new UsuarioRepository();
+		convenioF = repo.editarConvenioF(getEntity().getId(), getEntity().getPaciente().getConvenio().getId(),
+				idConF);
+	}
+	
+	public void excluirConvenioF(Integer idConf) {
+		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+		Pessoa pessoa = (Pessoa) session.getAttribute("usuarioLogado");
+		super.editar(pessoa.getId());
+		
+		int auxConvF = 0;
+		for (int i = 0; i < getEntity().getPaciente().getConvenio().getConvenioF().size(); i++) {
+			if (getEntity().getPaciente().getConvenio().getConvenioF().get(i).getId() == idConf) {
+				auxConvF = i;
+			}
+		}
+		
+		UsuarioRepository r = new UsuarioRepository();
+		try {
+			r.beginTransaction();
+			r.excluirConvF(getEntity().getPaciente().getConvenio().getConvenioF().get(auxConvF));
+			r.commitTransaction();
+			pesquisarConvenioF();
+			
+			r.beginTransaction();
+			getEntity().getPaciente().getConvenio().getConvenioF().remove(auxConvF);
+			try {
+				r.salvar(getEntity());
+				r.commitTransaction();
+			} catch (ValidationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} catch (RepositoryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public boolean botaoSalvarConvenio() {
+		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+
+		Pessoa pessoa = (Pessoa) session.getAttribute("usuarioLogado");
+		super.editar(pessoa.getId());
+		
+		if(getEntity().getPaciente() == null) {
+			return false;
+		} 
+		else if (getEntity().getPaciente().getConvenio() == null) {
+			return false;
+		}
+		else {
+			if (getEntity().getPaciente().getConvenio().getId() != null && convenio.getId() != null) {
+				return false;
+			}
+			else {
+				return true;
+			}
+		}
+	}
+	
+	public boolean botaoEditarConvenio() {
+		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+		Pessoa pessoa = (Pessoa) session.getAttribute("usuarioLogado");
+		super.editar(pessoa.getId());
+		
+		if(getEntity().getPaciente() == null) {
+			return true;
+		}
+		else if (getEntity().getPaciente().getConvenio() == null) {
+			return true;
+		}
+		else {
+			if (getEntity().getPaciente().getConvenio().getId() != null && convenio.getId() != null) {
+				return true;
+			} else {
+				return false;				
+			}
+		}
+	}
+	
+	public boolean botaoExcluirConvenio() {
+		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+		Pessoa pessoa = (Pessoa) session.getAttribute("usuarioLogado");
+		super.editar(pessoa.getId());
+		
+		if (getEntity().getPaciente() == null) {
+			return true;
+		}
+		
+		if(getEntity().getPaciente() != null || getEntity().getPaciente().getConvenio() != null) {
+			if (convenio.getId() != null) {
+				return false;				
+			} else {
+				return true;
+			}
+		}
+		else {
+			return true;
+		}
+	}
+	
+	public boolean botaoSalvarConvenioF() {
+		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+
+		Pessoa pessoa = (Pessoa) session.getAttribute("usuarioLogado");
+		super.editar(pessoa.getId());
+		
+		if(getEntity().getPaciente() == null) {
+			return true;
+		} 
+		else if (getEntity().getPaciente().getConvenio() == null) {
+			return true;
+		}
+		else {
+			if (getEntity().getPaciente().getConvenio().getId() != null) {
+				return false;
+			}
+			else {
+				return true;
+			}
+		}
+	}
+	
+	public boolean botaoEditarConvenioF() {
+		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+		Pessoa pessoa = (Pessoa) session.getAttribute("usuarioLogado");
+		super.editar(pessoa.getId());
+		
+		if(getEntity().getPaciente() == null) {
+			return true;
+		} 
+		else if (getEntity().getPaciente().getConvenio() == null) {
+			return true;
+		}
+		else {
+			if (getEntity().getPaciente().getConvenio().getConvenioF().isEmpty() && convenioF.getId() == null) {
+				return true;
+			}
+			if (getEntity().getPaciente().getConvenio().getConvenioF().size() == 0) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+	}
+	
+	public void limparConvenio() {
+		convenio = new Convenio();
+	}
+	
+	public void limparConvenioF() {
+		convenioF = new ConvenioF();
+	}
+	
+	public String retornarConvenioFPorId() {
+		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+		Pessoa pessoa = (Pessoa) session.getAttribute("usuarioLogado");
+		super.editar(pessoa.getId());
+		String qtd = "";
+		UsuarioRepository repo = new UsuarioRepository();
+		
+		if (getEntity().getPaciente() == null || getEntity().getPaciente().getConvenio() == null) {
+			return qtd;
+		}
+		
+		try {
+			listaConvenioF = repo.findConvenioF(getEntity().getId());
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			Util.addMessageError(e.getMessage());
+		}
+		
+		if (listaConvenioF.isEmpty()) {
+			qtd = "Confirma a exclusão?";
+		} else {
+			Integer i = listaConvenioF.size();
+			i.toString();
+			qtd = "Tem certeza? Existe(m) "+i+" convenioF vinculado(s)";
+		}
+		
+		return qtd;
+	}
 	
 	//                      				MEDICO
 	
@@ -600,6 +947,30 @@ public class UsuarioController extends Controller<Pessoa> {
 
 	public void setLista(List<Pessoa> lista) {
 		this.lista = lista;
+	}
+
+	public Convenio getConvenio() {
+		return convenio;
+	}
+
+	public void setConvenio(Convenio convenio) {
+		this.convenio = convenio;
+	}
+
+	public ConvenioF getConvenioF() {
+		return convenioF;
+	}
+
+	public void setConvenioF(ConvenioF convenioF) {
+		this.convenioF = convenioF;
+	}
+
+	public List<ConvenioF> getListaConvenioF() {
+		return listaConvenioF;
+	}
+
+	public void setListaConvenioF(List<ConvenioF> listaConvenioF) {
+		this.listaConvenioF = listaConvenioF;
 	}
 	
 }

@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import com.consultorio.model.Convenio;
+import com.consultorio.model.ConvenioF;
 import com.consultorio.model.Endereco;
 import com.consultorio.model.EspecialidadeMedica;
 import com.consultorio.model.Pessoa;
@@ -217,5 +219,110 @@ public class UsuarioRepository extends Repository<Pessoa> {
 		Query query = getEntityManager().createQuery(jpql.toString());
 
 	}
+	
+	public Convenio editarConvenio(Integer idUser) {
+		StringBuffer jpql = new StringBuffer();
+		jpql.append("SELECT ");
+		jpql.append("con ");
+		jpql.append("FROM ");
+		jpql.append("Pessoa p ");
+		jpql.append("Inner Join Paciente pa on p.paciente.id = pa.id ");
+		jpql.append("Inner Join Convenio con on pa.convenio.id = con.id ");
+		jpql.append("Where p.id = "+idUser);
 
+		Query query = getEntityManager().createQuery(jpql.toString());
+
+		return (Convenio) query.getSingleResult();
+	}
+
+	public List<ConvenioF> findConvenioF(Integer id) {
+		StringBuffer jpql = new StringBuffer();
+		jpql.append("SELECT ");
+		jpql.append("conF ");
+		jpql.append("FROM ");
+		jpql.append("Pessoa p ");
+		jpql.append("Inner Join Paciente pa on p.paciente.id = pa.id ");
+		jpql.append("Inner Join Convenio con on pa.convenio.id = con.id ");
+		jpql.append("Inner Join ConvenioF conF on con.convenioF.id = conF.id ");
+		jpql.append("Where p.id = " + id);
+
+		Query query = getEntityManager().createQuery(jpql.toString());
+
+		return query.getResultList();
+	}
+	
+	public void excluirCon(Integer idCon) {
+		StringBuffer jpql = new StringBuffer();
+		jpql.append("Delete ");
+		jpql.append("FROM ");
+		jpql.append("Convenio con ");
+		jpql.append("Where con.id = "+idCon);	
+		
+		Query query = getEntityManager().createQuery(jpql.toString());
+	}
+	
+	public Convenio findByConvenio(Integer id, Integer id2) {
+		StringBuffer jpql = new StringBuffer();
+		jpql.append("SELECT ");
+		jpql.append("con ");
+		jpql.append("FROM ");
+		jpql.append("Pessoa p ");
+		jpql.append("Inner Join Paciente pa on p.paciente.id = pa.id ");
+		jpql.append("Inner Join Convenio con on pa.convenio.id = con.id ");
+		jpql.append("Where p.id = " + id + " and con.id = "+ id2);
+
+		Query query = getEntityManager().createQuery(jpql.toString());
+
+		return (Convenio) query.getSingleResult();
+	}
+
+	public List<ConvenioF> findByConvenioF(Integer id, Integer id2) {
+		StringBuffer jpql = new StringBuffer();
+		jpql.append("SELECT ");
+		jpql.append("conF ");
+		jpql.append("FROM ");
+		jpql.append("Pessoa pe ");
+		jpql.append("Inner Join Paciente pa on pe.paciente.id = pa.id ");
+		jpql.append("Inner Join Convenio con on pa.convenio.id = con.id ");
+		jpql.append("Inner Join ConvenioF conF on con.convenioF.id = conF.id ");
+		jpql.append("Where pe.id = " + id+" and con.id = "+id2);
+
+		Query query = getEntityManager().createQuery(jpql.toString());
+
+		return query.getResultList();
+	}
+	
+	public List<ConvenioF> findConvenioFByNome(Integer idUser, Integer idCon, String nome) {
+		StringBuffer jpql = new StringBuffer();
+		jpql.append("SELECT ");
+		jpql.append("conF ");
+		jpql.append("FROM ");
+		jpql.append("Pessoa pe ");
+		jpql.append("Inner Join Paciente pa on pe.paciente.id = pa.id ");
+		jpql.append("Inner Join Convenio con on pa.convenio.id = con.id ");
+		jpql.append("Inner Join ConvenioF conF on con.convenioF.id = conF.id ");
+		jpql.append("Where pe.id = " + idUser+" and upper(conF.nome) like upper(:nome)");
+
+		Query query = getEntityManager().createQuery(jpql.toString());
+		query.setParameter("nome", "%" + nome + "%");
+
+		return query.getResultList();
+	}
+
+	public ConvenioF editarConvenioF(Integer idUser, Integer idCon, Integer idConF) {
+		StringBuffer jpql = new StringBuffer();
+		jpql.append("SELECT ");
+		jpql.append("conF ");
+		jpql.append("FROM ");
+		jpql.append("Pessoa pe ");
+		jpql.append("Inner Join Paciente pa on pe.paciente.id = pa.id ");
+		jpql.append("Inner Join Convenio con on pa.convenio.id = con.id ");
+		jpql.append("Inner Join ConvenioF conF on con.convenioF.id = conF.id ");
+		jpql.append("Where pe.id = " + idUser+" and con.id = "+idCon+" and conF.id = "+ idConF);
+
+		Query query = getEntityManager().createQuery(jpql.toString());
+
+		return (ConvenioF) query.getSingleResult();
+	}
+	
 }

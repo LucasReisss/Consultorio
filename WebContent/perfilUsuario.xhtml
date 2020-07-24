@@ -27,6 +27,8 @@
 }
 </style>
 	</ui:define>
+	
+	
 	<ui:define name="content">
 		<p:ajaxStatus onstart="PF('statusDialog').show()"
 			onsuccess="PF('statusDialog').hide()" />
@@ -41,7 +43,7 @@
 				<p:growl id="msgs" showDetail="true"
 					skipDetailIfEqualsSummary="true" />
 
-				<h3 style="margin-top: 0; text-align: center;">Ações</h3>
+				<h3>Ações</h3>
 				<p:accordionPanel>
 					<p:tab title="Editar Perfil">
 						<p:panel id="panel">
@@ -267,7 +269,154 @@
 					</p:tab>		
 				</p:accordionPanel>
 			</h:form>
+
+			<h:form id="formConvenio">
+				<p:accordionPanel id="tabelaCon">
+					<p:tab title="Plano(s) Médico">
+
+						<p:growl id="msgs" showDetail="true"
+							skipDetailIfEqualsSummary="true" />
+
+						<p:panel id="panelConvenio">
+
+							<h3>Convenio</h3>
+
+							<h:panelGrid columns="2" cellpadding="10">
+
+								<p:outputLabel value="Carteirinha:" />
+								<p:inputText value="#{usuarioController.convenio.carteirinha}"
+									required="true" id="ddd" requiredMessage="campo necessário" />
+
+								<p:outputLabel value="Plano:" />
+								<p:inputText value="#{usuarioController.convenio.plano}"
+									required="true" requiredMessage="aa" />
+
+								<p:outputLabel value="Validade:" />
+								<p:calendar value="#{usuarioController.convenio.validade}"
+									id="data" pattern="dd/MM/yyyy" required="true" />
+
+							</h:panelGrid>
+
+							<p:toolbar>
+								<f:facet name="left">
+									<p:commandButton value="Salvar" process="panelConvenio"
+										update="formConvenio" id="salvarConvenio"
+										action="#{usuarioController.salvarConvenio}"
+										disabled="#{usuarioController.botaoSalvarConvenio()}" />
+
+									<p:commandButton value="Limpar" process="@this"
+										update="panelConvenio"
+										action="#{usuarioController.limparConvenio}">
+									</p:commandButton>
+
+									<p:commandButton value="Editar" process="@this" update="panelConvenio"
+									id="editarConvenio" action="#{usuarioController.editarConvenio}"
+									disabled="#{usuarioController.botaoEditarConvenio()}" />
+									
+									<p:commandButton value="Excluir"
+											actionListener="#{usuarioController.excluirConvenio()}"
+											process="@this" update="formConvenio" 
+											disabled="#{usuarioController.botaoExcluirConvenio()}">
+											<p:confirm header="Confirmação" 
+											message="#{usuarioController.retornarConvenioFPorId()}" />
+									</p:commandButton>
+
+
+								</f:facet>
+							</p:toolbar>
+							
+							
+						</p:panel>
+
+						<p:panel id="panelConvenioF">
+
+							<h3>ConvenioF</h3>
+
+							<h:panelGrid columns="2" cellpadding="10">
+
+								<p:outputLabel value="Nome:" />
+								<p:inputText value="#{usuarioController.convenioF.nome}"
+									required="true" requiredMessage="aa" />
+
+								<p:outputLabel value="Registro Ans:" />
+								<p:inputText value="#{usuarioController.convenioF.registroAns}"
+									required="true" requiredMessage="aa" />
+
+							</h:panelGrid>
+
+							<p:toolbar>
+								<f:facet name="left">
+									<p:commandButton value="Salvar" process="panelConvenioF"
+										update="panelConvenioF msgs" 
+										disabled="#{usuarioController.botaoSalvarConvenioF()}"
+										action="#{usuarioController.salvarConvenioF()}"/>
+
+									<p:commandButton value="Limpar" process="@this"
+										update="panelConvenioF"
+										action="#{usuarioController.limparConvenioF}">
+									</p:commandButton>
+
+									<p:commandButton value="Gerenciar" process="@this" 
+									disabled="#{usuarioController.botaoEditarConvenioF()}"
+									onclick="PF('listagemConvenioF').show();"/>
+
+
+								</f:facet>
+							</p:toolbar>
+							
+							<p:dialog header="ConvenioF" widgetVar="listagemConvenioF"
+							height="300" width="90%" modal="true" resizable="true">
+							<p:ajax event="close" update="panelConvenioF" resetValues="true"/>
+							<p:outputLabel value="Nome: " />
+							<p:inputText id="itFiltro" value="#{usuarioController.filtro}" />
+							<p:commandButton value="Pesquisar"
+								actionListener="#{usuarioController.pesquisarConvenioF}"
+								process="@this itFiltro" update="dtListagemConvF" />
+							<br/>
+							<div class="ui-datatable"></div>
+							<p:dataTable id="dtListagemConvF" var="conF"
+								value="#{usuarioController.listarConvenioF()}">
+								
+								<p:column headerText="Nome">
+									<h:outputText value="#{conF.nome}" />
+								</p:column>
+								
+								<p:column headerText="Registro Ans">
+									<h:outputText value="#{conF.registroAns}" />
+								</p:column>
+
+									<p:column headerText="Ações">
+										<p:commandLink value="Editar"
+											actionListener="#{usuarioController.editarConvenioF(conF.id)}"
+											process="@this" update="formConvenio" resetValues="true" />
+										<p:commandLink value="Excluir" style="margin-left:5%;"
+											actionListener="#{usuarioController.excluirConvenioF(conF.id)}"
+											process="@this" update="dtListagemConvF">
+											<p:confirm header="Confirmação" message="Confirma a exclusão?" />
+										</p:commandLink>
+								</p:column>
+
+
+							</p:dataTable>
+						</p:dialog>
+							
+						</p:panel>
+
+
+						<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+							<p:commandButton value="Sim" type="button"
+								styleClass="ui-confirmdialog-yes" />
+							<p:commandButton value="Não" type="button"
+								styleClass="ui-confirmdialog-no" />
+						</p:confirmDialog>
+						
+						
+
+					</p:tab>
+				</p:accordionPanel>
+			</h:form>
 			
+
 			<h:form id="formEsp">
 				<p:growl id="msgs" showDetail="true"
 					skipDetailIfEqualsSummary="true" />
