@@ -1,14 +1,18 @@
 package com.consultorio.model;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 
 import com.consultorio.validation.Validation;
 
 @Entity
-public class Exame extends DefaultEntity<Exame> {
+public class Atendimento extends DefaultEntity<Atendimento> {
 
 	private static final long serialVersionUID = 5216381410759993045L;
-
+	
+	private Date data;
+	
 	private String anamnese;
 	
 	private String evolucao;
@@ -20,7 +24,7 @@ public class Exame extends DefaultEntity<Exame> {
 	private String atestado;
 	
 	private String historico;
-	
+
 	public String getAnamnese() {
 		return anamnese;
 	}
@@ -68,9 +72,17 @@ public class Exame extends DefaultEntity<Exame> {
 	public void setHistorico(String historico) {
 		this.historico = historico;
 	}
+	
+	public Date getData() {
+		return data;
+	}
+
+	public void setData(Date data) {
+		this.data = data;
+	}
 
 	@Override
-	public Validation<Exame> getValidation() {
+	public Validation<Atendimento> getValidation() {
 		// TODO Auto-generated method stub
 		return null;
 	}

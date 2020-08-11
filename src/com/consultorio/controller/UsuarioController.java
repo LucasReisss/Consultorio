@@ -21,6 +21,7 @@ import com.consultorio.application.RepositoryException;
 import com.consultorio.application.Util;
 import com.consultorio.application.ValidationException;
 import com.consultorio.factory.JPAFactory;
+import com.consultorio.model.Agenda;
 import com.consultorio.model.Convenio;
 import com.consultorio.model.ConvenioF;
 import com.consultorio.model.Endereco;
@@ -92,6 +93,16 @@ public class UsuarioController extends Controller<Pessoa> {
 		try {
 			r.beginTransaction();
 			getEntity().setSenha(Util.hashSHA256(getEntity().getSenha()));
+			if (getEntity().getPaciente() != null) {
+				if (getEntity().getPaciente().getAgenda() == null) {
+					getEntity().getPaciente().setAgenda(new ArrayList<Agenda>());
+				}
+			}
+			if (getEntity().getMedico() != null) {
+				if (getEntity().getMedico().getAgenda() == null) {
+					getEntity().getMedico().setAgenda(new ArrayList<Agenda>());
+				}
+			}
 			r.salvar(getEntity());
 			r.commitTransaction();
 		} catch (RepositoryException e) {
@@ -382,6 +393,12 @@ public class UsuarioController extends Controller<Pessoa> {
 			if (data.isBefore(hoje)) {
 				Util.addMessageError("Plano médico expirado");
 				return;
+			}
+		}
+		
+		if (getEntity().getPaciente() != null) {
+			if (getEntity().getPaciente().getAgenda() == null) {
+				getEntity().getPaciente().setAgenda(new ArrayList<Agenda>());
 			}
 		}
 		
@@ -707,6 +724,12 @@ public class UsuarioController extends Controller<Pessoa> {
 		
 		if (getEntity().getMedico() == null) {
 			getEntity().setMedico(new Medico());
+		}
+		
+		if (getEntity().getMedico() != null) {
+			if (getEntity().getMedico().getAgenda() == null) {
+				getEntity().getMedico().setAgenda(new ArrayList<Agenda>());
+			}
 		}
 		
 		mandarSelecionados();

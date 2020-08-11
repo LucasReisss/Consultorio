@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import com.consultorio.model.Agenda;
 import com.consultorio.model.Pessoa;
 
 public class PacienteRepository extends Repository<Pessoa> {
@@ -84,6 +85,20 @@ public class PacienteRepository extends Repository<Pessoa> {
 		long resultado = (long) query.getSingleResult();
 		
 		return resultado == 0 ? false : true;
+	}
+
+	public List<Agenda> pesquisarAgenda() {
+		StringBuffer jpql = new StringBuffer();
+		jpql.append("SELECT ");
+		jpql.append("ag ");
+		jpql.append("FROM ");
+		jpql.append("Pessoa pe ");
+		jpql.append("Inner Join Paciente pa on pe.paciente.id = pa.id ");
+		jpql.append("Inner Join Agenda ag on pa.agenda.id = ag.id ");
+
+		Query query = getEntityManager().createQuery(jpql.toString());
+
+		return query.getResultList();
 	}
 	
 }

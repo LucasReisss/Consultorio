@@ -11,7 +11,7 @@
 		<class>com.consultorio.model.DefaultEntity</class>
 		<class>com.consultorio.model.Endereco</class>
 		<class>com.consultorio.model.EspecialidadeMedica</class>
-		<class>com.consultorio.model.Exame</class>
+		<class>com.consultorio.model.Atendimento</class>
 		<class>com.consultorio.model.Financeiro</class>
 		<class>com.consultorio.model.Medicamento</class>
 		<class>com.consultorio.model.Medico</class>

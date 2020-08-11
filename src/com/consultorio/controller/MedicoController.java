@@ -1,10 +1,15 @@
 package com.consultorio.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import javax.servlet.http.HttpSession;
 
 import org.primefaces.event.SelectEvent;
 
@@ -12,6 +17,7 @@ import com.consultorio.application.RepositoryException;
 import com.consultorio.application.Util;
 import com.consultorio.application.ValidationException;
 import com.consultorio.listing.EspecialidadeMedicaListing;
+import com.consultorio.model.Agenda;
 import com.consultorio.model.EspecialidadeMedica;
 import com.consultorio.model.Medico;
 import com.consultorio.model.Pessoa;
@@ -26,6 +32,7 @@ public class MedicoController extends Controller<Pessoa> {
 	
 	private String filtro;
 	private List<Pessoa> listaMedico;
+	private List<Agenda> agendas = new ArrayList<Agenda>();
 	private EspecialidadeMedica especialidadeMedica;
 	private List<EspecialidadeMedica> listaEspecialidade;
 	private List<EspecialidadeMedica> especialidades;
@@ -35,6 +42,34 @@ public class MedicoController extends Controller<Pessoa> {
 	public void pesquisar() {
 		MedicoRepository repo = new MedicoRepository();
 		listaMedico = repo.findByNome(getFiltro());
+	}
+	
+	public void findAll() {
+		MedicoRepository repo = new MedicoRepository();
+		listaMedico = repo.findAll();
+	}
+	
+	public void pesquisarAgenda() {
+		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+		Pessoa pessoa = (Pessoa) session.getAttribute("usuarioLogado");
+		super.editar(pessoa.getId());
+		MedicoRepository repo = new MedicoRepository();
+		agendas = repo.pesquisarAgenda(getEntity().getId(), getEntity().getMedico().getId());
+	}
+	
+	public String retornarData() {
+		
+		Date data = new Date();
+		
+		String dia = "10";
+		String mes = "08";
+		String ano = "2020";
+		
+		Locale localeBR = new Locale("pt", "BR");
+        
+		SimpleDateFormat fmt = new SimpleDateFormat("dd 'de' MMMM 'de' yyyy", localeBR);
+		
+		return fmt.format(new Date());
 	}
 	
 	@Override
@@ -210,6 +245,14 @@ public class MedicoController extends Controller<Pessoa> {
 
 	public void setLista(List<Pessoa> lista) {
 		this.lista = lista;
+	}
+
+	public List<Agenda> getAgendas() {
+		return agendas;
+	}
+
+	public void setAgendas(List<Agenda> agendas) {
+		this.agendas = agendas;
 	}
 
 }
