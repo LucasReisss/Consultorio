@@ -27,8 +27,8 @@
 				<p:menuitem value="Especialidade" outcome="/especialidademedica" icon="pi pi-globe"/>
 			</p:submenu>
 			
-			<p:submenu label="Medico" icon="pi pi-file" >
-				<p:menuitem value="Exame(s)" url="exameMedico.xhtml" />
+			<p:submenu label="Medico" icon="pi pi-file" rendered="#{loginController.permiteAcesso('adm-medico')}">
+				<p:menuitem value="Exame(s)" url="#" />
 				<p:separator />
 				<p:menuitem value="Listar Pacientes" url="#" />
 				<p:separator />
@@ -39,7 +39,7 @@
 				<p:menuitem value="Atestados" url="atestado.xhtml" />
 			</p:submenu>
 			
-			<p:submenu label="Paciente" icon="pi pi-file"  >
+			<p:submenu label="Paciente" icon="pi pi-file" rendered="#{loginController.permiteAcesso('adm-paciente')}" >
 				<p:menuitem value="Exame(s)" url="examePaciente.xhtml" />
 				<p:separator />
 				<p:menuitem value="Anamnese" url="anamnese.xhtml" />
@@ -53,9 +53,7 @@
 				<p:menuitem value="Historico" url="#" />
 			</p:submenu>
 
-			<p:menuitem value="Agenda Medica" url="agendaMedico.xhtml" icon="pi pi-calendar-plus" rendered="#{loginController.permiteAcesso('adm-medico')}"/>
-
-			<p:menuitem value="Agenda Paciente" url="agendaPaciente.xhtml" icon="pi pi-calendar-plus" rendered="#{loginController.permiteAcesso('adm-paciente')}" />
+			<p:menuitem value="Agenda" url="agenda.xhtml" icon="pi pi-calendar-plus" />
 			
 			<p:menuitem value="Financeiro" url="#" icon="pi pi-dollar" />
 

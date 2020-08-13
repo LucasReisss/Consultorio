@@ -1,78 +1,218 @@
 package com.consultorio.controller;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
-import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import javax.servlet.http.HttpSession;
 
-import org.primefaces.event.ScheduleEntryMoveEvent;
-import org.primefaces.event.ScheduleEntryResizeEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultScheduleEvent;
 import org.primefaces.model.DefaultScheduleModel;
 import org.primefaces.model.ScheduleEvent;
 import org.primefaces.model.ScheduleModel;
 
+import com.consultorio.application.RepositoryException;
+import com.consultorio.application.Util;
+import com.consultorio.application.ValidationException;
 import com.consultorio.model.Agenda;
+import com.consultorio.model.Endereco;
+import com.consultorio.model.Medico;
+import com.consultorio.model.Paciente;
 import com.consultorio.model.Pessoa;
+import com.consultorio.model.Telefone;
 import com.consultorio.repository.AgendaRepository;
-import com.consultorio.repository.PacienteRepository;
 
 @Named
 @ViewScoped
 public class AgendaController extends Controller<Pessoa> {
 
 	private static final long serialVersionUID = 4948245614997659993L;
-	
-	private ScheduleModel eventModel;
-    
-    private ScheduleModel lazyEventModel;
- 
-    private ScheduleEvent event;
- 
-    private boolean showWeekends = true;
-    private boolean tooltip = true;
-    private boolean allDaySlot = true;
- 
-    private List<Agenda> agendas = new ArrayList<Agenda>();
-    private Agenda agenda = new Agenda();
 
-    private String timeFormat;
-    private String slotDuration="00:30:00";
-    private String slotLabelInterval;
-    private String scrollTime="06:00:00";
-    private String minTime="04:00:00";
-    private String maxTime="20:00:00";
-    private String locale="en";
-    private String timeZone="";
-    private String clientTimeZone="local";
-    private String columnHeaderFormat="";
-    
-    @PostConstruct
-    public void init() {
-        eventModel = new DefaultScheduleModel();
-        PacienteRepository agendaRepo = new PacienteRepository();
-        agendas = agendaRepo.pesquisarAgenda();
-      
-        if (agendas != null) { 
-        	if (!agendas.isEmpty()) {
-//            	for (Agenda agenda : agendas) {
-//            		 DefaultScheduleEvent event = DefaultScheduleEvent.builder().description(agenda.getNome()).data(agenda.getAtendimento()).build();
-//            		 eventModel.addEvent(event);
-//            	}	
-            }
-        }
-        	else {
-        	DefaultScheduleEvent event = new DefaultScheduleEvent<Agenda>();
-        }
- 
-    }
+	private Agenda agenda;
+	private List<Agenda> listaAgenda = new ArrayList<Agenda>();
+	private ScheduleModel agendas;
+	private ScheduleEvent event = new DefaultScheduleEvent();
+	private int idAgenda;
+	private List<Paciente> pacientes = new ArrayList<Paciente>();
+	private Pessoa paciente = new Pessoa();
+	private Pessoa medico = new Pessoa();
+	private List<Medico> medicos = new ArrayList<Medico>();
+
+	@PostConstruct
+	public void listar() {
+		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+		Pessoa pessoa = (Pessoa) session.getAttribute("usuarioLogado");
+		AgendaRepository repo = new AgendaRepository();
+		agendas = new DefaultScheduleModel();
+     
+		if (pessoa.getPaciente() != null) {
+			listaAgenda = repo.listarAgendaPacientePorId(pessoa.getId());
+			if (listaAgenda.isEmpty()) {
+				if (pessoa.getMedico() != null) {
+					listaAgenda = repo.listarAgendaMedPorId(pessoa.getId());
+					if (listaAgenda.isEmpty()) {
+						Util.addMessageInfo("Você não tem nada agendado.");
+						return;
+					} else {
+						for (Agenda agenda : listaAgenda) {
+							DefaultScheduleEvent evt = new DefaultScheduleEvent();
+							// add id para recuperar dps
+							evt.setDescription(agenda.getId().toString());
+							evt.setData(agenda.getAtendimento());
+							LocalDateTime ldt = LocalDateTime.ofInstant(agenda.getAtendimento().toInstant(),
+									ZoneId.systemDefault());
+							evt.setStartDate(ldt);
+							evt.setEndDate(ldt);
+
+							evt.setTitle(agenda.getNome());
+							evt.setAllDay(false);
+							evt.setEditable(true);
+							agendas.addEvent(evt);
+						}
+						return;
+					}
+				} else {
+					Util.addMessageInfo("Você não tem nada agendado.");
+					return;
+				}
+			} else {
+				for (Agenda agenda : listaAgenda) {
+					DefaultScheduleEvent evt = new DefaultScheduleEvent();
+					// add id para recuperar dps
+					evt.setDescription(agenda.getId().toString());
+					evt.setData(agenda.getAtendimento());
+					LocalDateTime ldt = LocalDateTime.ofInstant(agenda.getAtendimento().toInstant(),
+							ZoneId.systemDefault());
+					evt.setStartDate(ldt);
+					evt.setEndDate(ldt);
+
+					evt.setTitle(agenda.getNome());
+					evt.setAllDay(false);
+					evt.setEditable(true);
+					agendas.addEvent(evt);
+				}
+				return;
+			}
+
+		}
+		else if (pessoa.getMedico() != null) { // verificando se o med tem agenda
+			listaAgenda = repo.listarAgendaMedPorId(pessoa.getId());
+			if (listaAgenda.isEmpty()) {
+				Util.addMessageInfo("Você não tem nada agendado.");
+				return;
+			} else {
+				for (Agenda agenda : listaAgenda) {
+					DefaultScheduleEvent evt = new DefaultScheduleEvent();
+					// add id para recuperar dps
+					evt.setDescription(agenda.getId().toString());
+					evt.setData(agenda.getAtendimento());
+					LocalDateTime ldt = LocalDateTime.ofInstant(agenda.getAtendimento().toInstant(),
+							ZoneId.systemDefault());
+					evt.setStartDate(ldt);
+					evt.setEndDate(ldt);
+
+					evt.setTitle(agenda.getNome());
+					evt.setAllDay(false);
+					evt.setEditable(true);
+					agendas.addEvent(evt);
+				}
+			}
+		}
+		
+		else {
+			Util.addMessageInfo("Cadastre-se no nosso site.");
+		}
+
+	}
+
+	public void eventoSelecionado(SelectEvent evento) {
+		limpar();
+		ScheduleEvent event = (ScheduleEvent) evento.getObject();
+
+		for (Agenda agenda : listaAgenda) {
+			if (agenda.getId().toString().equals(event.getDescription())) {
+				AgendaRepository repo = new AgendaRepository();
+				idAgenda = Integer.parseInt(event.getDescription());
+				medico = repo.pegarMedicoPorAgendaId(idAgenda);
+				paciente = repo.pegarPacientePorAgendaId(idAgenda);
+
+				this.agenda = agenda;
+				break;
+			}
+		}
+	}
+
+	@Override
+	public void salvar() {
+		if (agenda.getId() == null) {
+			Util.addMessageWarn("Espere o paciente fazer o agendamento.");
+		} else {
+			HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext()
+					.getSession(false);
+			Pessoa pessoa = (Pessoa) session.getAttribute("usuarioLogado");
+			editar(pessoa.getId());
+
+			for (int i = 0; i < listaAgenda.size(); i++) {
+				if (getEntity().getPaciente().getAgenda().get(i).getId().equals(agenda.getId())) {
+					getEntity().getPaciente().getAgenda().get(i).setNome(agenda.getNome());
+				}
+			}
+			AgendaRepository r = new AgendaRepository();
+
+			try {
+				r.beginTransaction();
+				r.salvar(getEntity());
+				r.commitTransaction();
+			} catch (RepositoryException e) {
+				e.printStackTrace();
+				r.rollbackTransaction();
+				Util.addMessageError("Problema ao salvar.");
+				return;
+			} catch (ValidationException e) {
+				System.out.println(e.getMessage());
+				r.rollbackTransaction();
+				Util.addMessageError(e.getMessage());
+				return;
+			}
+			Util.addMessageInfo("Descrição Alterada com sucesso");
+			limpar();
+			listar();
+		}
+	}
+
+	public void onEventSelect(SelectEvent<ScheduleEvent> selectEvent) {
+		limpar();
+		event = selectEvent.getObject();
+	}
+
+	public void onDateSelect(SelectEvent<LocalDateTime> selectEvent) {
+		limpar();
+		event = DefaultScheduleEvent.builder().startDate(selectEvent.getObject())
+				.endDate(selectEvent.getObject().plusHours(1)).build();
+	}
+
+	public void limpar() {
+		agenda = new Agenda();
+		paciente = new Pessoa();
+		medico = new Pessoa();
+	}
+
+	@Override
+	public Pessoa getEntity() {
+		if (entity == null) {
+			entity = new Pessoa();
+			entity.setTelefone(new ArrayList<Telefone>());
+			entity.setEndereco(new Endereco());
+		}
+
+		return entity;
+	}
 
 	public Agenda getAgenda() {
 		return agenda;
@@ -81,252 +221,69 @@ public class AgendaController extends Controller<Pessoa> {
 	public void setAgenda(Agenda agenda) {
 		this.agenda = agenda;
 	}
-    
-	public void salvar() {
-		DefaultScheduleEvent newEvent = DefaultScheduleEvent.builder().title(agenda.getNome()).data(agenda.getAtendimento()).build();
-        if (agenda.getId() == null) {
-        	eventModel.addEvent(newEvent);
-        } else {
-            newEvent.setId(event.getId());
-            eventModel.updateEvent(newEvent);
-        }
-        AgendaRepository.salvar(agenda);
-        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Evento Salvo", "Evento Salvo");
-        addMessage(message);
-    }
 
-    public void remover() {
-    	eventModel.deleteEvent(event);
-    	AgendaRepository.remover(agenda);
-        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Evento Removido", "Evento Removido");
-        addMessage(message);
-    }
+	public List<Agenda> getListaAgenda() {
+		return listaAgenda;
+	}
 
-    public LocalDateTime getRandomDateTime(LocalDateTime base) {
-        LocalDateTime dateTime = base.withMinute(0).withSecond(0).withNano(0);
-        return dateTime.plusDays(((int) (Math.random()*30)));
-    }
-     
- 
-    public ScheduleModel getEventModel() {
-        return eventModel;
-    }
-     
-    public ScheduleModel getLazyEventModel() {
-        return lazyEventModel;
-    }
- 
-    private LocalDateTime previousDay8Pm() {
-        return LocalDateTime.now().minusDays(1).withHour(20).withMinute(0).withSecond(0).withNano(0);
-    }
-     
-    private LocalDateTime previousDay11Pm() {
-        return LocalDateTime.now().minusDays(1).withHour(23).withMinute(0).withSecond(0).withNano(0);
-    }
-     
-    private LocalDateTime today1Pm() {
-        return LocalDateTime.now().withHour(13).withMinute(0).withSecond(0).withNano(0);
-    }
-     
-    private LocalDateTime theDayAfter3Pm() {
-        return LocalDateTime.now().plusDays(1).withHour(15).withMinute(0).withSecond(0).withNano(0);
-    }
- 
-    private LocalDateTime today6Pm() {
-        return LocalDateTime.now().withHour(18).withMinute(0).withSecond(0).withNano(0);
-    }
-     
-    private LocalDateTime nextDay9Am() {
-        return LocalDateTime.now().plusDays(1).withHour(9).withMinute(0).withSecond(0).withNano(0);
-    }
-     
-    private LocalDateTime nextDay11Am() {
-        return LocalDateTime.now().plusDays(1).withHour(11).withMinute(0).withSecond(0).withNano(0);
-    }
-     
-    private LocalDateTime fourDaysLater3pm() {
-        return LocalDateTime.now().plusDays(4).withHour(15).withMinute(0).withSecond(0).withNano(0);
-    }
- 
-    private LocalDateTime sevenDaysLater0am() {
-        return LocalDateTime.now().plusDays(7).withHour(0).withMinute(0).withSecond(0).withNano(0);
-    }
- 
-    private LocalDateTime eightDaysLater0am() {
-        return LocalDateTime.now().plusDays(7).withHour(0).withMinute(0).withSecond(0).withNano(0);
-    }
-     
-    public LocalDate getInitialDate() {
-        return LocalDate.now().plusDays(1);
-    }
- 
-    public ScheduleEvent getEvent() {
-        return event;
-    }
- 
-    public void setEvent(ScheduleEvent event) {
-        this.event = event;
-    }
-     
-    public void addEvent() {
-        if (event.isAllDay()) {
-            //see https://github.com/primefaces/primefaces/issues/1164
-            if (event.getStartDate().toLocalDate().equals(event.getEndDate().toLocalDate())) {
-                event.setEndDate(event.getEndDate().plusDays(1));
-            }
-        }
- 
-        if(event.getId() == null)
-            eventModel.addEvent(event);
-        else
-            eventModel.updateEvent(event);
-         
-        event = new DefaultScheduleEvent();
-    }
-     
-    public void onEventSelect(SelectEvent<ScheduleEvent> selectEvent) {
-        event = selectEvent.getObject();
-    }
-     
-    public void onDateSelect(SelectEvent<LocalDateTime> selectEvent) {
-        event = DefaultScheduleEvent.builder().startDate(selectEvent.getObject()).endDate(selectEvent.getObject().plusHours(1)).build();
-    }
-     
-    public void onEventMove(ScheduleEntryMoveEvent event) {
-        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Event moved", "Delta:" + event.getDeltaAsDuration());
-         
-        addMessage(message);
-    }
-     
-    public void onEventResize(ScheduleEntryResizeEvent event) {
-        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Event resized", "Start-Delta:" + event.getDeltaStartAsDuration() + ", End-Delta: " + event.getDeltaEndAsDuration());
-         
-        addMessage(message);
-    }
-     
-    private void addMessage(FacesMessage message) {
-        FacesContext.getCurrentInstance().addMessage(null, message);
-    }
- 
-    public boolean isShowWeekends() {
-        return showWeekends;
-    }
- 
-    public void setShowWeekends(boolean showWeekends) {
-        this.showWeekends = showWeekends;
-    }
- 
-    public boolean isTooltip() {
-        return tooltip;
-    }
- 
-    public void setTooltip(boolean tooltip) {
-        this.tooltip = tooltip;
-    }
- 
-    public boolean isAllDaySlot() {
-        return allDaySlot;
-    }
- 
-    public void setAllDaySlot(boolean allDaySlot) {
-        this.allDaySlot = allDaySlot;
-    }
- 
-    public String getTimeFormat() {
-        return timeFormat;
-    }
- 
-    public void setTimeFormat(String timeFormat) {
-        this.timeFormat = timeFormat;
-    }
- 
-    public String getSlotDuration() {
-        return slotDuration;
-    }
- 
-    public void setSlotDuration(String slotDuration) {
-        this.slotDuration = slotDuration;
-    }
- 
-    public String getSlotLabelInterval() {
-        return slotLabelInterval;
-    }
- 
-    public void setSlotLabelInterval(String slotLabelInterval) {
-        this.slotLabelInterval = slotLabelInterval;
-    }
- 
-    public String getScrollTime() {
-        return scrollTime;
-    }
- 
-    public void setScrollTime(String scrollTime) {
-        this.scrollTime = scrollTime;
-    }
- 
-    public String getMinTime() {
-        return minTime;
-    }
- 
-    public void setMinTime(String minTime) {
-        this.minTime = minTime;
-    }
- 
-    public String getMaxTime() {
-        return maxTime;
-    }
- 
-    public void setMaxTime(String maxTime) {
-        this.maxTime = maxTime;
-    }
- 
-    public String getLocale() {
-        return locale;
-    }
- 
-    public void setLocale(String locale) {
-        this.locale = locale;
-    }
- 
-    public String getTimeZone() {
-        return timeZone;
-    }
- 
-    public void setTimeZone(String timeZone) {
-        this.timeZone = timeZone;
-    }
- 
-    public String getClientTimeZone() {
-        return clientTimeZone;
-    }
- 
-    public void setClientTimeZone(String clientTimeZone) {
-        this.clientTimeZone = clientTimeZone;
-    }
- 
-    public String getColumnHeaderFormat() {
-        return columnHeaderFormat;
-    }
- 
-    public void setColumnHeaderFormat(String columnHeaderFormat) {
-        this.columnHeaderFormat = columnHeaderFormat;
-    }
-    
-	public List<Agenda> getAgendas() {
+	public void setListaAgenda(List<Agenda> listaAgenda) {
+		this.listaAgenda = listaAgenda;
+	}
+
+	public ScheduleModel getAgendas() {
 		return agendas;
 	}
 
-	public void setAgendas(List<Agenda> agendas) {
+	public void setAgendas(ScheduleModel agendas) {
 		this.agendas = agendas;
 	}
 
-	public void setEventModel(ScheduleModel eventModel) {
-		this.eventModel = eventModel;
+	public ScheduleEvent getEvent() {
+		return event;
 	}
 
-	@Override
-	public Pessoa getEntity() {
-		return entity;
+	public void setEvent(ScheduleEvent event) {
+		this.event = event;
 	}
-	
+
+	public int getIdAgenda() {
+		return idAgenda;
+	}
+
+	public void setIdAgenda(int idAgenda) {
+		this.idAgenda = idAgenda;
+	}
+
+	public List<Paciente> getPacientes() {
+		return pacientes;
+	}
+
+	public void setPacientes(List<Paciente> pacientes) {
+		this.pacientes = pacientes;
+	}
+
+	public Pessoa getPaciente() {
+		return paciente;
+	}
+
+	public void setPaciente(Pessoa paciente) {
+		this.paciente = paciente;
+	}
+
+	public Pessoa getMedico() {
+		return medico;
+	}
+
+	public void setMedico(Pessoa medico) {
+		this.medico = medico;
+	}
+
+	public List<Medico> getMedicos() {
+		return medicos;
+	}
+
+	public void setMedicos(List<Medico> medicos) {
+		this.medicos = medicos;
+	}
+
 }
