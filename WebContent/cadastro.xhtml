@@ -7,6 +7,16 @@
 <h:head>
 	<title>Login</title>
 </h:head>
+<style type="text/css">
+body {
+	
+	background: #383636;
+}
+h1{
+color:white;
+text-align: center ;
+}
+</style>
 <h:body>
 
 	<p:ajaxStatus onstart="PF('statusDialog').show()"
@@ -78,7 +88,7 @@
 				</div>
 			</div>
 
-			<div class="ui-button ui-state-hover   ">
+			
 				<p:toolbar>
 					<f:facet name="left">
 						<p:commandButton value="Salvar" icon="pi pi-check" process="@form"
@@ -92,7 +102,7 @@
 					</f:facet>
 
 				</p:toolbar>
-			</div>
+			
 		</p:panel>
 
 	</h:form>
