@@ -9,6 +9,7 @@ import java.util.Locale;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import javax.persistence.EntityManager;
 import javax.servlet.http.HttpSession;
 
 import org.primefaces.event.SelectEvent;
@@ -16,12 +17,16 @@ import org.primefaces.event.SelectEvent;
 import com.consultorio.application.RepositoryException;
 import com.consultorio.application.Util;
 import com.consultorio.application.ValidationException;
+import com.consultorio.factory.JPAFactory;
 import com.consultorio.listing.PacienteListing;
 import com.consultorio.model.Agenda;
 import com.consultorio.model.Atendimento;
+import com.consultorio.model.EspecialidadeMedica;
+import com.consultorio.model.Medico;
 import com.consultorio.model.Paciente;
 import com.consultorio.model.Pessoa;
 import com.consultorio.model.Telefone;
+import com.consultorio.repository.MedicoRepository;
 import com.consultorio.repository.PacienteRepository;
 
 @Named
@@ -31,10 +36,35 @@ public class PacienteController extends Controller<Pessoa> {
 	private static final long serialVersionUID = -7996231487557010298L;
 	private String filtro;
 	private List<Pessoa> listaPaciente;
+	private List<Pessoa> listaMedico;
+	private Pessoa medico = new Pessoa();
+	private EspecialidadeMedica esp = new EspecialidadeMedica();
+	private List<EspecialidadeMedica> listaEspecialide = new ArrayList<EspecialidadeMedica>();
 	private Atendimento atendimento = new Atendimento();
 	private List<Agenda> agendas = new ArrayList<Agenda>();
 	private Telefone telefone = new Telefone();
+	private List<Pessoa> lista;
 
+
+	public void pesquisarMed() {
+		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+		Pessoa pessoa = (Pessoa) session.getAttribute("usuarioLogado");
+		super.editar(pessoa.getId());
+		
+		if (getEntity().getMedico() != null) {
+			MedicoRepository repo = new MedicoRepository();
+			listaMedico = repo.findOthersByNome(getFiltro(), getEntity().getId());
+		} else {
+			MedicoRepository repo = new MedicoRepository();
+			listaMedico = repo.findByNome(getFiltro());			
+		}
+	}
+	
+	public void editarMed(int id) {
+		EntityManager em = JPAFactory.getEntityManager();
+		setMedico((Pessoa) em.find(getEntity().getClass(), id));
+	}
+	
 	public void pesquisar() {
 		PacienteRepository repo = new PacienteRepository();
 		listaPaciente = repo.findByNome(getFiltro());
@@ -44,8 +74,12 @@ public class PacienteController extends Controller<Pessoa> {
 		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
 		Pessoa pessoa = (Pessoa) session.getAttribute("usuarioLogado");
 		super.editar(pessoa.getId());
-		PacienteRepository repo = new PacienteRepository();
-		agendas = repo.pesquisarAgenda();
+		if (getEntity().getPaciente() != null) {
+			PacienteRepository repo = new PacienteRepository();
+			agendas = repo.pesquisarAgenda(getEntity().getPaciente().getId());
+		} else {
+			agendas = new ArrayList<Agenda>();
+		}
 	}
 	
 	public String retornarData() {
@@ -66,7 +100,7 @@ public class PacienteController extends Controller<Pessoa> {
 	public String temExame() {
 		pesquisarAgenda();
 		Integer num = null;
-		if (agendas == null || agendas.isEmpty()) {
+		if (agendas.isEmpty()) {
 			return "Você ainda não tem nenhum exame marcado..";
 		}
 		else {
@@ -105,6 +139,12 @@ public class PacienteController extends Controller<Pessoa> {
 		Util.addMessageInfo("Exame cadastrado com sucesso.");
 	}
 	
+	@Override
+	public void limpar() {
+		medico = new Pessoa();
+		
+	}
+	
 	public void limparExame() {
 		atendimento = new Atendimento();
 	}
@@ -137,13 +177,38 @@ public class PacienteController extends Controller<Pessoa> {
 	
 	@Override
 	public Pessoa getEntity() {
-		if (entity == null)
+		if (entity == null) {
 			entity = new Pessoa();
 			if(entity.getPaciente() == null) {
 				entity.setPaciente(new Paciente());
 				entity.setTelefone(new ArrayList<Telefone>());
 			}
+		}
+		
 		return entity;
+	}
+	
+	public List<Pessoa> retornarEspecialidadesPorId(Integer id) {
+		lista = new ArrayList<Pessoa>();
+		MedicoRepository repo = new MedicoRepository();
+		try {
+			lista = repo.findByEspecialidade(id);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			Util.addMessageError(e.getMessage());
+		}
+		return lista;
+	}
+	
+	public List<EspecialidadeMedica> espDoMedSelecionado() {
+		if (medico == null) {
+			return listaEspecialide = new ArrayList<EspecialidadeMedica>();
+		}
+		else {
+			MedicoRepository repo = new MedicoRepository();
+			return listaEspecialide = repo.findEspecialidadeByMedico(medico.getId());
+		}
+		
 	}
 
 	public String getFiltro() {
@@ -196,6 +261,54 @@ public class PacienteController extends Controller<Pessoa> {
 
 	public void setExame(Atendimento atendimento) {
 		this.atendimento = atendimento;
+	}
+
+	public List<Pessoa> getListaMedico() {
+		return listaMedico;
+	}
+
+	public void setListaMedico(List<Pessoa> listaMedico) {
+		this.listaMedico = listaMedico;
+	}
+
+	public Pessoa getMedico() {
+		return medico;
+	}
+
+	public void setMedico(Pessoa medico) {
+		this.medico = medico;
+	}
+
+	public Atendimento getAtendimento() {
+		return atendimento;
+	}
+
+	public void setAtendimento(Atendimento atendimento) {
+		this.atendimento = atendimento;
+	}
+
+	public List<Pessoa> getLista() {
+		return lista;
+	}
+
+	public void setLista(List<Pessoa> lista) {
+		this.lista = lista;
+	}
+
+	public EspecialidadeMedica getEsp() {
+		return esp;
+	}
+
+	public void setEsp(EspecialidadeMedica esp) {
+		this.esp = esp;
+	}
+
+	public List<EspecialidadeMedica> getListaEspecialide() {
+		return listaEspecialide;
+	}
+
+	public void setListaEspecialide(List<EspecialidadeMedica> listaEspecialide) {
+		this.listaEspecialide = listaEspecialide;
 	}
 	
 }

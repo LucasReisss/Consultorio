@@ -35,12 +35,6 @@ public class CustomScheduleEvent implements ScheduleEvent {
 	}
 
 	@Override
-	public String getGroupId() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public Object getData() {
 		// TODO Auto-generated method stub
 		return null;
@@ -48,6 +42,54 @@ public class CustomScheduleEvent implements ScheduleEvent {
 
 	@Override
 	public String getTitle() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean isAllDay() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public String getStyleClass() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean isEditable() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public String getDescription() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getUrl() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ScheduleRenderingMode getRenderingMode() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Map getDynamicProperties() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getGroupId() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -77,50 +119,8 @@ public class CustomScheduleEvent implements ScheduleEvent {
 	}
 
 	@Override
-	public boolean isAllDay() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public String getStyleClass() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean isEditable() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
 	public boolean isOverlapAllowed() {
 		// TODO Auto-generated method stub
 		return false;
-	}
-
-	@Override
-	public String getDescription() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getUrl() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ScheduleRenderingMode getRenderingMode() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Map getDynamicProperties() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

@@ -29,7 +29,7 @@ import com.consultorio.repository.MedicoRepository;
 public class MedicoController extends Controller<Pessoa> {
 
 	private static final long serialVersionUID = -3862624597114610891L;
-	
+
 	private String filtro;
 	private List<Pessoa> listaMedico;
 	private List<Agenda> agendas = new ArrayList<Agenda>();
@@ -38,17 +38,17 @@ public class MedicoController extends Controller<Pessoa> {
 	private List<EspecialidadeMedica> especialidades;
 	private List<EspecialidadeMedica> cloneEspecialidade;
 	private List<Pessoa> lista;
-	
+
 	public void pesquisar() {
 		MedicoRepository repo = new MedicoRepository();
 		listaMedico = repo.findByNome(getFiltro());
 	}
-	
+
 	public void findAll() {
 		MedicoRepository repo = new MedicoRepository();
 		listaMedico = repo.findAll();
 	}
-	
+
 	public void pesquisarAgenda() {
 		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
 		Pessoa pessoa = (Pessoa) session.getAttribute("usuarioLogado");
@@ -56,29 +56,29 @@ public class MedicoController extends Controller<Pessoa> {
 		MedicoRepository repo = new MedicoRepository();
 		agendas = repo.pesquisarAgenda(getEntity().getId(), getEntity().getMedico().getId());
 	}
-	
+
 	public String retornarData() {
-		
+
 		Date data = new Date();
-		
+
 		String dia = "10";
 		String mes = "08";
 		String ano = "2020";
-		
+
 		Locale localeBR = new Locale("pt", "BR");
-        
+
 		SimpleDateFormat fmt = new SimpleDateFormat("dd 'de' MMMM 'de' yyyy", localeBR);
-		
+
 		return fmt.format(new Date());
 	}
-	
+
 	@Override
 	public void salvar() {
 		MedicoRepository r = new MedicoRepository();
 		try {
 			r.beginTransaction();
 			getEntity().setSenha(Util.hashSHA256(getEntity().getSenha()));
-			if (getEntity().getMedico().getListaEspecialidade() != null 
+			if (getEntity().getMedico().getListaEspecialidade() != null
 					&& getEntity().getMedico().getListaEspecialidade() == null) {
 				getEntity().getMedico().setListaEspecialidade(null);
 			}
@@ -99,7 +99,7 @@ public class MedicoController extends Controller<Pessoa> {
 		limpar();
 		Util.addMessageInfo("Cadastro realizado com sucesso.");
 	}
-	
+
 	@Override
 	public void editar(int id) {
 		super.editar(id);
@@ -108,7 +108,7 @@ public class MedicoController extends Controller<Pessoa> {
 			entity.getMedico().setListaEspecialidade(new ArrayList<EspecialidadeMedica>());
 		}
 	}
-	
+
 //	public void abrirMedicoListing() {
 //		MedicoListing listing = new MedicoListing();
 //		listing.open();
@@ -118,12 +118,12 @@ public class MedicoController extends Controller<Pessoa> {
 //		Medico entity = (Medico) event.getObject();
 //		getEntity().setMedico(entity);
 //	}
-	
+
 	public void abrirEspecialidadeListing() {
 		EspecialidadeMedicaListing listing = new EspecialidadeMedicaListing();
 		listing.open();
 	}
-	
+
 	public void obterEspecialidadeListing(SelectEvent event) {
 		EspecialidadeMedica entity = (EspecialidadeMedica) event.getObject();
 		listaEspecialidade.add(entity);
@@ -132,16 +132,16 @@ public class MedicoController extends Controller<Pessoa> {
 
 	@Override
 	public Pessoa getEntity() {
-		if(entity == null) {
+		if (entity == null) {
 			entity = new Pessoa();
-			if(entity.getMedico() == null) {
+			if (entity.getMedico() == null) {
 				entity.setMedico(new Medico());
 				if (entity.getMedico().getListaEspecialidade() == null) {
 					entity.getMedico().setListaEspecialidade(new ArrayList<EspecialidadeMedica>());
 				}
 			}
 		}
-	
+
 		return entity;
 	}
 
@@ -150,33 +150,32 @@ public class MedicoController extends Controller<Pessoa> {
 			especialidades = new ArrayList<EspecialidadeMedica>();
 			EspecialidadeMedicaRepository repo = new EspecialidadeMedicaRepository();
 			especialidades = repo.findAll();
-			
+
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			Util.addMessageError(e.getMessage());
 		}
 		return especialidades;
 	}
-	
+
 	public List<EspecialidadeMedica> mandarSelecionados() {
-		
+
 		cloneEspecialidade = new ArrayList<EspecialidadeMedica>();
-		
-			for (int j = 0; j < entity.getMedico().getListaEspecialidade().size(); j++) {
-				for (int i = 0; i < especialidades.size(); i++) {
+
+		for (int j = 0; j < entity.getMedico().getListaEspecialidade().size(); j++) {
+			for (int i = 0; i < especialidades.size(); i++) {
 				if (especialidades.get(i).getId().equals(entity.getMedico().getListaEspecialidade().get(j))) {
 					cloneEspecialidade.add(especialidades.get(i));
 				}
 			}
-				gerarEspecialidade();
+			gerarEspecialidade();
 		}
 
 		listaEspecialidade = cloneEspecialidade;
-		
 
 		return listaEspecialidade;
 	}
-	
+
 	public List<Pessoa> retornarEspecialidadesPorId(Integer id) {
 		lista = new ArrayList<Pessoa>();
 		MedicoRepository repo = new MedicoRepository();
@@ -188,7 +187,7 @@ public class MedicoController extends Controller<Pessoa> {
 		}
 		return lista;
 	}
-	
+
 	public String getFiltro() {
 		return filtro;
 	}
@@ -198,7 +197,7 @@ public class MedicoController extends Controller<Pessoa> {
 	}
 
 	public List<Pessoa> getListaMedico() {
-		if(listaMedico == null)
+		if (listaMedico == null)
 			listaMedico = new ArrayList<Pessoa>();
 		return listaMedico;
 	}

@@ -28,11 +28,46 @@ public class MedicoRepository extends Repository<Pessoa> {
 
 		return query.getResultList();
 	}
+	
+	public List<Pessoa> findOthersByNome(String nome, Integer idPessoa) {
+
+		StringBuffer jpql = new StringBuffer();
+		jpql.append("SELECT Distinct ");
+		jpql.append("pe ");
+		jpql.append("FROM ");
+		jpql.append("Pessoa pe ");
+		jpql.append("Inner Join Medico me on pe.medico.id = me.id ");
+		jpql.append("Inner Join EspecialidadeMedica es on me.listaEspecialidade.id = es.id ");		
+		jpql.append("Where pe.id <> " +idPessoa);
+		jpql.append(" and upper(pe.nome) like upper(:nome)");
+		jpql.append("Order By pe.id");
+
+		Query query = getEntityManager().createQuery(jpql.toString());
+
+		query.setParameter("nome", "%" + nome + "%");
+
+		return query.getResultList();
+	}
 
 	public List<Pessoa> findByEspecialidade(Integer id) {
 		StringBuffer jpql = new StringBuffer();
 		jpql.append("SELECT ");
 		jpql.append("es.nome ");
+		jpql.append("FROM ");
+		jpql.append("Pessoa pe ");
+		jpql.append("Inner Join Medico me on pe.medico.id = me.id ");
+		jpql.append("Inner Join EspecialidadeMedica es on me.listaEspecialidade.id = es.id ");
+		jpql.append("Where pe.id = " + id);
+
+		Query query = getEntityManager().createQuery(jpql.toString());
+
+		return query.getResultList();
+	}
+	
+	public List<EspecialidadeMedica> findEspecialidadeByMedico(Integer id) {
+		StringBuffer jpql = new StringBuffer();
+		jpql.append("SELECT ");
+		jpql.append("es ");
 		jpql.append("FROM ");
 		jpql.append("Pessoa pe ");
 		jpql.append("Inner Join Medico me on pe.medico.id = me.id ");

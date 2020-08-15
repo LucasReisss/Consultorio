@@ -87,7 +87,7 @@ public class PacienteRepository extends Repository<Pessoa> {
 		return resultado == 0 ? false : true;
 	}
 
-	public List<Agenda> pesquisarAgenda() {
+	public List<Agenda> pesquisarAgenda(Integer idPaciente) {
 		StringBuffer jpql = new StringBuffer();
 		jpql.append("SELECT ");
 		jpql.append("ag ");
@@ -95,6 +95,7 @@ public class PacienteRepository extends Repository<Pessoa> {
 		jpql.append("Pessoa pe ");
 		jpql.append("Inner Join Paciente pa on pe.paciente.id = pa.id ");
 		jpql.append("Inner Join Agenda ag on pa.agenda.id = ag.id ");
+		jpql.append("Where pa.id = "+idPaciente);
 
 		Query query = getEntityManager().createQuery(jpql.toString());
 

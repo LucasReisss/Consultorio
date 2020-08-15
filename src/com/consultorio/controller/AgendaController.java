@@ -3,6 +3,7 @@ package com.consultorio.controller;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -50,7 +51,7 @@ public class AgendaController extends Controller<Pessoa> {
 		Pessoa pessoa = (Pessoa) session.getAttribute("usuarioLogado");
 		AgendaRepository repo = new AgendaRepository();
 		agendas = new DefaultScheduleModel();
-     
+
 		if (pessoa.getPaciente() != null) {
 			listaAgenda = repo.listarAgendaPacientePorId(pessoa.getId());
 			if (listaAgenda.isEmpty()) {
@@ -100,8 +101,7 @@ public class AgendaController extends Controller<Pessoa> {
 				return;
 			}
 
-		}
-		else if (pessoa.getMedico() != null) { // verificando se o med tem agenda
+		} else if (pessoa.getMedico() != null) { // verificando se o med tem agenda
 			listaAgenda = repo.listarAgendaMedPorId(pessoa.getId());
 			if (listaAgenda.isEmpty()) {
 				Util.addMessageInfo("Você não tem nada agendado.");
@@ -124,7 +124,7 @@ public class AgendaController extends Controller<Pessoa> {
 				}
 			}
 		}
-		
+
 		else {
 			Util.addMessageInfo("Cadastre-se no nosso site.");
 		}

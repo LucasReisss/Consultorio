@@ -45,7 +45,7 @@
 				</div>
 			</f:facet>
 
-			<h:form>
+			<h:form id="formGeral">
 				<p:growl id="msgs" showDetail="true"
 					skipDetailIfEqualsSummary="true" />
 				<p:accordionPanel>
@@ -58,11 +58,20 @@
 									onclick="PF('listagem').show();">
 									<p:message for="itNome" escape="false" />
 								</p:commandLink>
-								<p:inputText id="itNome" value="#{medicoController.entity.nome}"
-									required="true" requiredMessage="Selecione o médico."
-									disabled="true" />
 
+								<p:inputText id="itNome"
+									value="#{pacienteController.medico.nome}" required="true"
+									requiredMessage="Selecione o médico." disabled="true" />
 
+								<p:outputLabel value="Areá para o atendimento: " />
+								<p:selectOneMenu id="especialidade" widgetVar="selectEsp"
+									valueChangeListener="#{pacienteController.retornarEspecialidadesPorId(pacienteController.medico.id)}">
+									<f:selectItem itemLabel="Especialidade" />
+									<f:selectItems value="#{pacienteController.lista}" />
+								</p:selectOneMenu>
+
+								<p:commandLink value="Selecione a data e a hora do atendimento"
+									onclick="PF('AgendaMed').show();" />
 							</h:panelGrid>
 
 							<p:toolbar>
@@ -83,16 +92,17 @@
 						</p:panel>
 
 						<p:dialog header="Listagem de Medicos" widgetVar="listagem"
-							height="300" modal="true" resizable="true">
+							height="300" width="90%" modal="true" resizable="true">
+
 							<p:outputLabel value="Nome: " />
-							<p:inputText id="itFiltro" value="#{medicoController.filtro}" />
+							<p:inputText id="itFiltro" value="#{pacienteController.filtro}" />
 							<p:commandButton value="Pesquisar"
-								actionListener="#{medicoController.pesquisar}"
+								actionListener="#{pacienteController.pesquisarMed}"
 								process="@this itFiltro" update="dtListagem" />
 							<br />
 							<div class="ui-datatable"></div>
 							<p:dataTable id="dtListagem" var="entity"
-								value="#{medicoController.listaMedico}">
+								value="#{pacienteController.listaMedico}">
 								<p:column headerText="Id">
 									<h:outputText value="#{entity.id}" />
 								</p:column>
@@ -102,20 +112,61 @@
 								</p:column>
 
 								<p:column headerText="Especialiade(s)">
-									<p:dataTable id="dtListagem" var="esp"
-										value="#{medicoController.retornarEspecialidadesPorId(entity.id)}">
-										<p:column>#{esp}</p:column>
-									</p:dataTable>
+									<p:outputLabel id="dtListagem"
+										value="#{pacienteController.retornarEspecialidadesPorId(entity.id)}" />
 								</p:column>
 
-								<p:column headerText="Editar">
-									<p:commandLink value="Editar"
-										actionListener="#{medicoController.editar(entity.id)}"
+								<p:column headerText="Ação">
+									<p:commandLink value="Selecionar"
+										actionListener="#{pacienteController.editarMed(entity.id)}"
 										process="@this" update="@form" resetValues="true" />
 								</p:column>
 
-
 							</p:dataTable>
+						</p:dialog>
+
+						<p:dialog header="Agenda medica" widgetVar="AgendaMed"
+							height="50%" width="50%" modal="true" resizable="true">
+
+							<h:form id="agenda">
+								<p:growl id="messages" showDetail="true" />
+
+								<h:panelGrid columnClasses="value">
+									<p:schedule id="schedule" value="#{agendaController.agendas}"
+										widgetVar="myschedule">
+
+										<p:ajax event="dateSelect" update="eventDetails"
+											oncomplete="PF('dialogo').show();" />
+										<p:ajax event="eventSelect"
+											listener="#{agendaController.eventoSelecionado}"
+											update="eventDetails" oncomplete="PF('dialogo').show();" />
+
+									</p:schedule>
+								</h:panelGrid>
+
+								<p:dialog widgetVar="dialogo" header="Detalhes do Atendimento"
+									closable="true" draggable="false" modal="true"
+									resizable="false">
+									<h:panelGrid id="eventDetails" columns="2">
+
+										<p:outputLabel value="Descricão" />
+										<p:inputText value="#{agendaController.agenda.nome}" />
+
+										<p:outputLabel value="Data Atendimento" />
+										<p:inputText value="#{agendaController.agenda.atendimento}" />
+
+										<p:outputLabel value="Paciente" />
+										<p:inputText value="#{agendaController.paciente.nome}" />
+
+										<p:outputLabel value="Medico" />
+										<p:inputText value="#{agendaController.medico.nome}" />
+
+									</h:panelGrid>
+
+								</p:dialog>
+
+							</h:form>
+
 						</p:dialog>
 
 					</p:tab>

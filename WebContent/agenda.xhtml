@@ -55,6 +55,7 @@
 
 			<p:dialog widgetVar="dialogo" header="Detalhes do Atendimento" closable="true"
 				draggable="false" modal="true" resizable="false">
+				<p:ajax event="close" update="#{agendaController.limpar()}"></p:ajax>
 				<h:panelGrid id="eventDetails" columns="2">
 
 					<p:outputLabel value="Descricão" />

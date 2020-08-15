@@ -170,7 +170,7 @@
 										<p:ajax update="formEnd" resetValues="true" />
 									</p:commandButton>
 
-									<p:commandButton value="Editar" id="editarTel"
+									<p:commandButton value="Editar" id="editarEnd"
 										action="#{usuarioController.editarEndereco}"
 										disabled="#{usuarioController.botaoEditarEnd()}"
 										process="@this" update="formEnd" resetValues="true">
@@ -448,7 +448,7 @@
 									disabled="#{usuarioController.botaoSalvarEsp()}"
 										action="#{usuarioController.salvarEspecialidade}" />
 
-									<p:commandButton value="Gerenciar" id="editarTel"
+									<p:commandButton value="Gerenciar Especialidades" id="editarEsp"
 									disabled="#{usuarioController.botaoEditarEsp()}"
 										onclick="PF('listagemEsp').show();">
 									</p:commandButton>
