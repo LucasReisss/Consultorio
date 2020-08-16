@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.13.0.final using JasperReports Library version 6.13.0-46ada4d1be8f3c5985fd0b6146f3ed44caed6f05  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Patient" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b2b894e3-aa8f-451b-9d08-42da1de78cb4">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.xml"/>
+	<parameter name="ID_CONVENIO" class="java.lang.Integer"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT pes.nome,
+	pes.datanascimento,
+	pes.email,
+	c.carteirinha
+FROM pessoa pes,
+	medico m,
+	convenio c,
+	paciente pac
+WHERE 
+	 pes.idpaciente = pac.id 
+	 AND pac.convenio_id = c.id  
+	 AND 1 = CASE
+	 					WHEN $P{ID_CONVENIO} IS NULL THEN 1
+	 					WHEN $P{ID_CONVENIO} = c.id THEN 1
+	 					ELSE 0
+	 				END
+ORDER BY pes.nome DESC]]>
+	</queryString>
+	<field name="nome" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nome"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pessoa"/>
+	</field>
+	<field name="datanascimento" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.label" value="datanascimento"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pessoa"/>
+	</field>
+	<field name="email" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="email"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pessoa"/>
+	</field>
+	<field name="carteirinha" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="carteirinha"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="convenio"/>
+	</field>
+	<group name="Group1">
+		<groupExpression><![CDATA[$F{carteirinha}]]></groupExpression>
+		<groupHeader>
+			<band height="33">
+				<staticText>
+					<reportElement mode="Opaque" x="0" y="0" width="100" height="32" forecolor="#FFA000" backcolor="#383636" uuid="3c2f1d39-2880-45ee-a7e9-19b5c20663ea"/>
+					<textElement>
+						<font size="12"/>
+					</textElement>
+					<text><![CDATA[carteirinha]]></text>
+				</staticText>
+				<textField>
+					<reportElement mode="Opaque" x="100" y="0" width="455" height="32" forecolor="#FFA000" backcolor="#383636" uuid="62efe976-e75a-4f13-b508-a40e1ea9a89e"/>
+					<textElement>
+						<font size="24" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{carteirinha}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement x="-20" y="32" width="595" height="1" forecolor="#666666" uuid="5bb60bad-119e-4a31-b588-c9ccc2f01c86"/>
+				</line>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<background>
+		<band/>
+	</background>
+	<title>
+		<band height="72">
+			<frame>
+				<reportElement mode="Opaque" x="-20" y="-20" width="595" height="92" backcolor="#383636" uuid="2d228faa-5bc4-496b-a89d-c3d85823d185"/>
+				<staticText>
+					<reportElement x="20" y="20" width="234" height="43" forecolor="#FFFFFF" uuid="7f4d1633-3695-47c7-8156-917401dfc978"/>
+					<textElement>
+						<font size="34" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Paciente]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="395" y="43" width="180" height="37" forecolor="#FFFFFF" uuid="49bcefd0-7460-4163-9205-5caa533b9717"/>
+					<textElement textAlignment="Right">
+						<font size="14" isBold="false"/>
+					</textElement>
+					<text><![CDATA[Lista de Paciente ordena por convênio]]></text>
+				</staticText>
+			</frame>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="13"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="21">
+			<line>
+				<reportElement x="-20" y="20" width="595" height="1" forecolor="#666666" uuid="4a265500-5c4f-4ee9-a2db-a62eb0b498c2"/>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="185" height="20" forecolor="#FFA000" backcolor="#383636" uuid="73527d34-a3d5-4812-8365-df1f47eba7ff">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="7f968a81-3d8c-4892-b9f1-6f609dbe3c07"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[nome]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="185" y="0" width="185" height="20" forecolor="#FFA000" backcolor="#383636" uuid="15e0a18d-1280-429c-8ddf-72d08582882d">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6507c9e3-d58b-411b-91c8-0aff6791762a"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[datanascimento]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="370" y="0" width="185" height="20" forecolor="#FFA000" backcolor="#383636" uuid="8fb6a896-609f-46a0-a15e-eecfc0b1d8b4">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="5e6792e0-3894-4ec2-84e4-26d0ef85f2f2"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[email]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="19" width="555" height="1" uuid="c7a800bc-87b3-48b2-aa6e-bb58adf7b129"/>
+			</line>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="0" y="0" width="185" height="20" uuid="5bb65b50-4115-409b-b03b-29eb65747731">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="7f968a81-3d8c-4892-b9f1-6f609dbe3c07"/>
+				</reportElement>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="185" y="0" width="185" height="20" uuid="645ab9f3-7f76-41bd-8d5f-9ccffea18d01">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6507c9e3-d58b-411b-91c8-0aff6791762a"/>
+				</reportElement>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{datanascimento}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="370" y="0" width="185" height="20" uuid="5d46b15a-ae48-41de-856c-6a7ee267c324">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="5e6792e0-3894-4ec2-84e4-26d0ef85f2f2"/>
+				</reportElement>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{email}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band/>
+	</columnFooter>
+	<pageFooter>
+		<band height="17">
+			<textField>
+				<reportElement mode="Opaque" x="0" y="4" width="515" height="13" backcolor="#E6E6E6" uuid="9ae63a0c-d2f0-461c-84e1-3019a0278725"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement mode="Opaque" x="515" y="4" width="40" height="13" backcolor="#E6E6E6" uuid="b5975746-8f99-4627-89af-ca39cf3c52db"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="0" y="4" width="100" height="13" uuid="0a9cfe67-ec1b-4921-a300-363c7d9938a0"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band/>
+	</summary>
+</jasperReport>

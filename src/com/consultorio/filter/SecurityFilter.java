@@ -34,9 +34,6 @@ public class SecurityFilter implements Filter {
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse res = (HttpServletResponse) response;
 
-		Paciente paciente = new Paciente();
-		Medico medico = new Medico();
-		Administrador adm = new Administrador();
 
 		// retorna a sessao corrente (false - para nao criar uma nova sessao)
 		HttpSession session = (HttpSession) req.getSession();
@@ -65,7 +62,7 @@ public class SecurityFilter implements Filter {
 			return;
 		}
 
-		// tratamento de páginas pelo tipo médico e paciente
+		// tratamento de pï¿½ginas pelo tipo mï¿½dico e paciente
 		else if (pessoa != null && pessoa.getMedico() != null && pessoa.getPaciente() != null) {
 			if (!(link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/medico.xhtml")
 					|| link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/paciente.xhtml")
@@ -77,7 +74,7 @@ public class SecurityFilter implements Filter {
 				return;
 			}
 		}
-		// tratamento de páginas pelo tipo médico
+		// tratamento de pï¿½ginas pelo tipo mï¿½dico
 		else if (pessoa != null && pessoa.getMedico() != null) {
 			if (link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/home.xhtml")
 					|| link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/perfilUsuario.xhtml")
@@ -85,14 +82,15 @@ public class SecurityFilter implements Filter {
 					|| link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/home.xhtml")
 					|| link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/prescricoes.xhtml")
 					|| link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/atestado.xhtml")
-					|| link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/agenda.xhtml")) {
+					|| link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/agenda.xhtml")
+					|| link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/pacientesReport")) {
 				chain.doFilter(request, response);
 			} else {
 				res.sendRedirect(req.getContextPath() + "/faces/home.xhtml");
 				return;
 			}
 		}
-		// tratamento de páginas pelo tipo paciente
+		// tratamento de pï¿½ginas pelo tipo paciente
 		else if (pessoa != null && pessoa.getPaciente() != null) {
 			if (link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/home.xhtml")
 					|| link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/perfilUsuario.xhtml")
