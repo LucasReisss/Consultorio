@@ -118,31 +118,36 @@ public class PacienteController extends Controller<Pessoa> {
 			getEntity().getPaciente().setAtendimento(new ArrayList<Atendimento>());
 		}
 		
-		PacienteRepository r = new PacienteRepository();
-		try {
-			r.beginTransaction();
-			getEntity().setSenha(Util.hashSHA256(getEntity().getSenha()));
-			r.salvar(getEntity());
-			r.commitTransaction();
-		} catch (RepositoryException e) {
-			e.printStackTrace();
-			r.rollbackTransaction();
-			Util.addMessageError("Problema ao salvar.");
-			return;
-		} catch (ValidationException e) {
-			System.out.println(e.getMessage());
-			r.rollbackTransaction();
-			Util.addMessageError(e.getMessage());
-			return;
+		if (medico.getId() != null) {
+			PacienteRepository r = new PacienteRepository();
+			try {
+				r.beginTransaction();
+				getEntity().setSenha(Util.hashSHA256(getEntity().getSenha()));
+				r.salvar(getEntity());
+				r.commitTransaction();
+			} catch (RepositoryException e) {
+				e.printStackTrace();
+				r.rollbackTransaction();
+				Util.addMessageError("Problema ao salvar.");
+				return;
+			} catch (ValidationException e) {
+				System.out.println(e.getMessage());
+				r.rollbackTransaction();
+				Util.addMessageError(e.getMessage());
+				return;
+			}
+			limpar();
+			Util.addMessageInfo("Exame cadastrado com sucesso.");
+		} else {
+			Util.addMessageWarn("Preencha as informaçõess.");
 		}
-		limpar();
-		Util.addMessageInfo("Exame cadastrado com sucesso.");
+		
 	}
 	
 	@Override
 	public void limpar() {
 		medico = new Pessoa();
-		
+		lista = new ArrayList<Pessoa>();
 	}
 	
 	public void limparExame() {
