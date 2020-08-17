@@ -1,26 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.13.0.final using JasperReports Library version 6.13.0-46ada4d1be8f3c5985fd0b6146f3ed44caed6f05  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Paciente" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="90135c55-7ebf-4320-9c20-2fb922a22deb">
-	<property name="com.jaspersoft.studio.data.sql.tables">
-		<![CDATA[bWVkaWNvICwyMTAsMTgzLDk3YjcxNzRkLTIxNGUtNDBjMC04ZDkwLTM4M2M3ZjM3ODRjZDtjb252
-ZW5pbyAsMzcxLDE0MSwyOGQ1NGFkNS1lZWRmLTQyYTItYWY5Mi1iMTYxZGEyODQzYTc7cGVzc29h
-ICwxNSwxNSwzZjRmNzM1Ny0yZGY2LTQzMmItOGQxZC01N2FlMjlkOWRjMWY7cGFjaWVudGUgLDUz
-MiwxNjksYzFmMTg4NTYtMWM1ZC00NmJjLThmZWUtNjk4ZTEyNGVhOWM4Ow==]]>
-	</property>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.xml"/>
 	<queryString language="SQL">
 		<![CDATA[SELECT pes.nome,
 	pes.datanascimento,
 	pes.email,
 	c.carteirinha
-FROM pessoa pes,
-	medico m,
-	convenio c,
-	paciente pac
-WHERE 
-	 pes.idpaciente = pac.id 
-	 AND pac.convenio_id = c.id 
-ORDER BY pes.nome]]>
+FROM pessoa pes
+	INNER JOIN paciente pac
+					ON pes.idpaciente = pac.id
+	INNER JOIN convenio c
+					ON pac.convenio_id = c.id
+
+ORDER BY pes.nome ]]>
 	</queryString>
 	<field name="nome" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="nome"/>

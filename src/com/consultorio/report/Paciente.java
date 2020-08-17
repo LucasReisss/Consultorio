@@ -10,6 +10,9 @@ import com.consultorio.factory.JDBCFactory;
 @WebServlet("/pacientesReport")
 public class Paciente extends ReportServlet {
 
+
+	private static final long serialVersionUID = -4008819968239926066L;
+
 	@Override
 	public String getArquivoJasper() {
 		return "Paciente.jasper";
