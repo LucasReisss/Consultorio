@@ -70,7 +70,6 @@ public class PacienteController extends Controller<Pessoa> {
 		setMedico((Pessoa) em.find(getEntity().getClass(), id));
 
 		medSelecionado = false;
-		agendaController.limpar();
 
 	}
 
@@ -133,16 +132,6 @@ public class PacienteController extends Controller<Pessoa> {
 			getEntity().getPaciente().setAtendimento(new ArrayList<Atendimento>());
 		}
 
-		atendimento.setData(agenda.getAtendimento());
-		getEntity().getPaciente().getAtendimento().add(atendimento);
-
-		agenda.setMedico(getMedico().getMedico());
-		agenda.setPaciente(getEntity().getPaciente());
-
-		// add o agendamento tanto p/ o med quanto para o paciente
-		getMedico().getMedico().getAgenda().add(agenda);
-		getEntity().getPaciente().getAgenda().add(agenda);
-
 		LocalDateTime ag = LocalDateTime.ofInstant(agenda.getAtendimento().toInstant(), ZoneId.systemDefault());
 		boolean boleano = false;
 
@@ -154,6 +143,16 @@ public class PacienteController extends Controller<Pessoa> {
 				break;
 			}
 		}
+		
+		atendimento.setData(agenda.getAtendimento());
+		getEntity().getPaciente().getAtendimento().add(atendimento);
+
+		agenda.setMedico(getMedico().getMedico());
+		agenda.setPaciente(getEntity().getPaciente());
+		
+		// add o agendamento tanto p/ o med quanto para o paciente
+		getMedico().getMedico().getAgenda().add(agenda);
+		getEntity().getPaciente().getAgenda().add(agenda);
 
 		if (boleano == true) {
 			Util.addMessageError("Você já tem um agendamento para esse dia e horário");

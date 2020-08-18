@@ -231,7 +231,7 @@ public class AgendaController extends Controller<Pessoa> {
 			if (data.isBefore(hoje)) {
 				Util.addMessageError("Data inválida");
 				return agenda = new Agenda();
-			} else if (!repo.listarAgendaMedPorId(id).isEmpty()) {
+			} else if (!repo.listarAgendaMedPorId(id).isEmpty() || repo.listarAgendaMedPorId(id).isEmpty()) {
 				List<Agenda> agendas = new ArrayList<Agenda>();
 				agendas = repo.listarAgendaMedPorId(id);
 				LocalDateTime ldt = LocalDateTime.ofInstant(agenda.getAtendimento().toInstant(),
