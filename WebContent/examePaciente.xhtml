@@ -37,7 +37,7 @@
 		</p:dialog>
 
 		<p:growl id="growl" globalOnly="false" />
-		
+
 		<p:panel id="panel">
 			<f:facet name="header">
 				<div align="left">
@@ -64,26 +64,46 @@
 									value="#{pacienteController.medico.nome}" required="true"
 									requiredMessage="Selecione o médico." disabled="true" />
 
+								<!-- 
 								<p:outputLabel value="Areá para o atendimento: " />
-								<p:selectOneMenu id="especialidade" widgetVar="selectEsp"
-									valueChangeListener="#{pacienteController.retornarEspecialidadesPorId(pacienteController.medico.id)}">
+								<p:selectOneMenu id="especialidade" widgetVar="selectEsp">
 									<f:selectItem itemLabel="Especialidade" />
-									<f:selectItems value="#{pacienteController.lista}" />
-								</p:selectOneMenu>
+									<f:selectItems value="#{pacienteController.listaEspecialide}"
+										var="esp" itemValue="#{esp.id}" itemLabel="#{esp.nome}" />
+								</p:selectOneMenu>  
+							 	 -->
 
-								<p:commandLink value="Selecione a data e a hora do atendimento"
+								<p:commandLink
+									value="Clique para preencher a descricao e data do atendimento"
+									disabled="#{pacienteController.medico.id == null}"
 									onclick="PF('AgendaMed').show();" />
+
+
+
+								<p:outputLabel value="Descrição" />
+								<p:inputText
+									value="#{pacienteController.agendaController.agenda.nome}"
+									disabled="true" required="true"
+									requiredMessage="Descrição necessária" />
+
+								<p:outputLabel value="Data e Hora" />
+								<p:datePicker id="datetime" required="true"
+									requiredMessage="Data necessária"
+									value="#{pacienteController.agendaController.agenda.atendimento}"
+									pattern="dd/MM/yyyy HH:mm:ss" showTime="true" disabled="true" />
+
 							</h:panelGrid>
 
 							<p:toolbar>
 								<f:facet name="left">
 									<p:commandButton value="Salvar" process="panelExame"
 										update="panelExame" id="salvarExame"
+										disabled="#{pacienteController.agenda.nome == null}"
 										action="#{pacienteController.salvarExame}" />
 
 									<p:commandButton value="Limpar" process="panelExame"
-										update="panelExame" id="limpar"
-										action="#{pacienteController.limparExame}" />
+										update="@form" id="limpar"
+										action="#{pacienteController.limpar}" />
 
 								</f:facet>
 							</p:toolbar>
@@ -126,44 +146,59 @@
 					</p:dataTable>
 				</p:dialog>
 
-			</h:form>
 
-			<h:form id="agenda">
 
-				<p:dialog header="Agenda medica" widgetVar="AgendaMed" height="50%"
+
+
+				<p:dialog header="Agenda medica" widgetVar="AgendaMed" height="40%"
 					width="50%" modal="true" resizable="true">
+
+					<p:commandButton disabled="#{pacienteController.medSelecionado == true}"
+						value="Carregar agenda de #{pacienteController.medico.nome}"
+						action="#{pacienteController.carregarAgendaDoMed()}"
+						update="panelMed eventDetails @this" />
 
 					<p:growl id="messages" showDetail="true" />
 
-					<h:panelGrid columnClasses="value">
-						<p:schedule id="schedule" value="#{agendaController.agendas}"
+					<h:panelGrid columnClasses="value" id="panelMed">
+						<p:schedule id="schedule"
+							value="#{pacienteController.agendaController.agendas}"
 							widgetVar="myschedule">
-
-							<p:ajax event="dateSelect" update="eventDetails"
-								oncomplete="PF('dialogo').show();" />
 							<p:ajax event="eventSelect"
-								listener="#{agendaController.eventoSelecionado}"
+								listener="#{pacienteController.agendaController.eventoSelecionado}"
 								update="eventDetails" oncomplete="PF('dialogo').show();" />
+							<p:ajax event="dateSelect" update="eventDetails"
+								listener="#{pacienteController.agendaController.onDateSelect}"
+								oncomplete="PF('dialogo').show();" />
 
 						</p:schedule>
 					</h:panelGrid>
 				</p:dialog>
 
 				<p:dialog widgetVar="dialogo" header="Detalhes do Atendimento"
-					closable="true" draggable="false" modal="true" resizable="false">
+					closable="true" draggable="false" modal="true" resizable="true">
 					<h:panelGrid id="eventDetails" columns="2">
 
 						<p:outputLabel value="Descricão" />
-						<p:inputText value="#{agendaController.agenda.nome}" />
+						<p:inputText
+							value="#{pacienteController.agendaController.agenda.nome}" />
 
 						<p:outputLabel value="Data Atendimento" />
-						<p:inputText value="#{agendaController.agenda.atendimento}" />
+						<p:datePicker id="datetime"
+							value="#{pacienteController.agendaController.agenda.atendimento}"
+							pattern="dd/MM/yyyy HH:mm:ss" showTime="true" onchange="">
+							<p:ajax event="blur"
+								listener="#{pacienteController.validarFalso()}"
+								update="preencher" />
+						</p:datePicker>
 
-						<p:outputLabel value="Paciente" />
-						<p:inputText value="#{agendaController.paciente.nome}" />
+						<p:commandButton value="Validar"
+							action="#{pacienteController.verificarDadosConsulta(pacienteController.medico.id)}"
+							update="preencher" />
 
-						<p:outputLabel value="Medico" />
-						<p:inputText value="#{agendaController.medico.nome}" />
+						<p:commandButton value="Preencher" id="preencher"
+							disabled="#{pacienteController.validacao == false}"
+							oncomplete="PF('dialogo').hide PF('AgendaMed').hide" />
 
 					</h:panelGrid>
 

@@ -1,5 +1,7 @@
 package com.consultorio.repository;
 
+
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -22,7 +24,7 @@ public class AgendaRepository extends Repository<Pessoa> {
 
 		return query.getResultList();
 	}
-
+	
 	public List<Agenda> listarAgendaMedPorId(Integer idPessoa) {
 		StringBuffer jpql = new StringBuffer();
 		jpql.append("SELECT ");
@@ -74,7 +76,7 @@ public class AgendaRepository extends Repository<Pessoa> {
 		jpql.append("pe ");
 		jpql.append("FROM ");
 		jpql.append("Pessoa pe ");
-		jpql.append("Inner Join Medico me on pe.paciente.id = me.id ");
+		jpql.append("Inner Join Medico me on pe.medico.id = me.id ");
 		jpql.append("Inner Join Agenda ag on me.agenda.id = ag.id ");
 		jpql.append("Where ag.id = "+idAgenda);
 		

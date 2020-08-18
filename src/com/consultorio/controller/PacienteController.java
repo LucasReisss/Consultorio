@@ -1,6 +1,9 @@
 package com.consultorio.controller;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -22,7 +25,6 @@ import com.consultorio.listing.PacienteListing;
 import com.consultorio.model.Agenda;
 import com.consultorio.model.Atendimento;
 import com.consultorio.model.EspecialidadeMedica;
-import com.consultorio.model.Medico;
 import com.consultorio.model.Paciente;
 import com.consultorio.model.Pessoa;
 import com.consultorio.model.Telefone;
@@ -31,10 +33,12 @@ import com.consultorio.repository.PacienteRepository;
 
 @Named
 @ViewScoped
-public class PacienteController extends Controller<Pessoa> { 
+public class PacienteController extends Controller<Pessoa> {
 
 	private static final long serialVersionUID = -7996231487557010298L;
 	private String filtro;
+	private Agenda agenda = new Agenda();
+	private AgendaController agendaController = new AgendaController();
 	private List<Pessoa> listaPaciente;
 	private List<Pessoa> listaMedico;
 	private Pessoa medico = new Pessoa();
@@ -44,32 +48,37 @@ public class PacienteController extends Controller<Pessoa> {
 	private List<Agenda> agendas = new ArrayList<Agenda>();
 	private Telefone telefone = new Telefone();
 	private List<Pessoa> lista;
-
+	private boolean validacao = false;
+	private boolean medSelecionado = false;
 
 	public void pesquisarMed() {
 		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
 		Pessoa pessoa = (Pessoa) session.getAttribute("usuarioLogado");
 		super.editar(pessoa.getId());
-		
+
 		if (getEntity().getMedico() != null) {
 			MedicoRepository repo = new MedicoRepository();
 			listaMedico = repo.findOthersByNome(getFiltro(), getEntity().getId());
 		} else {
 			MedicoRepository repo = new MedicoRepository();
-			listaMedico = repo.findByNome(getFiltro());			
+			listaMedico = repo.findByNome(getFiltro());
 		}
 	}
-	
+
 	public void editarMed(int id) {
 		EntityManager em = JPAFactory.getEntityManager();
 		setMedico((Pessoa) em.find(getEntity().getClass(), id));
+
+		medSelecionado = false;
+		agendaController.limpar();
+
 	}
-	
+
 	public void pesquisar() {
 		PacienteRepository repo = new PacienteRepository();
 		listaPaciente = repo.findByNome(getFiltro());
 	}
-	
+
 	public void pesquisarAgenda() {
 		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
 		Pessoa pessoa = (Pessoa) session.getAttribute("usuarioLogado");
@@ -81,49 +90,81 @@ public class PacienteController extends Controller<Pessoa> {
 			agendas = new ArrayList<Agenda>();
 		}
 	}
-	
+
 	public String retornarData() {
-		
+
 		Date data = new Date();
-		
+
 		String dia = "10";
 		String mes = "08";
 		String ano = "2020";
-		
+
 		Locale localeBR = new Locale("pt", "BR");
-        
+
 		SimpleDateFormat fmt = new SimpleDateFormat("dd 'de' MMMM 'de' yyyy", localeBR);
-		
+
 		return fmt.format(new Date());
 	}
-	
+
 	public String temExame() {
 		pesquisarAgenda();
-		Integer num = null;
+		Integer num = 0;
 		if (agendas.isEmpty()) {
 			return "Você ainda não tem nenhum exame marcado..";
-		}
-		else {
-			num = agendas.size();
-			return "Atualmente você tem "+num.toString()+" exame(s) em aberto";
+		} else {
+			LocalDate hoje = LocalDate.now();
+			for (int i = 0; i < agendas.size(); i++) {
+				LocalDate data = new java.sql.Date(agendas.get(i).getAtendimento().getTime()).toLocalDate();
+				if (data.isAfter(hoje)) {
+					num ++;
+				}
+			}
+			
+			return "Atualmente você tem " + num.toString() + " exame(s) em aberto";
 		}
 	}
-	
+
 	public void salvarExame() {
 		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
 		Pessoa pessoa = (Pessoa) session.getAttribute("usuarioLogado");
 		super.editar(pessoa.getId());
-		
+
 		if (getEntity().getPaciente().getAtendimento() == null) {
 			getEntity().getPaciente().setAtendimento(new ArrayList<Atendimento>());
 		}
-		
-		if (medico.getId() != null) {
+
+		atendimento.setData(agenda.getAtendimento());
+		getEntity().getPaciente().getAtendimento().add(atendimento);
+
+		agenda.setMedico(getMedico().getMedico());
+		agenda.setPaciente(getEntity().getPaciente());
+
+		// add o agendamento tanto p/ o med quanto para o paciente
+		getMedico().getMedico().getAgenda().add(agenda);
+		getEntity().getPaciente().getAgenda().add(agenda);
+
+		LocalDateTime ag = LocalDateTime.ofInstant(agenda.getAtendimento().toInstant(), ZoneId.systemDefault());
+		boolean boleano = false;
+
+		for (int i = 0; i < getEntity().getPaciente().getAgenda().size(); i++) {
+			LocalDateTime agendas = LocalDateTime.ofInstant(
+					getEntity().getPaciente().getAgenda().get(i).getAtendimento().toInstant(), ZoneId.systemDefault());
+			if (ag.equals(agendas)) {
+				boleano = true;
+				break;
+			}
+		}
+
+		if (boleano == true) {
+			Util.addMessageError("Você já tem um agendamento para esse dia e horário");
+			limpar();
+			agenda = new Agenda();
+		} else {
 			PacienteRepository r = new PacienteRepository();
 			try {
 				r.beginTransaction();
-				getEntity().setSenha(Util.hashSHA256(getEntity().getSenha()));
 				r.salvar(getEntity());
+				r.salvar(getMedico());
 				r.commitTransaction();
 			} catch (RepositoryException e) {
 				e.printStackTrace();
@@ -138,22 +179,41 @@ public class PacienteController extends Controller<Pessoa> {
 			}
 			limpar();
 			Util.addMessageInfo("Exame cadastrado com sucesso.");
-		} else {
-			Util.addMessageWarn("Preencha as informaçõess.");
+			agenda = new Agenda();
 		}
-		
 	}
-	
+
+	public void carregarAgendaDoMed() {
+		agendaController.listarAgendaMedSelecionado(medico.getId());
+		medSelecionado = true;
+	}
+
+	public void verificarDadosConsulta(Integer id) throws ValidationException {
+		editarMed(id);
+		agenda = agendaController.selDescEData(medico.getId());
+		if (agenda.getNome() == null || agenda.getNome().isBlank()) {
+			validacao = false;
+		} else {
+			validacao = true;
+		}
+	}
+
+	public void validarFalso() {
+		validacao = false;
+	}
+
 	@Override
 	public void limpar() {
 		medico = new Pessoa();
-		lista = new ArrayList<Pessoa>();
+		listaEspecialide = new ArrayList<EspecialidadeMedica>();
+		agendaController.limpar();
+		validacao = false;
 	}
-	
+
 	public void limparExame() {
 		atendimento = new Atendimento();
 	}
-	
+
 	@Override
 	public void salvar() {
 		PacienteRepository r = new PacienteRepository();
@@ -179,21 +239,21 @@ public class PacienteController extends Controller<Pessoa> {
 		limpar();
 		Util.addMessageInfo("Cadastro realizado com sucesso.");
 	}
-	
+
 	@Override
 	public Pessoa getEntity() {
 		if (entity == null) {
 			entity = new Pessoa();
-			if(entity.getPaciente() == null) {
+			if (entity.getPaciente() == null) {
 				entity.setPaciente(new Paciente());
 				entity.setTelefone(new ArrayList<Telefone>());
 			}
 		}
-		
+
 		return entity;
 	}
-	
-	public List<Pessoa> retornarEspecialidadesPorId(Integer id) {
+
+	public List<Pessoa> espeMedSel(Integer id) {
 		lista = new ArrayList<Pessoa>();
 		MedicoRepository repo = new MedicoRepository();
 		try {
@@ -204,16 +264,17 @@ public class PacienteController extends Controller<Pessoa> {
 		}
 		return lista;
 	}
-	
-	public List<EspecialidadeMedica> espDoMedSelecionado() {
-		if (medico == null) {
-			return listaEspecialide = new ArrayList<EspecialidadeMedica>();
+
+	public List<Pessoa> retornarEspecialidadesPorId(Integer id) {
+		lista = new ArrayList<Pessoa>();
+		MedicoRepository repo = new MedicoRepository();
+		try {
+			lista = repo.findByEspecialidade(id);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			Util.addMessageError(e.getMessage());
 		}
-		else {
-			MedicoRepository repo = new MedicoRepository();
-			return listaEspecialide = repo.findEspecialidadeByMedico(medico.getId());
-		}
-		
+		return lista;
 	}
 
 	public String getFiltro() {
@@ -246,7 +307,7 @@ public class PacienteController extends Controller<Pessoa> {
 		PacienteListing listing = new PacienteListing();
 		listing.open();
 	}
-	
+
 	public void obterPacienteListing(SelectEvent event) {
 		Pessoa entity = (Pessoa) event.getObject();
 		setEntity(entity);
@@ -315,5 +376,37 @@ public class PacienteController extends Controller<Pessoa> {
 	public void setListaEspecialide(List<EspecialidadeMedica> listaEspecialide) {
 		this.listaEspecialide = listaEspecialide;
 	}
-	
+
+	public AgendaController getAgendaController() {
+		return agendaController;
+	}
+
+	public void setAgendaController(AgendaController agendaController) {
+		this.agendaController = agendaController;
+	}
+
+	public boolean isValidacao() {
+		return validacao;
+	}
+
+	public void setValidacao(boolean validacao) {
+		this.validacao = validacao;
+	}
+
+	public Agenda getAgenda() {
+		return agenda;
+	}
+
+	public void setAgenda(Agenda agenda) {
+		this.agenda = agenda;
+	}
+
+	public boolean isMedSelecionado() {
+		return medSelecionado;
+	}
+
+	public void setMedSelecionado(boolean medSelecionado) {
+		this.medSelecionado = medSelecionado;
+	}	
+
 }

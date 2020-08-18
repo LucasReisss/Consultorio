@@ -38,6 +38,8 @@
 		</p:dialog>
 
 		<h:form>
+			<p:commandButton value="Carregar Dados" action="#{agendaController.listar}" 
+			update="@form" disabled="#{agendaController.agenda.nome != null}"/>
 			<p:growl id="messages" showDetail="true" />
 
 			<h:panelGrid columnClasses="value">

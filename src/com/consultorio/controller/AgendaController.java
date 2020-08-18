@@ -1,12 +1,14 @@
 package com.consultorio.controller;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -35,9 +37,9 @@ public class AgendaController extends Controller<Pessoa> {
 
 	private static final long serialVersionUID = 4948245614997659993L;
 
-	private Agenda agenda;
+	private Agenda agenda = new Agenda();
 	private List<Agenda> listaAgenda = new ArrayList<Agenda>();
-	private ScheduleModel agendas;
+	private ScheduleModel agendas = new DefaultScheduleModel();;
 	private ScheduleEvent event = new DefaultScheduleEvent();
 	private int idAgenda;
 	private List<Paciente> pacientes = new ArrayList<Paciente>();
@@ -45,7 +47,6 @@ public class AgendaController extends Controller<Pessoa> {
 	private Pessoa medico = new Pessoa();
 	private List<Medico> medicos = new ArrayList<Medico>();
 
-	@PostConstruct
 	public void listar() {
 		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
 		Pessoa pessoa = (Pessoa) session.getAttribute("usuarioLogado");
@@ -131,6 +132,35 @@ public class AgendaController extends Controller<Pessoa> {
 
 	}
 
+	public void listarAgendaMedSelecionado(Integer id) {
+		agendas = new DefaultScheduleModel();
+		limpar();
+		editar(id);
+		AgendaRepository repo = new AgendaRepository();
+
+		listaAgenda = repo.listarAgendaMedPorId(getEntity().getId());
+		if (listaAgenda.isEmpty()) {
+			Util.addMessageInfo(getEntity().getNome() + " não tem nada agendado.");
+			return;
+		} else {
+			for (Agenda agenda : listaAgenda) {
+				DefaultScheduleEvent evt = new DefaultScheduleEvent();
+				// add id para recuperar dps
+				evt.setDescription(agenda.getId().toString());
+				evt.setData(agenda.getAtendimento());
+				LocalDateTime ldt = LocalDateTime.ofInstant(agenda.getAtendimento().toInstant(),
+						ZoneId.systemDefault());
+				evt.setStartDate(ldt);
+				evt.setEndDate(ldt);
+
+				evt.setTitle(agenda.getNome());
+				evt.setAllDay(false);
+				evt.setEditable(true);
+				agendas.addEvent(evt);
+			}
+		}
+	}
+
 	public void eventoSelecionado(SelectEvent evento) {
 		limpar();
 		ScheduleEvent event = (ScheduleEvent) evento.getObject();
@@ -186,6 +216,64 @@ public class AgendaController extends Controller<Pessoa> {
 		}
 	}
 
+	public Agenda selDescEData(Integer id) throws ValidationException {
+		AgendaRepository repo = new AgendaRepository();
+		if (agenda.getNome().isBlank() || agenda.getAtendimento() == null) {
+			Util.addMessageError("Preencha todos os campos");
+			return agenda = new Agenda();
+		} else {
+			LocalDate data = new java.sql.Date(agenda.getAtendimento().getTime()).toLocalDate();
+			LocalDate hoje = LocalDate.now();
+			LocalTime tarde = LocalTime.parse("18:00");
+			LocalTime preAlmoco = LocalTime.parse("11:00");
+			LocalTime posAlmoco = LocalTime.parse("14:00");
+			LocalTime manha = LocalTime.parse("08:00");
+			if (data.isBefore(hoje)) {
+				Util.addMessageError("Data inválida");
+				return agenda = new Agenda();
+			} else if (!repo.listarAgendaMedPorId(id).isEmpty()) {
+				List<Agenda> agendas = new ArrayList<Agenda>();
+				agendas = repo.listarAgendaMedPorId(id);
+				LocalDateTime ldt = LocalDateTime.ofInstant(agenda.getAtendimento().toInstant(),
+						ZoneId.systemDefault());
+				if (ldt.getMinute() != 00 && ldt.getMinute() != 30) {
+					Util.addMessageWarn("Hora de atendimento inválida. Padrão de 30 em 30 minutos");
+					return agenda = new Agenda();
+
+				}
+				if (ldt.toLocalTime().isAfter(manha) && ldt.toLocalTime().isBefore(preAlmoco)) {
+					for (int i = 0; i < agendas.size(); i++) {
+						LocalDateTime agendaLista = LocalDateTime.ofInstant(agendas.get(i).getAtendimento().toInstant(),
+								ZoneId.systemDefault());
+						if (ldt.equals(agendaLista)) {
+							Util.addMessageError("Data da consulta já existente");
+							agenda = new Agenda();
+							break;
+						}
+					}
+
+					return agenda;
+				} else if (ldt.toLocalTime().isAfter(posAlmoco) && ldt.toLocalTime().isBefore(tarde)) {
+					for (int i = 0; i < agendas.size(); i++) {
+						LocalDateTime agendaLista = LocalDateTime.ofInstant(agendas.get(i).getAtendimento().toInstant(),
+								ZoneId.systemDefault());
+						if (ldt.equals(agendaLista)) {
+							Util.addMessageError("Data da consulta já existente");
+							agenda = new Agenda();
+							break;
+						}
+					}
+				} else {
+					Util.addMessageWarn("Horários disponíveis: 8:30-10:30 / 14:30-17:30");
+					return agenda = new Agenda();
+				}
+
+			}
+
+		}
+		return agenda;
+	}
+
 	public void onEventSelect(SelectEvent<ScheduleEvent> selectEvent) {
 		limpar();
 		event = selectEvent.getObject();
@@ -195,6 +283,9 @@ public class AgendaController extends Controller<Pessoa> {
 		limpar();
 		event = DefaultScheduleEvent.builder().startDate(selectEvent.getObject())
 				.endDate(selectEvent.getObject().plusHours(1)).build();
+		// transformando o local date time em Date
+		ZonedDateTime zdt = selectEvent.getObject().atZone(ZoneId.systemDefault());
+		agenda.setAtendimento(Date.from(zdt.toInstant()));
 	}
 
 	public void limpar() {
