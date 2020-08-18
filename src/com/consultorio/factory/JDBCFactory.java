@@ -15,7 +15,7 @@ public class JDBCFactory {
 			// registrando o driver do postgres
 			Class.forName("org.postgresql.Driver");
 			// estabelecendo uma conexao com o banco
-			conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/consultorio", "postgres", "root@123456");
+			conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/consultorio", "postgres", "root");
 			// obrigando a trabalhar com commit e rollback
 			conn.setAutoCommit(false);
 	

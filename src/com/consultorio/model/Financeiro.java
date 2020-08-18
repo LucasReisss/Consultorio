@@ -1,8 +1,14 @@
 package com.consultorio.model;
 
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import com.consultorio.validation.Validation;
 
@@ -11,19 +17,31 @@ public class Financeiro extends DefaultEntity<Financeiro> {
 
 	private static final long serialVersionUID = -2424463964056181252L;
 	
-	private Paciente paciente;
+	private String paciente;
 	private String cpf;
 	private String descricao;
+	@Column(nullable = false)
+	@Temporal(TemporalType.DATE)
 	private Date data;
 	private Double valor;
-	private Medico medico;
+	private String medico;
 	
-	public Paciente getPaciente() {
+
+
+	public String getPaciente() {
 		return paciente;
 	}
 
-	public void setPaciente(Paciente paciente) {
+	public void setPaciente(String paciente) {
 		this.paciente = paciente;
+	}
+
+	public String getMedico() {
+		return medico;
+	}
+
+	public void setMedico(String medico) {
+		this.medico = medico;
 	}
 
 	public String getCpf() {
@@ -58,13 +76,6 @@ public class Financeiro extends DefaultEntity<Financeiro> {
 		this.valor = valor;
 	}
 
-	public Medico getMedico() {
-		return medico;
-	}
-
-	public void setMedico(Medico medico) {
-		this.medico = medico;
-	}
 
 	@Override
 	public Validation<Financeiro> getValidation() {

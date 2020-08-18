@@ -1,0 +1,161 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/template/template.xhtml">
+	<ui:define name="head">
+		<style type="text/css">
+.ui-panelgrid.form-elements .ui-grc-2 {
+	padding-left: 60px;
+}
+
+@media ( max-width :1024px) {
+	.ui-panelgrid.form-elements .ui-grc-2 {
+		padding-left: 20px;
+	}
+}
+
+@media ( max-width :640px) {
+	.ui-panelgrid.form-elements .ui-grc-2 {
+		padding-left: 6px;
+	}
+}
+
+.dialogDemo label {
+	line-height: 2.1em;
+}
+</style>
+	</ui:define>
+	<ui:define name="content">
+
+		<h:body>
+			<h:form>
+				<h1>Financeiro</h1>
+				<br />
+
+				<p:growl id="growl" globalOnly="false" />
+				<p:panel id="panel">
+					<f:facet name="header">
+						<div align="center">
+							<h1>Financeiro</h1>
+						</div>
+					</f:facet>
+					<div class="ui-g ui-fluid  ">
+						<div class="ui-g-12">
+							<div class="card card-w-title  ">
+
+								<p:panelGrid columns="2" columnClasses="ui-g-12 ui-md-1"
+									layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+
+									<p:commandLink value="Nome:"
+										actionListener="#{financeiroController.abrirFinanceiroListing}"
+										process="@this" update="@none">
+
+										<p:ajax event="dialogReturn"
+											listener="#{financeiroController.obterFinanceiroListing}"
+											update="@form" />
+
+									</p:commandLink>
+									<p:inputText id="itNome"
+										value="#{financeiroController.entity.paciente}" required="true"
+										requiredMessage="Informe o nome." />
+
+									<p:outputLabel value="Data:" />
+									<p:calendar value="#{financeiroController.entity.data}"
+										pattern="dd/MM/yyyy" required="true" />
+
+									<p:outputLabel value="CPF:" />
+									<p:inputText value="#{financeiroController.entity.cpf}" />
+
+									<p:outputLabel value="Descrição:" />
+									<p:inputText value="#{financeiroController.entity.descricao}" />
+
+									<p:outputLabel value="Valor:" />
+									<p:inputText value="#{financeiroController.entity.valor}" />
+
+									<p:outputLabel value="Profissional:" />
+									<p:inputText value="#{financeiroController.entity.medico}" />
+								</p:panelGrid>
+
+							</div>
+						</div>
+					</div>
+
+					<p:toolbar>
+						<f:facet name="left">
+							<p:commandButton value="Salvar" icon="pi pi-check"
+								process="@form" update="@form"
+								action="#{financeiroController.salvar}" />
+
+							<p:commandButton value="Limpar" process="@this" update="panel"
+								action="#{financeiroController.limpar}">
+								<p:ajax update="@form" resetValues="true" />
+							</p:commandButton>
+
+						</f:facet>
+
+						<f:facet name="right">
+							<p:commandButton value="Excluir" icon="pi pi-trash"
+								process="@form" update="panel"
+								rendered="#{loginController.permiteAcesso('Adm')}"
+								action="#{financeiroController.excluir}">
+								<p:confirm header="Confirmação" message="Confirma a exclusão?" />
+							</p:commandButton>
+						</f:facet>
+					</p:toolbar>
+
+				</p:panel>
+
+				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes" />
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no" />
+				</p:confirmDialog>
+
+				<p:dialog header="Listagem do Financeiro" widgetVar="listagem"
+					height="300" width="90%" modal="true" resizable="true">
+					<p:outputLabel value="Nome: " />
+					<p:inputText id="itFiltro" value="#{financeiroController.filtro}" />
+					<p:commandButton value="Pesquisar"
+						actionListener="#{financeiroController.pesquisar}"
+						process="@this itFiltro" update="dtListagem" />
+					<br />
+					<div class="ui-datatable"></div>
+					<p:dataTable id="dtListagem" var="entity"
+						value="#{financeiroController.financeiro}">
+						<p:column headerText="Id">
+							<h:outputText value="#{entity.id}" />
+						</p:column>
+
+						<p:column headerText="Nome">
+							<p:commandLink value="#{entity.nome}"
+								actionListener="#{financeiroController.editar(entity.id)}"
+								process="@this" update="@form" resetValues="true" />
+						</p:column>
+
+						<p:column headerText="Cpf">
+							<h:outputText value="#{entity.cpf}" />
+						</p:column>
+						<p:column headerText="Data">
+							<h:outputText value="#{entity.data}" />
+						</p:column>
+						<p:column headerText="Descrição">
+							<h:outputText value="#{entity.descricao}" />
+						</p:column>
+						<p:column headerText="Valor">
+							<h:outputText value="#{entity.valor}" />
+						</p:column>
+						<p:column headerText="Profissional">
+							<h:outputText value="#{entity.medico}" />
+						</p:column>
+
+					</p:dataTable>
+				</p:dialog>
+
+			</h:form>
+		</h:body>
+
+	</ui:define>
+</ui:composition>

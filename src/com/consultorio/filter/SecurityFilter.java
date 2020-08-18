@@ -83,7 +83,8 @@ public class SecurityFilter implements Filter {
 					|| link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/prescricoes.xhtml")
 					|| link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/atestado.xhtml")
 					|| link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/agenda.xhtml")
-					|| link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/pacientesReport")) {
+					|| link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/pacientesReport")
+					|| link.equalsIgnoreCase("http://localhost:8080/Consultorio/faces/financeiro.xhtml")) {
 				chain.doFilter(request, response);
 			} else {
 				res.sendRedirect(req.getContextPath() + "/faces/home.xhtml");
